@@ -43,6 +43,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/config/firebase.config.ts",
+                  "with": "src/config/firebase.config.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
