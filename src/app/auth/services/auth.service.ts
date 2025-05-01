@@ -9,14 +9,14 @@ import { UserType } from '../models/user.model';
 })
 export class AuthService {
 
-  private auth: Auth = inject(Auth);
+  private firebaseAuth: Auth = inject(Auth);
   private firestore: Firestore = inject(Firestore);
 
-  readonly authState$: Observable<any | null> = authState(this.auth);
+  readonly authState$: Observable<any | null> = authState(this.firebaseAuth);
 
   async registerWithEmailPassword(email: string, password: string, userType: UserType, firstName: string, lastName: string): Promise<UserCredential> {
     try {
-      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(this.firebaseAuth, email, password);
       const user = userCredential.user;
 
       if (user) {
@@ -55,7 +55,7 @@ export class AuthService {
 
   async loginWithEmailPassword(email: string, password: string): Promise<UserCredential> {
     try {
-      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(this.firebaseAuth, email, password);
       return userCredential;
     } catch (error) {
       throw error;
@@ -65,7 +65,7 @@ export class AuthService {
   async signInWithGoogle(): Promise<UserCredential> {
     const provider = new GoogleAuthProvider();
     try {
-      const userCredential = await signInWithPopup(this.auth, provider);
+      const userCredential = await signInWithPopup(this.firebaseAuth, provider);
       // **IMPORTANT NOTE for later:**
       // If a user signs in with Google for the *first time*, their profile
       // document might not exist in Firestore. We need a strategy later to:
@@ -81,7 +81,7 @@ export class AuthService {
 
   async logout(): Promise<void> {
     try {
-      await signOut(this.auth);
+      await signOut(this.firebaseAuth);
     } catch (error) {
       console.error("Error signing out:", error);
       throw error;

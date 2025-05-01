@@ -7,10 +7,10 @@
 
     <mat-card-content>
       @if (errorMessage) {
-        <div class="error-message-area">
-          <mat-icon color="warn">warning</mat-icon>
-          <span>{{ errorMessage }}</span>
-        </div>
+      <div class="error-message-area">
+        <mat-icon color="warn">warning</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
       }
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -18,29 +18,35 @@
           <mat-label>Email Address</mat-label>
           <input matInput formControlName="email" type="email" placeholder="you@example.com" required>
           <mat-icon matSuffix color="primary">email</mat-icon> @if (email?.errors?.['required'] && email?.touched) {
-            <mat-error>Email is required</mat-error>
+          <mat-error>Email is required</mat-error>
           }
           @if (email?.errors?.['email'] && email?.touched) {
-            <mat-error>Please enter a valid email address</mat-error>
+          <mat-error>Please enter a valid email address</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Password</mat-label>
-          <input matInput formControlName="password" type="password" placeholder="Your Password" required>
-          <mat-icon matSuffix color="primary">lock</mat-icon> @if (password?.errors?.['required'] && password?.touched) {
-            <mat-error>Password is required</mat-error>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'"
+            placeholder="Your Password" required>
+          <button mat-icon-button matSuffix class="hide-password-button" (click)="hidePassword = !hidePassword" type="button"
+            aria-label="'Toggle password visibility'">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+            <mat-icon matSuffix color="primary">lock</mat-icon> 
+            @if (password?.errors?.['required'] && password?.touched) {
+          <mat-error>Password is required</mat-error>
           }
-          </mat-form-field>
+        </mat-form-field>
 
         <div class="button-container">
-            <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="submit-button">
-              @if (!isLoading) {
-                <span>Sign In</span>
-              } @else {
-                <mat-progress-spinner diameter="24" mode="indeterminate"></mat-progress-spinner>
-              }
-            </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading"
+            class="submit-button">
+            @if (!isLoading) {
+            <span>Sign In</span>
+            } @else {
+            <mat-progress-spinner diameter="24" mode="indeterminate"></mat-progress-spinner>
+            }
+          </button>
         </div>
 
       </form>
@@ -51,8 +57,8 @@
         <button mat-stroked-button type="button" (click)="signInWithGoogle()" [disabled]="isLoading"
           class="google-button">
           <span class="google-button-content">
-          <img src="assets/icons/google-logo.svg" class="google-icon" />
-          <span class="google-text">Sign In with Google</span>
+            <img src="assets/icons/google-logo.svg" class="google-icon" />
+            <span class="google-text">Sign In with Google</span>
           </span>
         </button>
       </div>
@@ -60,10 +66,9 @@
     </mat-card-content>
 
     <mat-card-actions>
-       <div class="switch-auth">
-         Don't have an account? <a routerLink="/register">Register here</a>
-       </div>
+      <div class="switch-auth">
+        Don't have an account? <a routerLink="/register">Register here</a>
+      </div>
     </mat-card-actions>
   </mat-card>
 </div>
-

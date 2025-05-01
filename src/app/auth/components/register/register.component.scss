@@ -25,6 +25,9 @@
    .form-field {
     width: 100%;
     margin-bottom: 10px;
+    .hide-password-button{
+      transform: scale(0.8);
+    }
   }
    .button-container {
      margin-top: 16px;

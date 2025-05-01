@@ -33,6 +33,8 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
+  hidePassword = true;
+  hideConfirmPassword = true;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) { }
 
@@ -44,9 +46,8 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
       userType: ['', Validators.required]
-    }, { validator: passwordMatchValidator });
+    }, { validators: passwordMatchValidator });
   }
-
   async onSubmit(): Promise<void> {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -58,7 +59,6 @@ export class RegisterComponent implements OnInit {
 
     try {
       const { firstName, lastName, email, password, userType: userTypeString } = this.registerForm.value;
-
       const userTypeEnum = userTypeString as UserType;
 
       await this.authService.registerWithEmailPassword(
@@ -70,16 +70,11 @@ export class RegisterComponent implements OnInit {
       );
 
       if (userTypeEnum === UserType.CareAssistant) {
-        alert('Registration successful! Please complete your profile.');
         await this.router.navigate(['/profile-setup']);
       } else {
-
-        alert('Registration successful!');
         await this.router.navigate(['/dashboard']);
       }
-
     } catch (error) {
-      console.error("Registration failed:", error);
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
     } finally {
       this.isLoading = false;

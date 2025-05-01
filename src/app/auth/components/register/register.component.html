@@ -47,7 +47,10 @@
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Password</mat-label>
-          <input matInput formControlName="password" type="password" placeholder="Choose a strong password" required>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Choose a strong password" required>
+          <button mat-icon-button matSuffix class="hide-password-button" (click)="hidePassword = !hidePassword" type="button"
+            aria-label="'Toggle password visibility'">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon></button>
           <mat-icon matSuffix color="primary">lock</mat-icon>
           @if (password?.errors?.['required'] && password?.touched) {
           <mat-error>Password is required</mat-error>
@@ -57,15 +60,18 @@
           }
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="form-field">
+        <mat-form-field appearance="outline" class="form-field"
+          [class.mat-form-field-invalid]="registerForm.hasError('passwordMismatch') && confirmPassword?.touched && !confirmPassword?.hasError('required')">
           <mat-label>Confirm Password</mat-label>
-          <input matInput formControlName="confirmPassword" type="password" placeholder="Re-enter your password"
+          <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Re-enter your password"
             required>
-          <mat-icon matSuffix color="primary">lock_reset</mat-icon>
-          @if (registerForm.hasError('passwordMismatch') && confirmPassword?.touched) {
-          <mat-error>Passwords do not match</mat-error>
-          }
-          @if (confirmPassword?.errors?.['required'] && confirmPassword?.touched) {
+          <button mat-icon-button matSuffix class="hide-password-button" (click)="hideConfirmPassword = !hideConfirmPassword" type="button"
+            aria-label="'Toggle password visibility'">
+            <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+          <mat-icon matSuffix
+            [color]="registerForm.hasError('passwordMismatch') && confirmPassword?.touched && !confirmPassword?.hasError('required') ? 'warn' : 'primary'">lock_reset</mat-icon>
+
+          @if (confirmPassword?.hasError('required') && confirmPassword?.touched) {
           <mat-error>Please confirm your password</mat-error>
           }
         </mat-form-field>
@@ -76,8 +82,9 @@
             <mat-option value="researcher">Person Looking for Care</mat-option>
             <mat-option value="care_assistant">Care Assistant / Provider</mat-option>
           </mat-select>
-          <mat-icon matSuffix color="primary">person_search</mat-icon> @if (userType?.errors?.['required'] &&
-          userType?.touched) {
+          <mat-icon matSuffix color="primary">person_search</mat-icon>
+          @if (userType?.errors?.['required'] && userType?.touched)
+          {
           <mat-error>Please select your role</mat-error>
           }
         </mat-form-field>

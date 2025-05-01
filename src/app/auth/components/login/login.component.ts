@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
+  hidePassword = true;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) { }
 
@@ -58,7 +59,6 @@ export class LoginComponent implements OnInit {
       await this.router.navigate(['/dashboard']);
 
     } catch (error) {
-      console.error("Login failed:", error);
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
     } finally {
       this.isLoading = false;
@@ -74,7 +74,6 @@ export class LoginComponent implements OnInit {
 
       await this.router.navigate(['/dashboard']);
     } catch (error) {
-      console.error("Google Sign-In failed:", error);
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
     } finally {
       this.isLoading = false;
