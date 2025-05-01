@@ -1,7 +1,7 @@
-import { Injectable, inject } from '@angular/core';
-import { Auth, AuthError, GoogleAuthProvider, UserCredential, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from '@angular/fire/auth'; // Import Auth functions
+import { Injectable, inject, signal } from '@angular/core';
+import { Auth, AuthError, GoogleAuthProvider, UserCredential, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, user } from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { UserAuth } from '../models/user-auth.model';
 import { UserType } from '../models/user.model';
 
 @Injectable({
@@ -12,7 +12,8 @@ export class AuthService {
   private firebaseAuth: Auth = inject(Auth);
   private firestore: Firestore = inject(Firestore);
 
-  readonly authState$: Observable<any | null> = authState(this.firebaseAuth);
+  user$ = user(this.firebaseAuth);
+  currentUser = signal<UserAuth | null | undefined>(undefined);
 
   async registerWithEmailPassword(email: string, password: string, userType: UserType, firstName: string, lastName: string): Promise<UserCredential> {
     try {
@@ -27,6 +28,15 @@ export class AuthService {
 
       return userCredential;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(this.firebaseAuth, email);
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
       throw error;
     }
   }
