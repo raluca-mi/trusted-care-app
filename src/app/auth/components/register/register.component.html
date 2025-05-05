@@ -1,8 +1,8 @@
 <div class="auth-container">
   <mat-card class="auth-card">
     <mat-card-header>
-      <mat-card-title>Create Account</mat-card-title>
-      <mat-card-subtitle>Join Trusted Care as a seeker or provider.</mat-card-subtitle>
+      <mat-card-title>{{ text.title }}</mat-card-title>
+      <mat-card-subtitle>{{ text.subtitle }}</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -14,99 +14,169 @@
       }
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName" type="text" placeholder="Enter your first name" required>
+          <mat-label>{{ text.firstNameLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="firstName"
+            type="text"
+            placeholder="{{ text.firstNamePlaceholder }}"
+            required
+          />
           <mat-icon matSuffix color="primary">person</mat-icon>
           @if (firstName?.errors?.['required'] && firstName?.touched) {
-          <mat-error>First name is required</mat-error>
+          <mat-error>{{ text.firstNameRequired }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName" type="text" placeholder="Enter your last name" required>
+          <mat-label>{{ text.lastNameLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="lastName"
+            type="text"
+            placeholder="{{ text.lastNamePlaceholder }}"
+            required
+          />
           <mat-icon matSuffix color="primary">person</mat-icon>
           @if (lastName?.errors?.['required'] && lastName?.touched) {
-          <mat-error>Last name is required</mat-error>
+          <mat-error>{{ text.lastNameRequired }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Email Address</mat-label>
-          <input matInput formControlName="email" type="email" placeholder="you@example.com" required>
+          <mat-label>{{ text.emailLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            type="email"
+            placeholder="{{ text.emailPlaceholder }}"
+            required
+          />
           <mat-icon matSuffix color="primary">email</mat-icon>
           @if (email?.errors?.['required'] && email?.touched) {
-          <mat-error>Email is required</mat-error>
-          }
-          @if (email?.errors?.['email'] && email?.touched) {
-          <mat-error>Please enter a valid email address</mat-error>
+          <mat-error>{{ text.emailRequired }}</mat-error>
+          } @if (email?.hasError('pattern') && email?.touched) {
+          <mat-error>{{ text.emailPattern }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Password</mat-label>
-          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Choose a strong password" required>
-          <button mat-icon-button matSuffix class="hide-password-button" (click)="hidePassword = !hidePassword" type="button"
-            aria-label="'Toggle password visibility'">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+          <mat-label>{{ text.passwordLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            placeholder="{{ text.passwordPlaceholder }}"
+            required
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            class="hide-password-button"
+            (click)="hidePassword = !hidePassword"
+            type="button"
+            aria-label="'Toggle password visibility'"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
           <mat-icon matSuffix color="primary">lock</mat-icon>
           @if (password?.errors?.['required'] && password?.touched) {
-          <mat-error>Password is required</mat-error>
-          }
-          @if (password?.errors?.['minlength'] && password?.touched) {
-          <mat-error>Password must be at least 6 characters long</mat-error>
+          <mat-error>{{ text.passwordRequired }}</mat-error>
+          } @if (password?.errors?.['minlength'] && password?.touched) {
+          <mat-error>{{ text.passwordMinLength }}</mat-error>
           }
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="form-field"
-          [class.mat-form-field-invalid]="registerForm.hasError('passwordMismatch') && confirmPassword?.touched && !confirmPassword?.hasError('required')">
-          <mat-label>Confirm Password</mat-label>
-          <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Re-enter your password"
-            required>
-          <button mat-icon-button matSuffix class="hide-password-button" (click)="hideConfirmPassword = !hideConfirmPassword" type="button"
-            aria-label="'Toggle password visibility'">
-            <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon></button>
-          <mat-icon matSuffix
-            [color]="registerForm.hasError('passwordMismatch') && confirmPassword?.touched && !confirmPassword?.hasError('required') ? 'warn' : 'primary'">lock_reset</mat-icon>
+        <mat-form-field
+          appearance="outline"
+          class="form-field"
+          [class.mat-form-field-invalid]="
+            registerForm.hasError('passwordMismatch') &&
+            confirmPassword?.touched &&
+            !confirmPassword?.hasError('required')
+          "
+        >
+          <mat-label>{{ text.confirmPasswordLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="confirmPassword"
+            [type]="hideConfirmPassword ? 'password' : 'text'"
+            placeholder="{{ text.confirmPasswordPlaceholder }}"
+            required
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            class="hide-password-button"
+            (click)="hideConfirmPassword = !hideConfirmPassword"
+            type="button"
+            aria-label="'Toggle password visibility'"
+          >
+            <mat-icon>{{
+              hideConfirmPassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
+          <mat-icon
+            matSuffix
+            [color]="
+              registerForm.hasError('passwordMismatch') &&
+              confirmPassword?.touched &&
+              !confirmPassword?.hasError('required')
+                ? 'warn'
+                : 'primary'
+            "
+            >lock_reset</mat-icon
+          >
 
-          @if (confirmPassword?.hasError('required') && confirmPassword?.touched) {
-          <mat-error>Please confirm your password</mat-error>
+          @if (confirmPassword?.hasError('required') &&
+          confirmPassword?.touched) {
+          <mat-error>{{ text.confirmPasswordRequired }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>I want to register as a:</mat-label>
+          <mat-label>{{ text.userTypeLabel }}</mat-label>
           <mat-select formControlName="userType" required>
-            <mat-option value="researcher">Person Looking for Care</mat-option>
-            <mat-option value="care_assistant">Care Assistant / Provider</mat-option>
+            <mat-option value="researcher">{{
+              text.userTypeOptionResearcher
+            }}</mat-option>
+            <mat-option value="care_assistant">{{
+              text.userTypeOptionCareAssistant
+            }}</mat-option>
           </mat-select>
           <mat-icon matSuffix color="primary">person_search</mat-icon>
-          @if (userType?.errors?.['required'] && userType?.touched)
-          {
-          <mat-error>Please select your role</mat-error>
+          @if (userType?.errors?.['required'] && userType?.touched) {
+          <mat-error>{{ text.userTypeRequired }}</mat-error>
           }
         </mat-form-field>
 
-
         <div class="button-container">
-          <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || isLoading"
-            class="submit-button">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="registerForm.invalid || isLoading"
+            class="submit-button"
+          >
             @if (!isLoading) {
-            <span>Register</span>
+            <span>{{ text.registerButton }}</span>
             } @else {
-            <mat-progress-spinner diameter="24" mode="indeterminate"></mat-progress-spinner>
+            <mat-progress-spinner
+              diameter="24"
+              mode="indeterminate"
+            ></mat-progress-spinner>
             }
           </button>
         </div>
       </form>
-
     </mat-card-content>
 
     <mat-card-actions>
       <div class="switch-auth">
-        Already have an account? <a routerLink="/login">Sign in here</a>
+        {{ text.signInPrompt }} <a routerLink="/login">{{ text.signInLink }}</a>
       </div>
     </mat-card-actions>
   </mat-card>

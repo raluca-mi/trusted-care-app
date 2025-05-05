@@ -1,0 +1,9 @@
+<div class="app-snackbar-content">
+  <mat-icon class="snackbar-icon" aria-hidden="true">{{ iconName() }}</mat-icon>
+
+  <span class="message">{{ data.message }}</span>
+
+  <button mat-icon-button (click)="dismiss()" aria-label="Close notification">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>

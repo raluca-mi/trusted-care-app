@@ -1,8 +1,8 @@
 <div class="auth-container">
   <mat-card class="auth-card">
     <mat-card-header>
-      <mat-card-title>Welcome Back!</mat-card-title>
-      <mat-card-subtitle>Sign in to find or offer care.</mat-card-subtitle>
+      <mat-card-title>{{ text.title }}</mat-card-title>
+      <mat-card-subtitle> {{ text.subtitle }} </mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -15,65 +15,101 @@
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Email Address</mat-label>
-          <input matInput formControlName="email" type="email" placeholder="you@example.com" required>
-          <mat-icon matSuffix color="primary">email</mat-icon> @if (email?.errors?.['required'] && email?.touched) {
-          <mat-error>Email is required</mat-error>
-          }
-          @if (email?.errors?.['email'] && email?.touched) {
-          <mat-error>Please enter a valid email address</mat-error>
+          <mat-label>{{ text.emailLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            type="email"
+            placeholder="{{ text.emailPlaceholder }}"
+            required
+          />
+          <mat-icon matSuffix color="primary">email</mat-icon> @if
+          (email?.errors?.['required'] && email?.touched) {
+          <mat-error>{{ text.emailRequired }}</mat-error>
+          } @if (email?.hasError('pattern') && email?.touched) {
+          <mat-error>{{ text.emailPattern }}</mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Password</mat-label>
-          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'"
-            placeholder="Your Password" required>
-          <button mat-icon-button matSuffix class="hide-password-button" (click)="hidePassword = !hidePassword"
-            type="button" aria-label="'Toggle password visibility'">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+          <mat-label>{{ text.passwordLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            placeholder="Your Password"
+            required
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            class="hide-password-button"
+            (click)="hidePassword = !hidePassword"
+            type="button"
+            aria-label="'Toggle password visibility'"
+          >
+            <mat-icon>{{
+              hidePassword ? "visibility_off" : "visibility"
+            }}</mat-icon>
+          </button>
           <mat-icon matSuffix color="primary">lock</mat-icon>
           @if (password?.errors?.['required'] && password?.touched) {
-          <mat-error>Password is required</mat-error>
+          <mat-error>{{ text.passwordRequired }}</mat-error>
           }
         </mat-form-field>
 
         <div class="forgot-password-link">
-          <button type="button" class="link-button" (click)="openForgotPasswordDialog()">
-            Forgot Password?
+          <button
+            type="button"
+            class="link-button"
+            (click)="openForgotPasswordDialog()"
+          >
+            {{ text.forgotPasswordLink }}
           </button>
         </div>
 
         <div class="button-container">
-          <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading"
-            class="submit-button">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="loginForm.invalid || isLoading"
+            class="submit-button"
+          >
             @if (!isLoading) {
-            <span>Sign In</span>
+            <span>{{ text.signInButton }}</span>
             } @else {
-            <mat-progress-spinner diameter="24" mode="indeterminate"></mat-progress-spinner>
+            <mat-progress-spinner
+              diameter="24"
+              mode="indeterminate"
+            ></mat-progress-spinner>
             }
           </button>
         </div>
-
       </form>
 
-      <div class="divider">OR</div>
+      <div class="divider">{{ text.dividerText }}</div>
 
       <div class="button-container">
-        <button mat-stroked-button type="button" (click)="signInWithGoogle()" [disabled]="isLoading"
-          class="google-button">
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="signInWithGoogle()"
+          [disabled]="isLoading"
+          class="google-button"
+        >
           <span class="google-button-content">
             <img src="assets/icons/google-logo.svg" class="google-icon" />
-            <span class="google-text">Sign In with Google</span>
+            <span class="google-text">{{ text.googleButton }}</span>
           </span>
         </button>
       </div>
-
     </mat-card-content>
 
     <mat-card-actions>
       <div class="switch-auth">
-        Don't have an account? <a routerLink="/register">Register here</a>
+        {{ text.registerPrompt }}
+        <a routerLink="/register">{{ text.registerLink }}</a>
       </div>
     </mat-card-actions>
   </mat-card>

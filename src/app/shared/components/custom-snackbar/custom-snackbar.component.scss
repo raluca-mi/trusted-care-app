@@ -1,0 +1,76 @@
+@use "@angular/material" as mat;
+
+:host {
+  display: block;
+  border-radius: 4px;
+  padding: 0px 8px 0px 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+:host-context(.success-snackbar) {
+  background-color: #348037;
+  color: white;
+
+  .app-snackbar-content .snackbar-icon,
+  .app-snackbar-content button[mat-icon-button] {
+    color: white;
+  }
+}
+
+:host-context(.error-snackbar) {
+  background-color: #8a2821;
+  color: white;
+
+  .app-snackbar-content .snackbar-icon,
+  .app-snackbar-content button[mat-icon-button] {
+    color: white;
+  }
+}
+
+:host-context(.warning-snackbar) {
+  background-color: #ff9800;
+  color: #333;
+
+  .app-snackbar-content .snackbar-icon,
+  .app-snackbar-content button[mat-icon-button] {
+    color: #333;
+  }
+}
+
+:host-context(.info-snackbar) {
+  background-color: #1d71b6;
+  color: white;
+
+  .app-snackbar-content .snackbar-icon,
+  .app-snackbar-content button[mat-icon-button] {
+    color: white;
+  }
+}
+
+.app-snackbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+
+  .snackbar-icon {
+    margin-right: 12px;
+    font-size: 15px;
+    height: 15px;
+    width: 15px;
+    flex-shrink: 0;
+  }
+
+  .message {
+    flex-grow: 1;
+    padding-right: 16px;
+    font-size: 0.875rem;
+  }
+
+  button[mat-icon-button] {
+    transform: scale(0.9);
+  }
+}

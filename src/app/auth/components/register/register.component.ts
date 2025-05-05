@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,13 +14,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
+import { REGISTER_TEXT } from '../../constants/register.constants';
 import { UserType } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { passwordMatchValidator } from '../../validators/password-match.validator';
 
 @Component({
   selector: 'register',
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     ReactiveFormsModule,
     RouterLink,
     MatCardModule,
@@ -24,10 +31,10 @@ import { passwordMatchValidator } from '../../validators/password-match.validato
     MatButtonModule,
     MatSelectModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
@@ -35,18 +42,32 @@ export class RegisterComponent implements OnInit {
   errorMessage: string | null = null;
   hidePassword = true;
   hideConfirmPassword = true;
+  text = REGISTER_TEXT;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.registerForm = this.formBuilder.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      userType: ['', Validators.required]
-    }, { validators: passwordMatchValidator });
+    this.registerForm = this.formBuilder.group(
+      {
+        firstName: ['', [Validators.required]],
+        lastName: ['', [Validators.required]],
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(this.text.emailRegexPattern),
+          ],
+        ],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required]],
+        userType: ['', Validators.required],
+      },
+      { validators: passwordMatchValidator }
+    );
   }
   async onSubmit(): Promise<void> {
     if (this.registerForm.invalid) {
@@ -58,7 +79,13 @@ export class RegisterComponent implements OnInit {
     this.errorMessage = null;
 
     try {
-      const { firstName, lastName, email, password, userType: userTypeString } = this.registerForm.value;
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        userType: userTypeString,
+      } = this.registerForm.value;
       const userTypeEnum = userTypeString as UserType;
 
       await this.authService.registerWithEmailPassword(
@@ -69,11 +96,9 @@ export class RegisterComponent implements OnInit {
         lastName
       );
 
-      if (userTypeEnum === UserType.CareAssistant) {
-        await this.router.navigate(['/profile-setup']);
-      } else {
-        await this.router.navigate(['/dashboard']);
-      }
+      await this.router.navigate(['/login'], {
+        queryParams: { registered: true },
+      });
     } catch (error) {
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
     } finally {
@@ -81,12 +106,22 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  get firstName() { return this.registerForm.get('firstName'); }
-  get lastName() { return this.registerForm.get('lastName'); }
-  get email() { return this.registerForm.get('email'); }
-  get password() { return this.registerForm.get('password'); }
-  get confirmPassword() { return this.registerForm.get('confirmPassword'); }
-  get userType() { return this.registerForm.get('userType'); }
+  get firstName() {
+    return this.registerForm.get('firstName');
+  }
+  get lastName() {
+    return this.registerForm.get('lastName');
+  }
+  get email() {
+    return this.registerForm.get('email');
+  }
+  get password() {
+    return this.registerForm.get('password');
+  }
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
+  get userType() {
+    return this.registerForm.get('userType');
+  }
 }
-
-

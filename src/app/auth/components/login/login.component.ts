@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,13 +15,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { take } from 'rxjs';
+import { NotificationService } from '../../../shared/services/notification.service';
+import { LOGIN_TEXT } from '../../constants/login.constants';
 import { AuthService } from '../../services/auth.service';
 import { ForgotPasswordDialogComponent } from '../forgot-password-dialog/forgot-password-dialog.component';
-
+import { REGISTER_TEXT } from '../../constants/register.constants';
 
 @Component({
   selector: 'login',
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     ReactiveFormsModule,
     RouterLink,
     MatCardModule,
@@ -25,10 +34,10 @@ import { ForgotPasswordDialogComponent } from '../forgot-password-dialog/forgot-
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
@@ -36,12 +45,36 @@ export class LoginComponent implements OnInit {
   errorMessage: string | null = null;
   hidePassword = true;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService, private matDialog: MatDialog) { }
+  text = LOGIN_TEXT;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private matDialog: MatDialog,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(REGISTER_TEXT.emailRegexPattern),
+        ],
+      ],
+      password: ['', [Validators.required]],
+    });
+
+    this.route.queryParams.pipe(take(1)).subscribe((params) => {
+      if (params['registered'] === 'true') {
+        this.notificationService.showSuccess(
+          this.text.registrationSuccessToast
+        );
+        this.router.navigate([], {});
+      }
     });
   }
 
@@ -51,7 +84,7 @@ export class LoginComponent implements OnInit {
       disableClose: true,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Password reset email sent to:', result.email);
       }
@@ -73,14 +106,12 @@ export class LoginComponent implements OnInit {
       await this.authService.loginWithEmailPassword(email, password);
 
       await this.router.navigate(['/dashboard']);
-
     } catch (error) {
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
     } finally {
       this.isLoading = false;
     }
   }
-
 
   async signInWithGoogle(): Promise<void> {
     this.isLoading = true;
@@ -96,7 +127,10 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  get email() { return this.loginForm.get('email'); }
-  get password() { return this.loginForm.get('password'); }
+  get email() {
+    return this.loginForm.get('email');
+  }
+  get password() {
+    return this.loginForm.get('password');
+  }
 }
-
