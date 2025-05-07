@@ -1,25 +1,22 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, skipWhile, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanActivateFn = (): boolean | UrlTree => {
+export const authGuard: CanActivateFn = (): Observable<boolean | UrlTree> => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-    const authService = inject(AuthService);
-    const router = inject(Router);
-
-    const isLoggedIn = !!authService.currentUser();
-
-    if (isLoggedIn) {
+  return authService.user$.pipe(
+    skipWhile((user) => user === undefined),
+    take(1),
+    map((user) => {
+      if (user) {
         return true;
-    } else {
+      } else {
         return router.createUrlTree(['/login']);
-    }
+      }
+    })
+  );
 };
-
-
-
-
-
-
-
-

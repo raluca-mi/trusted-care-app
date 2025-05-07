@@ -2,14 +2,12 @@ import { Injectable, inject, signal } from '@angular/core';
 import {
   Auth,
   AuthError,
-  GoogleAuthProvider,
   UserCredential,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signOut,
-  user,
+  user
 } from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 import {
@@ -30,7 +28,7 @@ export class AuthService {
   user$ = user(this.firebaseAuth);
   currentUser = signal<UserAuth | null | undefined>(undefined);
 
-  async registerWithEmailPassword(
+  async register(
     email: string,
     password: string,
     userType: UserType,
@@ -102,33 +100,13 @@ export class AuthService {
     }
   }
 
-  async loginWithEmailPassword(
-    email: string,
-    password: string
-  ): Promise<UserCredential> {
+  async login(email: string, password: string): Promise<UserCredential> {
     try {
       const userCredential = await signInWithEmailAndPassword(
         this.firebaseAuth,
         email,
         password
       );
-      return userCredential;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async signInWithGoogle(): Promise<UserCredential> {
-    const provider = new GoogleAuthProvider();
-    try {
-      const userCredential = await signInWithPopup(this.firebaseAuth, provider);
-      // **IMPORTANT NOTE for later:**
-      // If a user signs in with Google for the *first time*, their profile
-      // document might not exist in Firestore. We need a strategy later to:
-      // 1. Check if the Firestore doc `users/{uid}` exists after Google Sign-in.
-      // 2. If not, potentially prompt them for their User Type ('researcher'/'care_assistant')
-      //    and THEN create the Firestore document.
-      // For now, this method just handles the login/linking part.
       return userCredential;
     } catch (error) {
       throw error;

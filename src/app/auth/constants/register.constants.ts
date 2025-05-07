@@ -32,7 +32,6 @@ export const REGISTER_TEXT = {
   lastNameRequired: 'Last name is required',
   emailRequired: 'Email is required',
   emailInvalid: 'Please enter a valid email address',
-  emailPattern: 'Invalid email format provided',
   passwordRequired: 'Password is required',
   passwordMinLength: 'Password must be at least 6 characters long',
   confirmPasswordRequired: 'Please confirm your password',

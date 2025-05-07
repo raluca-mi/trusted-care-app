@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.main-layout-container {
+  display: flex;
+  height: 100%;
+
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+}

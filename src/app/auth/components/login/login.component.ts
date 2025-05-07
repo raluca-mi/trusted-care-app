@@ -18,9 +18,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { take } from 'rxjs';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { LOGIN_TEXT } from '../../constants/login.constants';
+import { REGISTER_TEXT } from '../../constants/register.constants';
 import { AuthService } from '../../services/auth.service';
 import { ForgotPasswordDialogComponent } from '../forgot-password-dialog/forgot-password-dialog.component';
-import { REGISTER_TEXT } from '../../constants/register.constants';
 
 @Component({
   selector: 'login',
@@ -103,22 +103,7 @@ export class LoginComponent implements OnInit {
       const email = this.loginForm.value.email;
       const password = this.loginForm.value.password;
 
-      await this.authService.loginWithEmailPassword(email, password);
-
-      await this.router.navigate(['/dashboard']);
-    } catch (error) {
-      this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  async signInWithGoogle(): Promise<void> {
-    this.isLoading = true;
-    this.errorMessage = null;
-    try {
-      await this.authService.signInWithGoogle();
-
+      await this.authService.login(email, password);
       await this.router.navigate(['/dashboard']);
     } catch (error) {
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);

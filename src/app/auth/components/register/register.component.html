@@ -57,7 +57,7 @@
           @if (email?.errors?.['required'] && email?.touched) {
           <mat-error>{{ text.emailRequired }}</mat-error>
           } @if (email?.hasError('pattern') && email?.touched) {
-          <mat-error>{{ text.emailPattern }}</mat-error>
+          <mat-error>{{ text.emailInvalid }}</mat-error>
           }
         </mat-form-field>
 

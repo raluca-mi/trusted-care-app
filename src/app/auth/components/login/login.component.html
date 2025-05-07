@@ -27,7 +27,7 @@
           (email?.errors?.['required'] && email?.touched) {
           <mat-error>{{ text.emailRequired }}</mat-error>
           } @if (email?.hasError('pattern') && email?.touched) {
-          <mat-error>{{ text.emailPattern }}</mat-error>
+          <mat-error>{{ text.emailInvalid }}</mat-error>
           }
         </mat-form-field>
 
@@ -37,7 +37,7 @@
             matInput
             formControlName="password"
             [type]="hidePassword ? 'password' : 'text'"
-            placeholder="Your Password"
+            placeholder="{{ text.passwordPlaceholder }}"
             required
           />
           <button
@@ -87,23 +87,6 @@
           </button>
         </div>
       </form>
-
-      <div class="divider">{{ text.dividerText }}</div>
-
-      <div class="button-container">
-        <button
-          mat-stroked-button
-          type="button"
-          (click)="signInWithGoogle()"
-          [disabled]="isLoading"
-          class="google-button"
-        >
-          <span class="google-button-content">
-            <img src="assets/icons/google-logo.svg" class="google-icon" />
-            <span class="google-text">{{ text.googleButton }}</span>
-          </span>
-        </button>
-      </div>
     </mat-card-content>
 
     <mat-card-actions>

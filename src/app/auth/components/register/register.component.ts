@@ -88,7 +88,7 @@ export class RegisterComponent implements OnInit {
       } = this.registerForm.value;
       const userTypeEnum = userTypeString as UserType;
 
-      await this.authService.registerWithEmailPassword(
+      await this.authService.register(
         email,
         password,
         userTypeEnum,
