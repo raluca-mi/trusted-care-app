@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { take } from 'rxjs';
+import { LoggerService } from '../../../shared/services/logger.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { LOGIN_TEXT } from '../../constants/login.constants';
 import { REGISTER_TEXT } from '../../constants/register.constants';
@@ -53,7 +54,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private matDialog: MatDialog,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -86,7 +88,7 @@ export class LoginComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Password reset email sent to:', result.email);
+        this.logger.log('Password reset email sent to:', result.email);
       }
     });
   }
@@ -104,9 +106,10 @@ export class LoginComponent implements OnInit {
       const password = this.loginForm.value.password;
 
       await this.authService.login(email, password);
-      await this.router.navigate(['/dashboard']);
+      await this.router.navigate(['/home']);
     } catch (error) {
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
+      this.logger.error('Login failed:', error);
     } finally {
       this.isLoading = false;
     }

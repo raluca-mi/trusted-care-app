@@ -14,10 +14,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoggerService } from '../../../shared/services/logger.service';
 import { FORGOT_PASSWORD_TEXT } from '../../constants/forgot-password.constants';
 import { LOGIN_TEXT } from '../../constants/login.constants';
-import { AuthService } from '../../services/auth.service';
 import { REGISTER_TEXT } from '../../constants/register.constants';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'forgot-password-dialog',
@@ -46,6 +47,7 @@ export class ForgotPasswordDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private dialogRef = inject(MatDialogRef<ForgotPasswordDialogComponent>);
+  private logger = inject(LoggerService);
 
   ngOnInit(): void {
     this.forgotPasswordForm = this.fb.group({
@@ -75,7 +77,7 @@ export class ForgotPasswordDialogComponent implements OnInit {
       this.successMessage = this.text.successMessage;
       this.forgotPasswordForm.disable();
     } catch (error) {
-      console.error('Password reset failed:', error);
+      this.logger.error('Password reset failed:', error);
       if (
         typeof error === 'object' &&
         error !== null &&
@@ -86,6 +88,7 @@ export class ForgotPasswordDialogComponent implements OnInit {
           'No account found associated with this email address.';
       } else {
         this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
+        this.logger.error('Error sending password reset email:', error);
       }
     } finally {
       this.isLoading = false;

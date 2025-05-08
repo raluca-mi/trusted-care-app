@@ -1,5 +1,75 @@
-<div class="main-layout-container">
-  <main class="main-content">
-    <router-outlet />
-  </main>
-</div>
+<mat-toolbar color="primary" class="main-toolbar">
+  <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Trusted Care</span>
+  <span class="toolbar-spacer"></span>
+
+  @if(currentUser(); as user) {
+  <span class="toolbar-user-info">{{ user.displayName || user.email }}</span>
+  }
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="userMenu"
+    aria-label="User account options"
+  >
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="navigateTo('/settings')">
+      <mat-icon>settings</mat-icon>
+      <span>Settings</span>
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    opened
+    class="main-sidenav"
+    [fixedInViewport]="true"
+    [fixedTopGap]="64"
+  >
+    <mat-nav-list>
+      <a
+        mat-list-item
+        (click)="navigateTo('/home')"
+        routerLinkActive="active-list-item"
+      >
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>Home</span>
+      </a>
+      <a
+        mat-list-item
+        (click)="navigateTo('/profile-setup')"
+        routerLinkActive="active-list-item"
+      >
+        <mat-icon matListItemIcon>person_search</mat-icon>
+        <span matListItemTitle>Find Care</span>
+      </a>
+      <mat-divider></mat-divider>
+      <a
+        mat-list-item
+        (click)="navigateTo('/settings')"
+        routerLinkActive="active-list-item"
+      >
+        <mat-icon matListItemIcon>settings</mat-icon>
+        <span matListItemTitle>Settings</span>
+      </a>
+      <a mat-list-item (click)="logout()">
+        <mat-icon matListItemIcon>logout</mat-icon>
+        <span matListItemTitle>Logout</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-layout-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

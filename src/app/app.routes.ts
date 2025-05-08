@@ -38,17 +38,21 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'dashboard',
+        path: 'home',
         loadComponent: () =>
-          import('./dashboard/components/dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent
+          import('./home-page/components/home-page/home-page.component').then(
+            (m) => m.HomePageComponent
           ),
-        title: 'Dashboard - Trusted Care',
+        title: 'Home - Trusted Care',
       },
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'home',
         pathMatch: 'full',
+      },
+      {
+        path: '**',
+        redirectTo: 'home',
       },
     ],
   },

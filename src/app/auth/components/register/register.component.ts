@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
+import { LoggerService } from '../../../shared/services/logger.service';
 import { REGISTER_TEXT } from '../../constants/register.constants';
 import { UserType } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
@@ -47,7 +48,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +103,7 @@ export class RegisterComponent implements OnInit {
       });
     } catch (error) {
       this.errorMessage = this.authService.getFirebaseAuthErrorMessage(error);
+      this.logger.error('Registration failed:', error);
     } finally {
       this.isLoading = false;
     }

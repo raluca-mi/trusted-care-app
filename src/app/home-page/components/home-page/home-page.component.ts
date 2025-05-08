@@ -4,16 +4,18 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { UserAuth } from '../../../auth/models/user-auth.model';
 import { AuthService } from '../../../auth/services/auth.service';
+import { LoggerService } from '../../../shared/services/logger.service';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'home-page',
   imports: [MatCardModule, MatButtonModule],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+  templateUrl: './home-page.component.html',
+  styleUrl: './home-page.component.scss',
 })
-export class DashboardComponent {
+export class HomePageComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private logger = inject(LoggerService);
 
   currentUser: Signal<UserAuth | null | undefined> =
     this.authService.currentUser;
@@ -23,7 +25,7 @@ export class DashboardComponent {
       await this.authService.logout();
       await this.router.navigate(['/login']);
     } catch (error) {
-      console.error('Error during logout:', error);
+      this.logger.error('Error during logout:', error);
     }
   }
 }
