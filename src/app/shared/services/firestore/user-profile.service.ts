@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
 
+import { updateDoc } from 'firebase/firestore';
 import { Observable, from } from 'rxjs';
 import { UserInterface } from '../../../auth/models/user.model';
 
@@ -20,5 +21,13 @@ export class UserProfileService {
   createUserProfile(userData: UserInterface): Observable<void> {
     const userDocRef = doc(this.firestore, `users/${userData.uid}`);
     return from(setDoc(userDocRef, userData));
+  }
+
+  updateUserProfile(
+    uid: string,
+    updatedUserData: Partial<UserInterface>
+  ): Observable<void> {
+    const userDocRef = doc(this.firestore, `users/${uid}`);
+    return from(updateDoc(userDocRef, updatedUserData));
   }
 }

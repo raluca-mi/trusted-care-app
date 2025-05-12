@@ -2,7 +2,7 @@ import { Component, inject, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
-import { UserAuth } from '../../../auth/models/user-auth.model';
+import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LoggerService } from '../../../shared/services/logger.service';
 
@@ -17,7 +17,7 @@ export class HomePageComponent {
   private router = inject(Router);
   private logger = inject(LoggerService);
 
-  currentUser: Signal<UserAuth | null | undefined> =
+  currentUser: Signal<UserInterface | null | undefined> =
     this.authService.currentUser;
 
   async logout(): Promise<void> {

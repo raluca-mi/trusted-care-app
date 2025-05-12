@@ -1,0 +1,94 @@
+<div class="settings-container">
+  <h2>User Settings</h2>
+
+  @if (currentUserProfile() === undefined) {
+  <div class="loading-shade">
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="50"
+    ></mat-progress-spinner>
+    <p>Loading profile...</p>
+  </div>
+  } @else if (currentUserProfile()) {
+  <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
+    <mat-card class="settings-card">
+      <mat-card-header>
+        <mat-card-title>Account Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Email:</strong> {{ currentUserProfile().email }}</p>
+        <mat-divider></mat-divider>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" required />
+            @if (settingsForm.get('firstName')?.hasError('required') &&
+            settingsForm.get('firstName')?.touched) {
+            <mat-error>First name is required</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" required />
+            @if (settingsForm.get('lastName')?.hasError('required') &&
+            settingsForm.get('lastName')?.touched) {
+            <mat-error>Last name is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <p>
+          <strong>Account Type:</strong>
+          {{
+            currentUserProfile().userType === UserTypeEnum.CareAssistant
+              ? "Care Assistant / Provider"
+              : "Researcher"
+          }}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-stroked-button type="button" (click)="changePassword()">
+          <mat-icon>lock_reset</mat-icon> Change Password
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    @if (currentUserProfile().userType === UserTypeEnum.CareAssistant) {
+    <mat-card class="settings-card">
+      <mat-card-header>
+        <mat-card-title>Caregiver Profile Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          Caregiver-specific fields (Bio, Location, Services, Rate, etc.) will
+          go here.
+        </p>
+      </mat-card-content>
+    </mat-card>
+    }
+
+    <div class="save-button-container">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!hasActualChanges() || settingsForm.invalid || isSaving()"
+      >
+        @if (!isSaving()) {
+        <span>Save Changes</span>
+        } @else {
+        <span>Saving...</span>
+        <mat-progress-spinner
+          mode="indeterminate"
+          diameter="20"
+          style="margin-left: 8px"
+        ></mat-progress-spinner>
+        }
+      </button>
+    </div>
+  </form>
+  } @else {
+  <p class="error-message">
+    Could not load user profile data or user is logged out.
+  </p>
+  }
+</div>

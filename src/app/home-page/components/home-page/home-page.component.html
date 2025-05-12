@@ -1,7 +1,4 @@
 <div class="home-container">
   <h2>Home Page</h2>
-  <p>Welcome to the main application area!</p>
-  @if (currentUser(); as user) {
-  <p>Your UID: {{ user.uid }}</p>
-  }
+  <p>Welcome {{ currentUser().firstName }} to the main application area!</p>
 </div>

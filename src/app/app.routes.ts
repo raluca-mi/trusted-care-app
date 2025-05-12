@@ -46,10 +46,19 @@ export const routes: Routes = [
         title: 'Home - Trusted Care',
       },
       {
+        path: 'settings',
+        loadComponent: () =>
+          import(
+            './settings/components/user-settings/user-settings.component'
+          ).then((m) => m.UserSettingsComponent),
+        title: 'Settings - Trusted Care',
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',
       },
+
       {
         path: '**',
         redirectTo: 'home',

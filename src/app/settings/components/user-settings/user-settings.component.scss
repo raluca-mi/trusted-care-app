@@ -1,0 +1,87 @@
+.settings-container {
+  margin: 20px 0;
+  padding: 0;
+}
+
+.settings-card {
+  margin-bottom: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+
+  .form-field {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+    .form-field {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+mat-card-content p {
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+mat-divider {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.save-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+
+  button[type="submit"] {
+    min-width: 150px;
+    padding: 8px 24px;
+  }
+}
+
+.loading-shade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #666;
+  min-height: 200px;
+
+  p {
+    margin-top: 16px;
+  }
+}
+
+.error-message {
+  color: #f44336;
+  text-align: center;
+  padding: 20px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-mdc-form-field {
+  .mat-mdc-floating-label {
+    color: #555;
+  }
+}
+
+mat-card-actions button[mat-stroked-button] {
+  color: #555;
+  border-color: #ccc;
+}
