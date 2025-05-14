@@ -1,6 +1,90 @@
 .settings-container {
   margin: 20px 0;
-  padding: 0;
+  padding: 0 16px;
+}
+
+.settings-top-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.profile-picture-column {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.account-info-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+.account-picture-info-horizontal-display {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-picture-container-outer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+.profile-picture-container-inner {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .profile-placeholder-icon {
+    font-size: 90px;
+    width: 90px;
+    height: 90px;
+    color: #bdbdbd;
+  }
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+
+  button[mat-icon-button] {
+    transform: scale(0.9);
+  }
+  .upload-text-button {
+  }
+}
+
+.profile-picture-hint {
+  margin-top: 12px;
+  font-size: 0.8em;
+  color: #757575;
+  text-align: center;
 }
 
 .settings-card {
@@ -18,6 +102,35 @@
   }
 }
 
+.full-width {
+  width: 100%;
+}
+
+.section-divider {
+  margin-top: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+.additional-details-group {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px dashed #e0e0e0;
+
+  h4 {
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+}
+
+.full-width-checkbox {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.bio-field textarea {
+  min-height: 100px;
+}
+
 @media (max-width: 768px) {
   .form-row {
     flex-direction: column;
@@ -28,16 +141,18 @@
   }
 }
 
+.mat-mdc-card-header {
+  padding: 16px 16px 16px;
+}
+
 mat-card-content p {
   margin-bottom: 16px;
   line-height: 1.6;
 }
-
 mat-divider {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-
 .save-button-container {
   display: flex;
   justify-content: flex-end;
@@ -50,7 +165,6 @@ mat-divider {
     padding: 8px 24px;
   }
 }
-
 .loading-shade {
   display: flex;
   flex-direction: column;
@@ -59,12 +173,10 @@ mat-divider {
   padding: 40px;
   color: #666;
   min-height: 200px;
-
   p {
     margin-top: 16px;
   }
 }
-
 .error-message {
   color: #f44336;
   text-align: center;
@@ -74,13 +186,9 @@ mat-divider {
   align-items: center;
   justify-content: center;
 }
-
-.mat-mdc-form-field {
-  .mat-mdc-floating-label {
-    color: #555;
-  }
+.mat-mdc-form-field .mat-mdc-floating-label {
+  color: #555;
 }
-
 mat-card-actions button[mat-stroked-button] {
   color: #555;
   border-color: #ccc;
