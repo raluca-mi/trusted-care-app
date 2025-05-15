@@ -7,17 +7,19 @@
       mode="indeterminate"
       diameter="50"
     ></mat-progress-spinner>
-    <p>Loading profile...</p>
+    <p>{{ text.loadingProfile }}</p>
   </div>
   } @else if (currentUserProfile()) {
   <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
     <mat-stepper linear>
       <!-- Step 1: Account Information -->
       <mat-step>
-        <ng-template matStepLabel>Account Information</ng-template>
+        <ng-template matStepLabel>{{
+          text.accountInformationStep
+        }}</ng-template>
         <mat-card class="settings-card">
           <mat-card-header>
-            <mat-card-title>Account Information</mat-card-title>
+            <mat-card-title>{{ text.accountInformationStep }}</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <div class="profile-picture-column">
@@ -47,15 +49,15 @@
                     >{{
                       selectedImagePreviewUrl ||
                       currentUserProfile().profilePictureUrl
-                        ? "Change"
-                        : "Add"
+                        ? text.changeButton
+                        : text.addButton
                     }}
-                    Photo</span
+                    {{ text.photo }}</span
                   >
                 </button>
               </div>
               <p class="profile-picture-hint">
-                A clear photo helps build trust. Recommended: 200x200px.
+                {{ text.profilePictureHint }}
               </p>
               <input
                 type="file"
@@ -67,41 +69,46 @@
             </div>
             <div class="form-row">
               <mat-form-field appearance="outline" class="form-field">
-                <mat-label>First Name</mat-label>
+                <mat-label>{{ text.firstNameLabel }}</mat-label>
                 <input matInput formControlName="firstName" required />
                 @if (settingsForm.get('firstName')?.hasError('required') &&
                 settingsForm.get('firstName')?.touched) {
-                <mat-error>First name is required</mat-error>
+                <mat-error>{{ text.firstNameRequired }}</mat-error>
                 }
               </mat-form-field>
               <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Last Name</mat-label>
+                <mat-label>{{ text.lastNameLabel }}</mat-label>
                 <input matInput formControlName="lastName" required />
                 @if (settingsForm.get('lastName')?.hasError('required') &&
                 settingsForm.get('lastName')?.touched) {
-                <mat-error>Last name is required</mat-error>
+                <mat-error>{{ text.lastNameRequired }}</mat-error>
                 }
               </mat-form-field>
             </div>
-            <p><strong>Email:</strong> {{ currentUserProfile().email }}</p>
+            <p>
+              <strong>{{ text.emailLabel }}:</strong>
+              {{ currentUserProfile().email }}
+            </p>
           </mat-card-content>
         </mat-card>
         <div>
-          <button mat-button matStepperNext type="button">Next</button>
+          <button mat-button matStepperNext type="button">
+            {{ text.nextButton }}
+          </button>
         </div>
       </mat-step>
 
       <!-- Step 2: Caregiver Details -->
       @if(currentUserProfile().userType === 'care_assistant') {
       <mat-step>
-        <ng-template matStepLabel>Caregiver Details</ng-template>
+        <ng-template matStepLabel>{{ text.caregiverDetailsStep }}</ng-template>
         <mat-card class="settings-card">
           <mat-card-header>
-            <mat-card-title>Caregiver Details</mat-card-title>
+            <mat-card-title>{{ text.caregiverDetailsStep }}</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Years of Experience</mat-label>
+              <mat-label>{{ text.yearsOfExperienceLabel }}</mat-label>
               <input
                 matInput
                 type="number"
@@ -111,7 +118,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Hourly Rate</mat-label>
+              <mat-label>{{ text.hourlyRateLabel }}</mat-label>
               <input
                 matInput
                 type="number"
@@ -121,7 +128,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Assistance Types</mat-label>
+              <mat-label>{{ text.assistanceTypesLabel }}</mat-label>
               <mat-select formControlName="assistanceTypes" multiple>
                 <mat-option
                   *ngFor="let type of allAssistanceTypes"
@@ -133,7 +140,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Availability</mat-label>
+              <mat-label>{{ text.availabilityLabel }}</mat-label>
               <mat-select formControlName="availability" multiple>
                 <mat-option
                   *ngFor="let option of allAvailabilityOptions"
@@ -147,23 +154,23 @@
               formGroupName="additionalDetails"
               class="additional-details-group"
             >
-              <h4>Other Details:</h4>
+              <h4>{{ text.otherDetailsLabel }}:</h4>
               <mat-checkbox
                 formControlName="nonSmoker"
                 class="full-width-checkbox"
-                >Non-Smoker</mat-checkbox
+                >{{ text.nonSmokerLabel }}</mat-checkbox
               >
               <mat-checkbox
                 formControlName="hasOwnTransportation"
                 class="full-width-checkbox"
-                >I have my own transportation</mat-checkbox
+                >{{ text.haveOwnTransportationLabel }}</mat-checkbox
               >
               <mat-form-field
                 appearance="outline"
                 class="form-field full-width"
                 style="margin-top: 10px"
               >
-                <mat-label>Willing to Travel (km)</mat-label>
+                <mat-label>{{ text.willingToTravelKmLabel }}</mat-label>
                 <input
                   matInput
                   type="number"
@@ -171,28 +178,32 @@
                   placeholder="e.g., 20"
                   min="0"
                 />
-                <span matTextSuffix>km</span>
+                <span matTextSuffix>{{ text.km }}</span>
               </mat-form-field>
             </div>
           </mat-card-content>
         </mat-card>
         <div>
-          <button mat-button matStepperPrevious type="button">Back</button>
-          <button mat-button matStepperNext type="button">Next</button>
+          <button mat-button matStepperPrevious type="button">
+            {{ text.backButton }}
+          </button>
+          <button mat-button matStepperNext type="button">
+            {{ text.nextButton }}
+          </button>
         </div>
       </mat-step>
       }
 
       <!-- Step 3: Additional Details -->
       <mat-step>
-        <ng-template matStepLabel>Additional Details</ng-template>
+        <ng-template matStepLabel>{{ text.additionalDetailsStep }}</ng-template>
         <mat-card class="settings-card">
           <mat-card-header>
-            <mat-card-title>Additional Details</mat-card-title>
+            <mat-card-title>{{ text.additionalDetailsStep }}</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Phone Number</mat-label>
+              <mat-label>{{ text.phoneNumberLabel }}</mat-label>
               <input
                 matInput
                 formControlName="phoneNumber"
@@ -203,7 +214,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Gender</mat-label>
+              <mat-label>{{ text.genderLabel }}</mat-label>
               <mat-select formControlName="gender">
                 <mat-option
                   *ngFor="let gender of genderOptions"
@@ -215,7 +226,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Date of Birth</mat-label>
+              <mat-label>{{ text.dateOfBirthLabel }}</mat-label>
               <input
                 matInput
                 [matDatepicker]="dobPicker"
@@ -229,7 +240,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>Location</mat-label>
+              <mat-label>{{ text.locationLabel }}</mat-label>
               <input
                 matInput
                 formControlName="location"
@@ -242,11 +253,11 @@
               appearance="outline"
               class="form-field full-width bio-field"
             >
-              <mat-label>About Me / Bio</mat-label>
+              <mat-label>{{ text.aboutMeBioLabel }}</mat-label>
               <textarea
                 matInput
                 formControlName="bio"
-                placeholder="Tell us about yourself, your experience, and what makes you a great caregiver..."
+                placeholder="Tell us about yourself."
                 rows="6"
               ></textarea>
               <mat-hint
@@ -257,7 +268,9 @@
           </mat-card-content>
         </mat-card>
         <div class="save-button-container">
-          <button mat-button matStepperPrevious type="button">Back</button>
+          <button mat-button matStepperPrevious type="button">
+            {{ text.backButton }}
+          </button>
           <button
             mat-raised-button
             color="primary"
@@ -267,9 +280,9 @@
             "
           >
             @if (!isSaving()) {
-            <span>Save Changes</span>
+            <span>{{ text.saveChangesButton }}</span>
             } @else {
-            <span>Saving...</span>
+            <span>{{ text.saving }}</span>
             <mat-progress-spinner
               mode="indeterminate"
               diameter="20"
@@ -283,7 +296,7 @@
   </form>
   } @else {
   <p class="error-message">
-    Could not load user profile data or user is logged out.
+    {{ text.couldNotLoadUserData }}
   </p>
   }
 </div>

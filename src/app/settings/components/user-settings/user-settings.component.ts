@@ -45,6 +45,7 @@ import { UserProfileService } from '../../../shared/services/firestore/user-prof
 import { LoggerService } from '../../../shared/services/logger.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { UserStorageService } from '../../../shared/services/storage/user-storage.service';
+import { USER_SETTINGS_TEXT } from '../../constants/user-settings.constants';
 
 @Component({
   selector: 'user-settings',
@@ -87,7 +88,10 @@ export class UserSettingsComponent implements OnInit {
   hasActualChanges = signal(false);
   private formChangesSubscription: Subscription | null = null;
 
+  text = USER_SETTINGS_TEXT;
+
   @ViewChild('profilePictureInput')
+  
   profilePictureInput!: ElementRef<HTMLInputElement>;
   selectedImagePreviewUrl: string | ArrayBuffer | null = null;
   private selectedImageFile: File | null = null;
@@ -268,9 +272,7 @@ export class UserSettingsComponent implements OnInit {
         (this.selectedImagePreviewUrl = e.target?.result || null);
       reader.readAsDataURL(file);
       this.hasActualChanges.set(true);
-      this.notificationService.showInfo(
-        'New image selected. Click "Save Changes" to upload and apply.'
-      );
+      this.notificationService.showInfo(this.text.newImageSelectedNotification);
       element.value = '';
     }
   }
@@ -280,7 +282,7 @@ export class UserSettingsComponent implements OnInit {
     if (!currentProfile) {
       this.logger.error('Save aborted: Current profile is not available.');
       this.notificationService.showError(
-        'Cannot save settings: User data is missing.'
+        this.text.cannotSaveSettingsUserDataMissingNotification
       );
       return;
     }
@@ -288,13 +290,13 @@ export class UserSettingsComponent implements OnInit {
       this.logger.log('Save aborted: Form is invalid.');
       this.settingsForm.markAllAsTouched();
       this.notificationService.showError(
-        'Please correct the errors in the form.'
+        this.text.pleaseCorrentErrorsInFormNotification
       );
       return;
     }
     if (!this.hasActualChanges() && !this.selectedImageFile) {
       this.logger.log('Save aborted: No actual changes to save.');
-      this.notificationService.showInfo('No changes to save.');
+      this.notificationService.showInfo(this.text.noChangesToSaveNotification);
       return;
     }
 
@@ -305,7 +307,9 @@ export class UserSettingsComponent implements OnInit {
     try {
       if (this.selectedImageFile) {
         this.isProcessingPicture.set(true);
-        this.notificationService.showInfo('Uploading new profile picture...');
+        this.notificationService.showInfo(
+          this.text.uploadingNewProfilePictureNotification
+        );
 
         if (this.initialProfilePictureUrl) {
           this.logger.log(
@@ -345,8 +349,10 @@ export class UserSettingsComponent implements OnInit {
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         displayName: `${formValues.firstName} ${formValues.lastName}`,
-        profilePictureUrl: newImageDownloadURL,
       };
+      if (typeof newImageDownloadURL === 'string') {
+        updatedData.profilePictureUrl = newImageDownloadURL;
+      }
 
       if (currentProfile.userType === UserType.CareAssistant) {
         updatedData.phoneNumber = formValues.phoneNumber || null;
@@ -413,12 +419,14 @@ export class UserSettingsComponent implements OnInit {
 
       this.settingsForm.markAsPristine();
       this.hasActualChanges.set(false);
-      this.notificationService.showSuccess('Profile updated successfully!');
+      this.notificationService.showSuccess(
+        this.text.profileUpdatedSuccessfullyNotification
+      );
       this.logger.log('Profile update successful:', updatedData);
     } catch (error) {
       this.logger.error('Error saving profile settings:', error);
       this.notificationService.showError(
-        'Failed to update profile. Please try again.'
+        this.text.profileUpdateFailedNotification
       );
     } finally {
       this.isSaving.set(false);
@@ -435,7 +443,7 @@ export class UserSettingsComponent implements OnInit {
         .sendPasswordResetEmail(email)
         .then(() => {
           this.notificationService.showInfo(
-            'Password reset email sent. Please check your inbox.'
+            this.text.passwordResetEmailSentNotification
           );
         })
         .catch((error) => {
@@ -448,14 +456,11 @@ export class UserSettingsComponent implements OnInit {
           );
         });
     } else {
-      this.notificationService.showError(
-        'Cannot initiate password reset: Email not found.'
-      );
+      this.notificationService.showError(this.text.emailNotFoundNotification);
     }
   }
 
   deleteAccount(): void {
-    this.logger.warn('Delete account clicked - requires implementation');
     this.notificationService.showWarning(
       'Account deletion not yet implemented.'
     );

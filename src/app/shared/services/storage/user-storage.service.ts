@@ -16,6 +16,7 @@ export class UserStorageService {
   constructor() {}
 
   uploadProfilePicture(file: File, userId: string): Observable<string> {
+
     const timestamp = Date.now();
     const safeFileNamePart = file.name
       .split('.')[0]
