@@ -1,6 +1,6 @@
 .settings-container {
-  margin: 20px 0;
-  padding: 0 16px;
+  margin-bottom: 20px;
+  padding: 16px 16px;
 }
 
 .profile-picture-column {
@@ -137,8 +137,6 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 16px;
-  padding: 8px 0;
 }
 
 @media (max-width: 768px) {

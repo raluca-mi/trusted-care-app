@@ -1,6 +1,4 @@
 <div class="settings-container">
-  <h2>{{ text.userSettingsTitle }}</h2>
-
   @if (currentUserProfile() === undefined) {
   <div class="loading-shade">
     <mat-progress-spinner
@@ -181,7 +179,6 @@
                   <mat-option [value]="type">{{ type }}</mat-option>
                   }
                 </mat-select>
-                <mat-hint>{{ text.selectAllThatApplyHint }}</mat-hint>
               </mat-form-field>
               <mat-form-field
                 appearance="outline"
@@ -193,7 +190,6 @@
                   <mat-option [value]="option">{{ option }}</mat-option>
                   }
                 </mat-select>
-                <mat-hint>{{ text.selectGeneralAvailabilityHint }}</mat-hint>
               </mat-form-field>
               <div
                 formGroupName="additionalDetails"
