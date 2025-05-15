@@ -1,5 +1,5 @@
 <div class="settings-container">
-  <h2>User Settings</h2>
+  <h2>{{ text.userSettingsTitle }}</h2>
 
   @if (currentUserProfile() === undefined) {
   <div class="loading-shade">
@@ -11,179 +11,225 @@
   </div>
   } @else if (currentUserProfile()) {
   <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
-    <mat-stepper linear>
-      <!-- Step 1: Account Information -->
-      <mat-step>
+    <mat-stepper linear #stepper="matStepper">
+      <mat-step [stepControl]="settingsForm.get('firstName')">
         <ng-template matStepLabel>{{
           text.accountInformationStep
         }}</ng-template>
-        <mat-card class="settings-card">
-          <mat-card-header>
-            <mat-card-title>{{ text.accountInformationStep }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="profile-picture-column">
-              <div class="profile-picture-container-outer">
-                <div class="profile-picture-container-inner">
-                  @if (selectedImagePreviewUrl) {
-                  <img
-                    [src]="selectedImagePreviewUrl"
-                    alt="Profile Picture"
-                    class="profile-image"
-                  />
-                  } @else {
-                  <mat-icon class="profile-placeholder-icon"
-                    >account_circle</mat-icon
-                  >
-                  }
-                </div>
-              </div>
-              <div class="profile-actions">
-                <button
-                  mat-stroked-button
-                  (click)="triggerProfilePictureUpload()"
-                  type="button"
-                  class="upload-text-button"
+        <div class="step-content-wrapper">
+          <div class="profile-picture-column">
+            <div class="profile-picture-container-outer">
+              <div class="profile-picture-container-inner">
+                @if (selectedImagePreviewUrl) {
+                <img
+                  [src]="selectedImagePreviewUrl"
+                  alt="Profile Picture"
+                  class="profile-image"
+                />
+                } @else {
+                <mat-icon class="profile-placeholder-icon"
+                  >account_circle</mat-icon
                 >
-                  <span
-                    >{{
-                      selectedImagePreviewUrl ||
-                      currentUserProfile().profilePictureUrl
-                        ? text.changeButton
-                        : text.addButton
-                    }}
-                    {{ text.photo }}</span
-                  >
-                </button>
+                } @if(isProcessingPicture()){
+                <div class="picture-upload-spinner">
+                  <mat-progress-spinner
+                    mode="indeterminate"
+                    diameter="40"
+                  ></mat-progress-spinner>
+                </div>
+                }
               </div>
-              <p class="profile-picture-hint">
-                {{ text.profilePictureHint }}
+            </div>
+            <div class="profile-actions">
+              <button
+                mat-stroked-button
+                (click)="triggerProfilePictureUpload()"
+                type="button"
+                class="upload-text-button"
+                [disabled]="isProcessingPicture() || isSaving()"
+              >
+                <span
+                  >{{
+                    selectedImagePreviewUrl || initialProfilePictureUrl
+                      ? text.changeButton
+                      : text.addButton
+                  }}
+                  {{ text.photo }}</span
+                >
+              </button>
+              @if (selectedImagePreviewUrl || initialProfilePictureUrl) {
+              <button
+                mat-stroked-button
+                color="warn"
+                (click)="removeProfilePicture()"
+                type="button"
+                class="remove-photo-button"
+                [disabled]="isProcessingPicture() || isSaving()"
+                [matTooltip]="text.removePhotoTooltip"
+              >
+                <mat-icon>delete_outline</mat-icon>
+                <span>{{ text.removeButton }} {{ text.photo }}</span>
+              </button>
+              }
+            </div>
+            <p class="profile-picture-hint">{{ text.profilePictureHint }}</p>
+            <input
+              type="file"
+              hidden
+              #profilePictureInput
+              (change)="onProfilePictureSelected($event)"
+              accept="image/png, image/jpeg, image/gif"
+            />
+          </div>
+
+          <mat-card class="settings-card no-top-margin">
+            <mat-card-header>
+              <mat-card-title>{{ text.personalDetailsTitle }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                <strong>{{ text.emailLabel }}:</strong>
+                {{ currentUserProfile().email }}
               </p>
-              <input
-                type="file"
-                hidden
-                #profilePictureInput
-                (change)="onProfilePictureSelected($event)"
-                accept="image/png, image/jpeg, image/gif"
-              />
-            </div>
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{ text.firstNameLabel }}</mat-label>
-                <input matInput formControlName="firstName" required />
-                @if (settingsForm.get('firstName')?.hasError('required') &&
-                settingsForm.get('firstName')?.touched) {
-                <mat-error>{{ text.firstNameRequired }}</mat-error>
-                }
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>{{ text.lastNameLabel }}</mat-label>
-                <input matInput formControlName="lastName" required />
-                @if (settingsForm.get('lastName')?.hasError('required') &&
-                settingsForm.get('lastName')?.touched) {
-                <mat-error>{{ text.lastNameRequired }}</mat-error>
-                }
-              </mat-form-field>
-            </div>
-            <p>
-              <strong>{{ text.emailLabel }}:</strong>
-              {{ currentUserProfile().email }}
-            </p>
-          </mat-card-content>
-        </mat-card>
-        <div>
+              <mat-divider></mat-divider>
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ text.firstNameLabel }}</mat-label>
+                  <input matInput formControlName="firstName" required />
+                  @if (settingsForm.get('firstName')?.hasError('required') &&
+                  settingsForm.get('firstName')?.touched) {
+                  <mat-error>{{ text.firstNameRequired }}</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ text.lastNameLabel }}</mat-label>
+                  <input matInput formControlName="lastName" required />
+                  @if (settingsForm.get('lastName')?.hasError('required') &&
+                  settingsForm.get('lastName')?.touched) {
+                  <mat-error>{{ text.lastNameRequired }}</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <p>
+                <strong>{{ text.accountTypeLabel }}:</strong>
+                {{
+                  currentUserProfile().userType === UserTypeEnum.CareAssistant
+                    ? text.careAssistantRole
+                    : text.researcherRole
+                }}
+              </p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="changePassword()"
+              >
+                <mat-icon>lock_reset</mat-icon> {{ text.changePasswordButton }}
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+        <div class="stepper-buttons">
           <button mat-button matStepperNext type="button">
             {{ text.nextButton }}
           </button>
         </div>
       </mat-step>
 
-      <!-- Step 2: Caregiver Details -->
-      @if(currentUserProfile().userType === 'care_assistant') {
-      <mat-step>
+      @if(currentUserProfile().userType === UserTypeEnum.CareAssistant) {
+      <mat-step [stepControl]="settingsForm.get('experienceYears')">
         <ng-template matStepLabel>{{ text.caregiverDetailsStep }}</ng-template>
-        <mat-card class="settings-card">
-          <mat-card-header>
-            <mat-card-title>{{ text.caregiverDetailsStep }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.yearsOfExperienceLabel }}</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="experienceYears"
-                placeholder="e.g., 5"
-              />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.hourlyRateLabel }}</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="hourlyRate"
-                placeholder="e.g., 20"
-              />
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.assistanceTypesLabel }}</mat-label>
-              <mat-select formControlName="assistanceTypes" multiple>
-                <mat-option
-                  *ngFor="let type of allAssistanceTypes"
-                  [value]="type"
-                >
-                  {{ type }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.availabilityLabel }}</mat-label>
-              <mat-select formControlName="availability" multiple>
-                <mat-option
-                  *ngFor="let option of allAvailabilityOptions"
-                  [value]="option"
-                >
-                  {{ option }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <div
-              formGroupName="additionalDetails"
-              class="additional-details-group"
-            >
-              <h4>{{ text.otherDetailsLabel }}:</h4>
-              <mat-checkbox
-                formControlName="nonSmoker"
-                class="full-width-checkbox"
-                >{{ text.nonSmokerLabel }}</mat-checkbox
-              >
-              <mat-checkbox
-                formControlName="hasOwnTransportation"
-                class="full-width-checkbox"
-                >{{ text.haveOwnTransportationLabel }}</mat-checkbox
-              >
+        <div class="step-content-wrapper">
+          <mat-card class="settings-card">
+            <mat-card-header>
+              <mat-card-title>{{
+                text.professionalInformationTitle
+              }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ text.yearsOfExperienceLabel }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    formControlName="experienceYears"
+                    [placeholder]="text.experiencePlaceholder"
+                    min="0"
+                  />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ text.hourlyRateLabel }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    formControlName="hourlyRate"
+                    [placeholder]="text.hourlyRatePlaceholder"
+                    min="0"
+                  />
+                  <span matTextSuffix>RON</span>
+                </mat-form-field>
+              </div>
               <mat-form-field
                 appearance="outline"
                 class="form-field full-width"
-                style="margin-top: 10px"
               >
-                <mat-label>{{ text.willingToTravelKmLabel }}</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  formControlName="willingToTravelKm"
-                  placeholder="e.g., 20"
-                  min="0"
-                />
-                <span matTextSuffix>{{ text.km }}</span>
+                <mat-label>{{ text.assistanceTypesLabel }}</mat-label>
+                <mat-select formControlName="assistanceTypes" multiple>
+                  @for(type of allAssistanceTypes; track type) {
+                  <mat-option [value]="type">{{ type }}</mat-option>
+                  }
+                </mat-select>
+                <mat-hint>{{ text.selectAllThatApplyHint }}</mat-hint>
               </mat-form-field>
-            </div>
-          </mat-card-content>
-        </mat-card>
-        <div>
+              <mat-form-field
+                appearance="outline"
+                class="form-field full-width"
+              >
+                <mat-label>{{ text.availabilityLabel }}</mat-label>
+                <mat-select formControlName="availability" multiple>
+                  @for(option of allAvailabilityOptions; track option) {
+                  <mat-option [value]="option">{{ option }}</mat-option>
+                  }
+                </mat-select>
+                <mat-hint>{{ text.selectGeneralAvailabilityHint }}</mat-hint>
+              </mat-form-field>
+              <div
+                formGroupName="additionalDetails"
+                class="additional-details-group"
+              >
+                <h4>{{ text.otherDetailsLabel }}:</h4>
+                <mat-checkbox
+                  formControlName="nonSmoker"
+                  class="full-width-checkbox"
+                  >{{ text.nonSmokerLabel }}</mat-checkbox
+                >
+                <mat-checkbox
+                  formControlName="hasOwnTransportation"
+                  [class.full-width-checkbox]
+                  >{{ text.haveOwnTransportationLabel }}</mat-checkbox
+                >
+                <mat-form-field
+                  appearance="outline"
+                  class="form-field full-width"
+                  style="margin-top: 10px"
+                >
+                  <mat-label>{{ text.willingToTravelKmLabel }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    formControlName="willingToTravelKm"
+                    [placeholder]="text.travelKmPlaceholder"
+                    min="0"
+                  />
+                  <span matTextSuffix>{{ text.kmSuffix }}</span>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div class="stepper-buttons">
           <button mat-button matStepperPrevious type="button">
             {{ text.backButton }}
           </button>
@@ -194,109 +240,131 @@
       </mat-step>
       }
 
-      <!-- Step 3: Additional Details -->
-      <mat-step>
+      <mat-step [stepControl]="settingsForm.get('phoneNumber')">
         <ng-template matStepLabel>{{ text.additionalDetailsStep }}</ng-template>
-        <mat-card class="settings-card">
-          <mat-card-header>
-            <mat-card-title>{{ text.additionalDetailsStep }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.phoneNumberLabel }}</mat-label>
-              <input
-                matInput
-                formControlName="phoneNumber"
-                type="tel"
-                placeholder="e.g., +40 123 456 789"
-              />
-              <mat-icon matSuffix>phone</mat-icon>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.genderLabel }}</mat-label>
-              <mat-select formControlName="gender">
-                <mat-option
-                  *ngFor="let gender of genderOptions"
-                  [value]="gender"
-                >
-                  {{ gender }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.dateOfBirthLabel }}</mat-label>
-              <input
-                matInput
-                [matDatepicker]="dobPicker"
-                formControlName="dateOfBirth"
-              />
-              <mat-datepicker-toggle
-                matSuffix
-                [for]="dobPicker"
-              ></mat-datepicker-toggle>
-              <mat-datepicker #dobPicker></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="form-field full-width">
-              <mat-label>{{ text.locationLabel }}</mat-label>
-              <input
-                matInput
-                formControlName="location"
-                placeholder="Brașov, Brașov"
-              />
-              <mat-icon matSuffix>location_on</mat-icon>
-            </mat-form-field>
-
-            <mat-form-field
-              appearance="outline"
-              class="form-field full-width bio-field"
-            >
-              <mat-label>{{ text.aboutMeBioLabel }}</mat-label>
-              <textarea
-                matInput
-                formControlName="bio"
-                placeholder="Tell us about yourself."
-                rows="6"
-              ></textarea>
-              <mat-hint
-                >{{ settingsForm.get("bio")?.value?.length || 0 }} /
-                1500</mat-hint
+        <div class="step-content-wrapper">
+          <mat-card class="settings-card">
+            <mat-card-header>
+              <mat-card-title>{{ text.additionalDetailsStep }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field
+                appearance="outline"
+                class="form-field full-width"
               >
-            </mat-form-field>
-          </mat-card-content>
-        </mat-card>
-        <div class="save-button-container">
+                <mat-label>{{ text.phoneNumberLabel }}</mat-label>
+                <input
+                  matInput
+                  formControlName="phoneNumber"
+                  type="tel"
+                  [placeholder]="text.phoneNumberPlaceholder"
+                />
+                <mat-icon matSuffix>phone</mat-icon>
+                @if (settingsForm.get('phoneNumber')?.hasError('pattern') &&
+                settingsForm.get('phoneNumber')?.touched) {
+                <mat-error>{{ text.phoneNumberInvalid }}</mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field
+                appearance="outline"
+                class="form-field full-width"
+              >
+                <mat-label>{{ text.genderLabel }}</mat-label>
+                <mat-select formControlName="gender">
+                  <mat-option [value]="null"
+                    ><em>{{ text.preferNotToSay }}</em></mat-option
+                  >
+                  @for(gender of genderOptions; track gender) {
+                  <mat-option [value]="gender">{{ gender }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field
+                appearance="outline"
+                class="form-field full-width"
+              >
+                <mat-label>{{ text.dateOfBirthLabel }}</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="dobPicker"
+                  formControlName="dateOfBirth"
+                  [placeholder]="text.dobPlaceholder"
+                  readonly
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="dobPicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker
+                  #dobPicker
+                  startView="multi-year"
+                ></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field
+                appearance="outline"
+                class="form-field full-width"
+              >
+                <mat-label>{{ text.locationLabel }}</mat-label>
+                <input
+                  matInput
+                  formControlName="location"
+                  [placeholder]="text.locationPlaceholder"
+                />
+                <mat-icon matSuffix>location_on</mat-icon>
+              </mat-form-field>
+              <mat-form-field
+                appearance="outline"
+                class="form-field full-width bio-field"
+              >
+                <mat-label>{{ text.aboutMeBioLabel }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="bio"
+                  [placeholder]="text.bioPlaceholder"
+                  rows="6"
+                ></textarea>
+                <mat-hint
+                  >{{ settingsForm.get("bio")?.value?.length || 0 }} /
+                  1500</mat-hint
+                >
+              </mat-form-field>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div class="stepper-buttons">
           <button mat-button matStepperPrevious type="button">
             {{ text.backButton }}
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="
-              !hasActualChanges() || settingsForm.invalid || isSaving()
-            "
-          >
-            @if (!isSaving()) {
-            <span>{{ text.saveChangesButton }}</span>
-            } @else {
-            <span>{{ text.saving }}</span>
-            <mat-progress-spinner
-              mode="indeterminate"
-              diameter="20"
-              style="margin-left: 8px"
-            ></mat-progress-spinner>
-            }
           </button>
         </div>
       </mat-step>
     </mat-stepper>
+
+    <div class="save-button-container">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="
+          !hasActualChanges() ||
+          settingsForm.invalid ||
+          isSaving() ||
+          isProcessingPicture()
+        "
+      >
+        @if (!isSaving()) {
+        <span>{{ text.saveChangesButton }}</span>
+        } @else {
+        <span>{{ text.savingButton }}</span>
+        <mat-progress-spinner
+          mode="indeterminate"
+          diameter="20"
+          style="margin-left: 8px"
+        ></mat-progress-spinner>
+        }
+      </button>
+    </div>
   </form>
   } @else {
-  <p class="error-message">
-    {{ text.couldNotLoadUserData }}
-  </p>
+  <p class="error-message">{{ text.couldNotLoadUserData }}</p>
   }
 </div>

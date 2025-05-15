@@ -3,34 +3,10 @@
   padding: 0 16px;
 }
 
-.settings-top-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
 .profile-picture-column {
-  flex: 0 0 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-.account-info-column {
-  flex: 1;
-  min-width: 300px;
-}
-
-.account-picture-info-horizontal-display {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 16px;
   margin-bottom: 24px;
 }
 
@@ -39,7 +15,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 .profile-picture-container-inner {
   width: 160px;
@@ -52,6 +28,7 @@
   overflow: hidden;
   border: 3px solid white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 
   .profile-image {
     width: 100%;
@@ -65,18 +42,36 @@
     height: 90px;
     color: #bdbdbd;
   }
+
+  .picture-upload-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
 }
 
 .profile-actions {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 0px;
 
-  button[mat-icon-button] {
-    transform: scale(0.9);
-  }
   .upload-text-button {
+    min-width: 120px;
+  }
+  .remove-photo-button {
+    min-width: 120px;
+    mat-icon {
+      margin-right: 4px;
+    }
   }
 }
 
@@ -89,6 +84,9 @@
 
 .settings-card {
   margin-bottom: 24px;
+  &.no-top-margin {
+    margin-top: 0;
+  }
 }
 
 .form-row {
@@ -131,7 +129,26 @@
   min-height: 100px;
 }
 
+.step-content-wrapper {
+  padding: 16px 0;
+}
+
+.stepper-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 0;
+}
+
 @media (max-width: 768px) {
+  .profile-actions {
+    flex-direction: column;
+    .upload-text-button,
+    .remove-photo-button {
+      width: 100%;
+    }
+  }
   .form-row {
     flex-direction: column;
     gap: 0;

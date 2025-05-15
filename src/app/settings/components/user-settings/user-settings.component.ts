@@ -4,6 +4,7 @@ import {
   effect,
   ElementRef,
   inject,
+  OnDestroy,
   OnInit,
   signal,
   Signal,
@@ -28,6 +29,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -65,11 +67,12 @@ import { USER_SETTINGS_TEXT } from '../../constants/user-settings.constants';
     MatNativeDateModule,
     MatCheckboxModule,
     MatStepperModule,
+    MatTooltipModule,
   ],
   templateUrl: './user-settings.component.html',
   styleUrl: './user-settings.component.scss',
 })
-export class UserSettingsComponent implements OnInit {
+export class UserSettingsComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private userProfileService = inject(UserProfileService);
@@ -83,18 +86,18 @@ export class UserSettingsComponent implements OnInit {
   isProcessingPicture = signal(false);
   settingsForm!: FormGroup;
   private initialFormValues: any = {};
-  private initialProfilePictureUrl: string | null | undefined = null;
+  initialProfilePictureUrl: string | null | undefined = null;
 
   hasActualChanges = signal(false);
   private formChangesSubscription: Subscription | null = null;
 
-  text = USER_SETTINGS_TEXT;
-
   @ViewChild('profilePictureInput')
-  
   profilePictureInput!: ElementRef<HTMLInputElement>;
   selectedImagePreviewUrl: string | ArrayBuffer | null = null;
   private selectedImageFile: File | null = null;
+  private pictureMarkedForRemoval = false;
+
+  text = USER_SETTINGS_TEXT;
 
   readonly genderOptions = Object.values(GenderType);
   readonly allAssistanceTypes: AssistanceType[] = [
@@ -105,7 +108,7 @@ export class UserSettingsComponent implements OnInit {
     'Special Needs Care',
     'Other',
   ];
-  readonly allAvailabilityOptions = [
+  readonly allAvailabilityOptions: string[] = [
     'Weekdays',
     'Weekends',
     'Mornings',
@@ -129,6 +132,7 @@ export class UserSettingsComponent implements OnInit {
         this.selectedImagePreviewUrl = profile.profilePictureUrl || null;
         this.initialProfilePictureUrl = profile.profilePictureUrl;
         this.selectedImageFile = null;
+        this.pictureMarkedForRemoval = false;
       } else if (profile === null) {
         if (this.settingsForm) {
           this.settingsForm.reset();
@@ -138,6 +142,7 @@ export class UserSettingsComponent implements OnInit {
         this.selectedImagePreviewUrl = null;
         this.initialProfilePictureUrl = null;
         this.selectedImageFile = null;
+        this.pictureMarkedForRemoval = false;
       }
     });
   }
@@ -176,9 +181,10 @@ export class UserSettingsComponent implements OnInit {
         const formValuesChanged =
           JSON.stringify(currentValues) !==
           JSON.stringify(this.initialFormValues);
-
         this.hasActualChanges.set(
-          formValuesChanged || !!this.selectedImageFile
+          formValuesChanged ||
+            !!this.selectedImageFile ||
+            this.pictureMarkedForRemoval
         );
         this.logger.log(
           'Form value changed, hasActualChanges set to:',
@@ -189,16 +195,12 @@ export class UserSettingsComponent implements OnInit {
 
   private initializeForm(): void {
     this.settingsForm = this.fb.group({
+      // Step 1 Controls
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      phoneNumber: [
-        '',
-        [Validators.pattern('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$')],
-      ],
-      location: [''],
-      bio: ['', [Validators.maxLength(1500)]],
-      dateOfBirth: [null],
-      gender: [null],
+      profilePictureUrl: [''],
+
+      // Step 2 Controls (Caregiver Details)
       experienceYears: [null, [Validators.min(0), Validators.max(70)]],
       hourlyRate: [null, [Validators.min(0)]],
       assistanceTypes: [[]],
@@ -208,6 +210,16 @@ export class UserSettingsComponent implements OnInit {
         hasOwnTransportation: [false],
         willingToTravelKm: [null, [Validators.min(0), Validators.max(500)]],
       }),
+
+      // Step 3 Controls (Additional Details)
+      phoneNumber: [
+        '',
+        [Validators.pattern('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$')],
+      ],
+      gender: [null],
+      dateOfBirth: [null],
+      location: [''],
+      bio: ['', [Validators.maxLength(1500)]],
     });
     this.initialFormValues = this.settingsForm.getRawValue();
     this.settingsForm.disable();
@@ -218,6 +230,7 @@ export class UserSettingsComponent implements OnInit {
     const patchData = {
       firstName: profile.firstName || '',
       lastName: profile.lastName || '',
+      profilePictureUrl: profile.profilePictureUrl || '', // Patch the URL to the form
       phoneNumber: profile.phoneNumber || '',
       location: profile.location || '',
       bio: profile.bio || '',
@@ -239,6 +252,7 @@ export class UserSettingsComponent implements OnInit {
     this.selectedImagePreviewUrl = profile.profilePictureUrl || null;
     this.initialProfilePictureUrl = profile.profilePictureUrl;
     this.selectedImageFile = null;
+    this.pictureMarkedForRemoval = false;
     this.settingsForm.enable();
     this.settingsForm.markAsPristine();
     this.hasActualChanges.set(false);
@@ -261,7 +275,15 @@ export class UserSettingsComponent implements OnInit {
       const file = fileList[0];
       if (!file.type.startsWith('image/')) {
         this.notificationService.showError(
-          'Invalid file type. Please select an image.'
+          this.text.invalidFileTypeNotification
+        );
+        element.value = '';
+        return;
+      }
+      const currentAuthUser = this.authService.currentUser();
+      if (!currentAuthUser?.uid) {
+        this.notificationService.showError(
+          'User not identified. Cannot process picture.'
         );
         element.value = '';
         return;
@@ -271,9 +293,26 @@ export class UserSettingsComponent implements OnInit {
       reader.onload = (e) =>
         (this.selectedImagePreviewUrl = e.target?.result || null);
       reader.readAsDataURL(file);
+      this.pictureMarkedForRemoval = false;
       this.hasActualChanges.set(true);
       this.notificationService.showInfo(this.text.newImageSelectedNotification);
       element.value = '';
+    }
+  }
+
+  removeProfilePicture(): void {
+    if (this.isProcessingPicture() || this.isSaving()) return;
+    if (this.selectedImagePreviewUrl || this.initialProfilePictureUrl) {
+      this.selectedImagePreviewUrl = null;
+      this.selectedImageFile = null;
+      this.pictureMarkedForRemoval = true;
+      this.settingsForm.get('profilePictureUrl')?.setValue(null);
+      this.hasActualChanges.set(true);
+      this.notificationService.showInfo(
+        this.text.pictureMarkedForRemovalNotification
+      );
+    } else {
+      this.notificationService.showInfo('No profile picture to remove.');
     }
   }
 
@@ -294,7 +333,7 @@ export class UserSettingsComponent implements OnInit {
       );
       return;
     }
-    if (!this.hasActualChanges() && !this.selectedImageFile) {
+    if (!this.hasActualChanges()) {
       this.logger.log('Save aborted: No actual changes to save.');
       this.notificationService.showInfo(this.text.noChangesToSaveNotification);
       return;
@@ -310,7 +349,6 @@ export class UserSettingsComponent implements OnInit {
         this.notificationService.showInfo(
           this.text.uploadingNewProfilePictureNotification
         );
-
         if (this.initialProfilePictureUrl) {
           this.logger.log(
             'Attempting to delete old profile picture:',
@@ -325,12 +363,11 @@ export class UserSettingsComponent implements OnInit {
             this.logger.log('Old profile picture deleted successfully.');
           } catch (deleteError) {
             this.logger.warn(
-              'Could not delete old profile picture, or it did not exist. Proceeding with upload.',
+              'Could not delete old profile picture. Proceeding with new upload.',
               deleteError
             );
           }
         }
-
         newImageDownloadURL = await firstValueFrom(
           this.userStorageService.uploadProfilePicture(
             this.selectedImageFile,
@@ -341,6 +378,39 @@ export class UserSettingsComponent implements OnInit {
           'New profile picture uploaded. URL:',
           newImageDownloadURL
         );
+        this.settingsForm
+          .get('profilePictureUrl')
+          ?.setValue(newImageDownloadURL);
+        this.isProcessingPicture.set(false);
+      } else if (this.pictureMarkedForRemoval) {
+        this.isProcessingPicture.set(true);
+        this.notificationService.showInfo('Removing profile picture...');
+        if (this.initialProfilePictureUrl) {
+          try {
+            await firstValueFrom(
+              this.userStorageService.deleteProfilePicture(
+                this.initialProfilePictureUrl
+              )
+            );
+            this.logger.log('Profile picture deleted successfully.');
+            newImageDownloadURL = null;
+            this.settingsForm.get('profilePictureUrl')?.setValue(null);
+          } catch (deleteError) {
+            this.logger.error(
+              'Failed to delete profile picture from storage.',
+              deleteError
+            );
+            this.notificationService.showError(
+              'Failed to remove picture. Please try again.'
+            );
+            this.isSaving.set(false);
+            this.isProcessingPicture.set(false);
+            return;
+          }
+        } else {
+          newImageDownloadURL = null;
+          this.settingsForm.get('profilePictureUrl')?.setValue(null);
+        }
         this.isProcessingPicture.set(false);
       }
 
@@ -349,10 +419,8 @@ export class UserSettingsComponent implements OnInit {
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         displayName: `${formValues.firstName} ${formValues.lastName}`,
+        profilePictureUrl: newImageDownloadURL,
       };
-      if (typeof newImageDownloadURL === 'string') {
-        updatedData.profilePictureUrl = newImageDownloadURL;
-      }
 
       if (currentProfile.userType === UserType.CareAssistant) {
         updatedData.phoneNumber = formValues.phoneNumber || null;
@@ -388,7 +456,8 @@ export class UserSettingsComponent implements OnInit {
               : Number(formValues.additionalDetails.willingToTravelKm),
         };
         updatedData.profileComplete = !!(
-          (newImageDownloadURL || currentProfile.profilePictureUrl) &&
+          (newImageDownloadURL ||
+            (this.initialProfilePictureUrl && !this.pictureMarkedForRemoval)) &&
           formValues.phoneNumber &&
           formValues.experienceYears &&
           formValues.hourlyRate &&
@@ -416,13 +485,13 @@ export class UserSettingsComponent implements OnInit {
       this.initialProfilePictureUrl = newImageDownloadURL;
       this.selectedImagePreviewUrl = newImageDownloadURL || null;
       this.selectedImageFile = null;
+      this.pictureMarkedForRemoval = false;
 
       this.settingsForm.markAsPristine();
       this.hasActualChanges.set(false);
       this.notificationService.showSuccess(
         this.text.profileUpdatedSuccessfullyNotification
       );
-      this.logger.log('Profile update successful:', updatedData);
     } catch (error) {
       this.logger.error('Error saving profile settings:', error);
       this.notificationService.showError(

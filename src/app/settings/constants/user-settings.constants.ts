@@ -1,61 +1,91 @@
 export const USER_SETTINGS_TEXT = {
-  // Profile Picture
-  profilePictureHint:
-    'A clear photo helps build trust. Recommended: 200x200px.',
+  // Page Title
+  userSettingsTitle: 'User Settings',
 
-  //Profile labels
-  firstNameLabel: 'First Name',
-  lastNameLabel: 'Last Name',
-  emailLabel: 'Email',
-  yearsOfExperienceLabel: 'Years of Experience',
-  hourlyRateLabel: 'Hourly Rate',
-  assistanceTypesLabel: 'Assistance Types',
-  availabilityLabel: 'Availability',
-  otherDetailsLabel: 'Other Details',
-  willingToTravelKmLabel: 'Willing to travel (km)',
-  phoneNumberLabel: 'Phone Number',
-  genderLabel: 'Gender',
-  dateOfBirthLabel: 'Date of Birth',
-  locationLabel: 'Location',
-  aboutMeBioLabel: 'About Me / Bio',
-
-  //Checkbox labels
-  nonSmokerLabel: 'Non-Smoker',
-  haveOwnTransportationLabel: 'I have my own transportation',
-
-  //Field error messages
-  firstNameRequired: 'First name is required',
-  lastNameRequired: 'Last name is required',
-
+  // Loading & Error Messages
+  loadingProfile: 'Loading profile...',
   couldNotLoadUserData:
     'Could not load user profile data or user is logged out.',
 
-  //Wizard buttons
-  nextButton: 'Next',
-  backButton: 'Back',
-  saveChangesButton: 'Save Changes',
-  cancelButton: 'Cancel',
-  addButton: 'Add',
-  changeButton: 'Change',
-
-  //Wizzard steps
+  // Stepper Labels
   accountInformationStep: 'Account Information',
   caregiverDetailsStep: 'Caregiver Details',
+  servicesAndAvailabilityStep: 'Services & Availability',
+  otherDetailsStep: 'Other Details',
   additionalDetailsStep: 'Additional Details',
 
-  //Other
-  km: 'km',
-  saving: 'Saving...',
-  loadingProfile: 'Loading profile...',
+  // --- Step 1: Account Information ---
+  // Profile Picture Section
+  uploadPhotoTooltip: 'Upload new profile picture',
+  changeButton: 'Change',
+  addButton: 'Add',
   photo: 'Photo',
+  removeButton: 'Remove',
+  removePhotoTooltip: 'Remove profile picture',
+  profilePictureHint:
+    'A clear photo helps build trust. Recommended: 200x200px.',
 
-  //Notifications
+  // Personal Details Card
+  personalDetailsTitle: 'Personal Details',
+  emailLabel: 'Email',
+  firstNameLabel: 'First Name',
+  firstNameRequired: 'First name is required',
+  lastNameLabel: 'Last Name',
+  lastNameRequired: 'Last name is required',
+  accountTypeLabel: 'Account Type',
+  careAssistantRole: 'Care Assistant / Provider',
+  researcherRole: 'Researcher',
+  changePasswordButton: 'Change Password',
+
+  // --- Step 2: Caregiver Details (Professional Information) ---
+  professionalInformationTitle: 'Professional Information',
+  yearsOfExperienceLabel: 'Years of Experience',
+  experiencePlaceholder: 'e.g., 5',
+  hourlyRateLabel: 'Hourly Rate',
+  hourlyRatePlaceholder: 'e.g., 20',
+  assistanceTypesLabel: 'Assistance Types You Offer',
+  selectAllThatApplyHint: 'Select all that apply.',
+  availabilityLabel: 'Your General Availability',
+  selectGeneralAvailabilityHint: 'Select your general availability.',
+  otherDetailsLabel: 'Other Details',
+  nonSmokerLabel: 'Non-Smoker',
+  haveOwnTransportationLabel: 'I have my own transportation',
+  willingToTravelKmLabel: 'Willing to Travel (km)',
+  travelKmPlaceholder: 'e.g., 20',
+  kmSuffix: 'km',
+
+  // --- Step 3: Additional Details (Contact, Personal, Location, Bio) ---
+  phoneNumberLabel: 'Phone Number',
+  phoneNumberPlaceholder: 'e.g., +40 123 456 789',
+  phoneNumberInvalid: 'Please enter a valid phone number.',
+  genderLabel: 'Gender',
+  preferNotToSay: 'Prefer not to say',
+  dateOfBirthLabel: 'Date of Birth',
+  dobPlaceholder: 'DD/MM/YYYY',
+  locationLabel: 'Location',
+  locationPlaceholder: 'Brașov, Brașov',
+  aboutMeBioLabel: 'About Me / Bio',
+  bioPlaceholder:
+    'Tell us about yourself, your experience, and what makes you a great caregiver...',
+
+  // Stepper Buttons
+  nextButton: 'Next',
+  backButton: 'Back',
+
+  // Save Button Area
+  saveChangesButton: 'Save Changes',
+  savingButton: 'Saving...',
+
+  // Notifications (from component logic)
+  invalidFileTypeNotification: 'Invalid file type. Please select an image.',
   newImageSelectedNotification:
-    'New image selected. Please save changes to apply.',
+    'New image selected. Click "Save Changes" to upload and apply.',
+  pictureMarkedForRemovalNotification:
+    'Profile picture will be removed upon saving changes.',
   cannotSaveSettingsUserDataMissingNotification:
-    'Cannot save settings. User data is missing.',
+    'Cannot save settings: User data is missing.',
   pleaseCorrentErrorsInFormNotification:
-    'Please correct the errors in the form before saving.',
+    'Please correct the errors in the form.',
   noChangesToSaveNotification: 'No changes to save.',
   uploadingNewProfilePictureNotification: 'Uploading new profile picture...',
   profileUpdatedSuccessfullyNotification: 'Profile updated successfully!',
@@ -64,4 +94,4 @@ export const USER_SETTINGS_TEXT = {
   passwordResetEmailSentNotification:
     'Password reset email sent. Please check your inbox.',
   emailNotFoundNotification: 'Cannot initiate password reset: Email not found.',
-};
+} as const;
