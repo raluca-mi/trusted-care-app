@@ -1,17 +1,26 @@
-export enum UserType {
+export enum UserTypeEnum {
   Researcher = 'researcher',
   CareAssistant = 'care_assistant',
 }
 
-export type AssistanceType =
-  | 'Child Care'
-  | 'Elderly Care'
-  | 'House Keeping'
-  | 'Pets Care'
-  | 'Special Needs Care'
-  | 'Other';
+export enum AssistanceTypeEnum {
+  ChildCare = 'Child Care',
+  ElderlyCare = 'Elderly Care',
+  PetsCare = 'Pets Care',
+  HouseKeeping = 'House Keeping',
+}
 
-export enum GenderType {
+export enum AvailabilityOptionEnum {
+  Weekdays = 'Weekdays',
+  Weekends = 'Weekends',
+  Mornings = 'Mornings',
+  Afternoons = 'Afternoons',
+  Evenings = 'Evenings',
+  Overnights = 'Overnights',
+  Flexible = 'Flexible',
+}
+
+export enum GenderEnum {
   Female = 'Female',
   Male = 'Male',
   Other = 'Other',
@@ -24,7 +33,7 @@ export interface UserInterface {
   displayName: string;
 
   // App-Specific Core Info
-  userType: UserType;
+  userType: UserTypeEnum;
   firstName: string;
   lastName: string;
   createdAt: Date;
@@ -38,10 +47,10 @@ export interface UserInterface {
   location?: string;
   bio?: string;
   dateOfBirth?: string | null;
-  gender?: GenderType | null;
-  assistanceTypes?: AssistanceType[] | null;
+  gender?: GenderEnum | null;
+  assistanceTypes?: AssistanceTypeEnum[] | null;
   experienceYears?: number;
-  availability?: string[];
+  availability?: AvailabilityOptionEnum[] | null;
   hourlyRate?: number | null;
   additionalDetails?: {
     nonSmoker?: boolean;

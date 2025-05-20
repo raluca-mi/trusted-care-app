@@ -175,8 +175,11 @@
               >
                 <mat-label>{{ text.assistanceTypesLabel }}</mat-label>
                 <mat-select formControlName="assistanceTypes" multiple>
-                  @for(type of allAssistanceTypes; track type) {
-                  <mat-option [value]="type">{{ type }}</mat-option>
+                  @for(assistanceType of assistanceTypes; track assistanceType)
+                  {
+                  <mat-option [value]="assistanceType">{{
+                    assistanceType
+                  }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
@@ -186,11 +189,15 @@
               >
                 <mat-label>{{ text.availabilityLabel }}</mat-label>
                 <mat-select formControlName="availability" multiple>
-                  @for(option of allAvailabilityOptions; track option) {
-                  <mat-option [value]="option">{{ option }}</mat-option>
+                  @for(availabilityOption of availabilityOptions; track
+                  availabilityOption) {
+                  <mat-option [value]="availabilityOption">{{
+                    availabilityOption
+                  }}</mat-option>
                   }
                 </mat-select>
               </mat-form-field>
+
               <div
                 formGroupName="additionalDetails"
                 class="additional-details-group"

@@ -17,7 +17,7 @@ import {
   AUTH_GENERIC_ERROR_MESSAGE,
   USER_DATA_NOT_AVAILABLE_MESSAGE,
 } from '../constants/auth-message.constants';
-import { UserInterface, UserType } from '../models/user.model';
+import { UserInterface, UserTypeEnum } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +42,7 @@ export class AuthService {
   async register(
     email: string,
     password: string,
-    userType: UserType,
+    userType: UserTypeEnum,
     firstName: string,
     lastName: string
   ): Promise<UserCredential> {
@@ -63,7 +63,7 @@ export class AuthService {
           lastName: lastName,
           displayName: `${firstName} ${lastName}`,
           createdAt: new Date(),
-          profileComplete: userType === UserType.Researcher,
+          profileComplete: userType === UserTypeEnum.Researcher,
         };
 
         await firstValueFrom(

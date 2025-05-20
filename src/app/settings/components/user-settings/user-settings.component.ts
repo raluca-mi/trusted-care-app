@@ -37,10 +37,11 @@ import {
   Subscription,
 } from 'rxjs';
 import {
-  AssistanceType,
-  GenderType,
+  AssistanceTypeEnum,
+  AvailabilityOptionEnum,
+  GenderEnum,
   UserInterface,
-  UserType,
+  UserTypeEnum,
 } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
@@ -99,24 +100,9 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   text = USER_SETTINGS_TEXT;
 
-  readonly genderOptions = Object.values(GenderType);
-  readonly allAssistanceTypes: AssistanceType[] = [
-    'Child Care',
-    'Elderly Care',
-    'House Keeping',
-    'Pets Care',
-    'Special Needs Care',
-    'Other',
-  ];
-  readonly allAvailabilityOptions: string[] = [
-    'Weekdays',
-    'Weekends',
-    'Mornings',
-    'Afternoons',
-    'Evenings',
-    'Overnights',
-    'Flexible',
-  ];
+  readonly genderOptions = Object.values(GenderEnum);
+  readonly assistanceTypes = Object.values(AssistanceTypeEnum);
+  readonly availabilityOptions = Object.values(AvailabilityOptionEnum);
 
   constructor() {
     effect(() => {
@@ -422,7 +408,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         profilePictureUrl: newImageDownloadURL,
       };
 
-      if (currentProfile.userType === UserType.CareAssistant) {
+      if (currentProfile.userType === UserTypeEnum.CareAssistant) {
         updatedData.phoneNumber = formValues.phoneNumber || null;
         updatedData.location = formValues.location || undefined;
         updatedData.bio = formValues.bio || undefined;
@@ -536,6 +522,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   }
 
   get UserTypeEnum() {
-    return UserType;
+    return UserTypeEnum;
   }
 }

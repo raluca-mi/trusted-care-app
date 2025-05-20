@@ -40,10 +40,42 @@ export const routes: Routes = [
       {
         path: 'home',
         loadComponent: () =>
-          import('./home-page/components/home-page/home-page.component').then(
+          import('./home/components/home-page/home-page.component').then(
             (m) => m.HomePageComponent
           ),
-        title: 'Home - Trusted Care',
+        title: 'Home',
+      },
+      {
+        path: 'child-care',
+        loadComponent: () =>
+          import(
+            './find-care/components/child-care-page/child-care-page.component'
+          ).then((m) => m.ChildCarePageComponent),
+        title: 'Find Child Care',
+      },
+      {
+        path: 'elderly-care',
+        loadComponent: () =>
+          import(
+            './find-care/components/elderly-care-page/elderly-care-page.component'
+          ).then((m) => m.ElderlyCarePageComponent),
+        title: 'Find Senior Care',
+      },
+      {
+        path: 'pets-care',
+        loadComponent: () =>
+          import(
+            './find-care/components/pets-care-page/pets-care-page.component'
+          ).then((m) => m.PetsCarePageComponent),
+        title: 'Find Pet Care',
+      },
+      {
+        path: 'housekeeping',
+        loadComponent: () =>
+          import(
+            './find-care/components/housekeeping-page/housekeeping-page.component'
+          ).then((m) => m.HousekeepingPageComponent),
+        title: 'Find Housekeeping',
       },
       {
         path: 'settings',
@@ -51,7 +83,7 @@ export const routes: Routes = [
           import(
             './settings/components/user-settings/user-settings.component'
           ).then((m) => m.UserSettingsComponent),
-        title: 'Settings - Trusted Care',
+        title: 'Settings',
       },
       {
         path: '',

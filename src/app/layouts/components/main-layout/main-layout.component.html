@@ -1,8 +1,33 @@
 <mat-toolbar color="primary" class="main-toolbar">
-  <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle menu">
+  <button
+    mat-icon-button
+    (click)="sidenav.toggle()"
+    aria-label="Toggle menu"
+    class="menu-button"
+  >
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Trusted Care</span>
+  <span
+    class="app-title"
+    (click)="navigateTo('/home')"
+    role="button"
+    tabindex="0"
+    >Trusted Care</span
+  >
+
+  <div class="toolbar-center-nav">
+    @for(type of assistanceTypes; track type.id) {
+    <a
+      mat-button
+      [routerLink]="type.route"
+      routerLinkActive="toolbar-active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      {{ type.displayName }}
+    </a>
+    }
+  </div>
+
   <span class="toolbar-spacer"></span>
 
   @if(currentUser(); as user) {
@@ -40,23 +65,52 @@
       <a
         mat-list-item
         (click)="navigateTo('/home')"
+        routerLink="/home"
         routerLinkActive="active-list-item"
+        [routerLinkActiveOptions]="{ exact: true }"
       >
         <mat-icon matListItemIcon>home</mat-icon>
         <span matListItemTitle>Home</span>
       </a>
+
       <a
         mat-list-item
-        (click)="navigateTo('/profile-setup')"
+        (click)="isFindCareExpanded = !isFindCareExpanded"
+        class="expandable-header"
+        [class.expanded]="isFindCareExpanded"
+        aria-expanded="isFindCareExpanded"
         routerLinkActive="active-list-item"
+        [routerLinkActiveOptions]="{ exact: true }"
       >
-        <mat-icon matListItemIcon>person_search</mat-icon>
+        <mat-icon matListItemIcon>search</mat-icon>
         <span matListItemTitle>Find Care</span>
+        <mat-icon class="expand-icon">{{
+          isFindCareExpanded ? "expand_less" : "expand_more"
+        }}</mat-icon>
       </a>
+
+      @if(isFindCareExpanded) {
+      <div class="nested-nav-list">
+        @for(type of assistanceTypes; track type.id) {
+        <a
+          mat-list-item
+          [routerLink]="type.route"
+          routerLinkActive="active-list-item"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="navigateTo(type.route)"
+        >
+          <span matListItemTitle class="nested-item-title">{{
+            type.displayName
+          }}</span>
+        </a>
+        }
+      </div>
+      }
       <mat-divider></mat-divider>
       <a
         mat-list-item
         (click)="navigateTo('/settings')"
+        routerLink="/settings"
         routerLinkActive="active-list-item"
       >
         <mat-icon matListItemIcon>settings</mat-icon>

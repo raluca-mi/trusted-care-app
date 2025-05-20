@@ -16,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import { LoggerService } from '../../../shared/services/logger.service';
 import { REGISTER_TEXT } from '../../constants/register.constants';
-import { UserType } from '../../models/user.model';
+import { UserTypeEnum } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { passwordMatchValidator } from '../../validators/password-match.validator';
 
@@ -88,7 +88,7 @@ export class RegisterComponent implements OnInit {
         password,
         userType: userTypeString,
       } = this.registerForm.value;
-      const userTypeEnum = userTypeString as UserType;
+      const userTypeEnum = userTypeString as UserTypeEnum;
 
       await this.authService.register(
         email,

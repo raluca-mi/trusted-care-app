@@ -1,3 +1,5 @@
+@use "@angular/material" as mat;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -10,10 +12,45 @@
   top: 0;
   z-index: 1001;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+  .app-title {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
+.toolbar-center-nav {
+  display: none;
+  @media (min-width: 1024px) {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    margin: 0 20px;
+  }
+
+  a.mat-mdc-button {
+    margin: 0 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    min-width: auto;
+    padding: 0 10px;
+    line-height: 36px;
+    border-radius: 4px;
+  }
+
+  .toolbar-active-link {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
 }
 
 .toolbar-spacer {
   flex: 1 1 auto;
+  @media (min-width: 1024px) {
+    flex-grow: 0;
+  }
 }
 
 .toolbar-user-info {
@@ -27,16 +64,60 @@
 
 .sidenav-container {
   flex-grow: 1;
-  background-color: #f4f7f6;
 }
+
 .main-sidenav {
-  width: 230px;
+  width: 240px;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #fafafa;
+
+  .mat-mdc-list-item {
+    font-weight: 500;
+    height: 48px;
+  }
+
+  ::ng-deep.mdc-list-item__content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .expandable-header {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    &.expanded {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .expand-icon {
+      margin-top: 11px;
+      margin-left: auto;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    &.expanded .expand-icon {
+      transform: rotate(360deg);
+    }
+  }
+
+  .nested-nav-list {
+    a.mat-mdc-list-item {
+      padding-left: 40px !important;
+      height: 40px;
+      .nested-item-title {
+        font-weight: 400;
+        font-size: 0.9em;
+      }
+    }
+  }
 }
 
 .main-layout-content {
-  padding: 20px;
+  padding: 0;
   height: calc(100vh - 64px);
   overflow-y: auto;
 }
@@ -45,4 +126,8 @@
   background-color: rgba(0, 0, 0, 0.08);
 
   font-weight: 500;
+}
+::ng-deep.mdc-list-item__content.mat-mdc-list-item-unscoped-content
+  mdc-list-item__secondary-text {
+  margin-top: 10px;
 }

@@ -6,16 +6,25 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterOutlet } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
+import { ASSISTANCE_TYPES_DETAILS } from '../../../shared/constants/assistance-type-details.constants';
 import { LoggerService } from '../../../shared/services/logger.service';
+import { NavigationAssistanceTypeDetail } from '../models/navigation-assistance-type-detail.model';
 
 @Component({
   selector: 'main-layout',
   imports: [
     CommonModule,
     RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
@@ -36,18 +45,23 @@ export class MainLayoutComponent {
 
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
+  readonly assistanceTypes: NavigationAssistanceTypeDetail[] =
+    ASSISTANCE_TYPES_DETAILS;
+  isFindCareExpanded = false;
+
   async logout(): Promise<void> {
     try {
       await this.authService.logout();
-      await this.router.navigate(['/login']);
-      this.logger.log('Logged out successfully from MainLayout');
+      await this.router.navigate(['/auth/login']);
     } catch (error) {
       this.logger.error('Logout failed in MainLayout:', error);
     }
   }
 
   navigateTo(route: string): void {
-    this.logger.log(`Navigating to ${route}`);
+    if (this.sidenav && this.sidenav.mode === 'over' && this.sidenav.opened) {
+      this.sidenav.close();
+    }
     this.router.navigate([route]);
   }
 }
