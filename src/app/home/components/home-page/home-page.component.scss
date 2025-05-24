@@ -1,0 +1,24 @@
+.home-container {
+  display: flex;
+  min-height: calc(100vh - 64px);
+
+  .loading-shade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #666;
+    min-height: 200px;
+    width: 100%;
+    p {
+      margin-top: 16px;
+    }
+  }
+
+  .home-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}

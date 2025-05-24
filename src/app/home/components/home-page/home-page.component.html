@@ -1,4 +1,15 @@
 <div class="home-container">
-  <h2>Home Page</h2>
-  <p>Welcome {{ currentUser().firstName }} to the main application area!</p>
+  @if (currentUser() === undefined) {
+  <div class="loading-shade">
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="50"
+    ></mat-progress-spinner>
+    <p>Loading profile...</p>
+  </div>
+  } @else if(currentUser()) {
+  <div class="home-header">
+    <p>Welcome {{ currentUser().firstName }}!</p>
+  </div>
+  }
 </div>

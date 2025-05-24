@@ -94,7 +94,7 @@
     }
 
     .expand-icon {
-      margin-top: 11px;
+      margin-top: 13px;
       margin-left: auto;
       transition: transform 0.2s ease-in-out;
     }
@@ -127,7 +127,25 @@
 
   font-weight: 500;
 }
-::ng-deep.mdc-list-item__content.mat-mdc-list-item-unscoped-content
-  mdc-list-item__secondary-text {
-  margin-top: 10px;
+
+.user-profile-button {
+  padding: 0;
+  border: none;
+  background: none;
+  :hover {
+    cursor: pointer;
+  }
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+mat-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

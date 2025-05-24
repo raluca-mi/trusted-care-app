@@ -34,11 +34,19 @@
   <span class="toolbar-user-info">{{ user.displayName || user.email }}</span>
   }
   <button
-    mat-icon-button
+    class="user-profile-button"
     [matMenuTriggerFor]="userMenu"
     aria-label="User account options"
   >
+    @if (currentUser()?.profilePictureUrl) {
+    <img
+      [src]="currentUser().profilePictureUrl"
+      alt="Profile"
+      class="user-avatar"
+    />
+    } @else {
     <mat-icon>account_circle</mat-icon>
+    }
   </button>
   <mat-menu #userMenu="matMenu">
     <button mat-menu-item (click)="navigateTo('/settings')">

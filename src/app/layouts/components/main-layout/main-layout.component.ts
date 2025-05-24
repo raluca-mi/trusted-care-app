@@ -52,7 +52,7 @@ export class MainLayoutComponent {
   async logout(): Promise<void> {
     try {
       await this.authService.logout();
-      await this.router.navigate(['/auth/login']);
+      await this.router.navigate(['/login']);
     } catch (error) {
       this.logger.error('Logout failed in MainLayout:', error);
     }
