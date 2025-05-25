@@ -1,9 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
 
-import { updateDoc } from 'firebase/firestore';
-import { Observable, from } from 'rxjs';
-import { UserInterface } from '../../../auth/models/user.model';
+import {
+  collection,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+import { Observable, from, map } from 'rxjs';
+import {
+  AssistanceTypeEnum,
+  UserInterface,
+  UserTypeEnum,
+} from '../../../auth/models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +39,27 @@ export class UserProfileService {
   ): Observable<void> {
     const userDocRef = doc(this.firestore, `users/${uid}`);
     return from(updateDoc(userDocRef, updatedUserData));
+  }
+
+  getCareAssistantsByAssistanceType(
+    assistanceType: AssistanceTypeEnum
+  ): Observable<UserInterface[]> {
+    const usersCollectionRef = collection(this.firestore, 'users');
+    const q = query(
+      usersCollectionRef,
+      where('userType', '==', UserTypeEnum.CareAssistant),
+      where('assistanceTypes', 'array-contains', assistanceType)
+    );
+
+    return from(getDocs(q)).pipe(
+      map((querySnapshot) => {
+        const assistants: UserInterface[] = [];
+        querySnapshot.forEach((doc) => {
+          assistants.push({ uid: doc.id, ...doc.data() } as UserInterface);
+        });
+
+        return assistants;
+      })
+    );
   }
 }

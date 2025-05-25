@@ -1,0 +1,70 @@
+@if(assistant(); as assistantData) {
+<mat-card class="assistant-card" (click)="viewProfile()" matRipple>
+  <button
+    mat-icon-button
+    class="favorite-button"
+    [class.is-favorite]="isFavorite()"
+    (click)="toggleFavorite($event)"
+    [matTooltip]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
+    aria-label="Toggle favorite"
+  >
+    <mat-icon>{{ isFavorite() ? "favorite" : "favorite_border" }}</mat-icon>
+  </button>
+  <div class="card-header">
+    <div class="profile-picture-container">
+      @if(assistantData.profilePictureUrl) {
+      <img
+        [src]="assistantData.profilePictureUrl"
+        [alt]="assistantData.displayName + ' profile picture'"
+        class="profile-image"
+      />
+      } @else {
+      <mat-icon class="profile-placeholder-icon">account_circle</mat-icon>
+      }
+    </div>
+    <div class="header-text">
+      <mat-card-title>{{
+        assistantData.displayName ||
+          assistantData.firstName + " " + assistantData.lastName
+      }}</mat-card-title>
+      @if(assistantData.location) {
+      <mat-card-subtitle class="location-subtitle">
+        <mat-icon class="subtitle-icon">location_on</mat-icon>
+        <span>{{ assistantData.location }}</span>
+      </mat-card-subtitle>
+      }
+    </div>
+  </div>
+
+  <mat-card-content class="card-content">
+    @if(assistantData.bio) {
+    <p class="bio-snippet">
+      {{
+        (assistantData.bio.length > 100
+          ? assistantData.bio.substring(0, 100) + "..."
+          : assistantData.bio) || "No bio available."
+      }}
+    </p>
+    } @else {
+    <p class="bio-snippet">No bio available.</p>
+    }
+
+    <div class="details-section">
+      @if(assistantData.availability && assistantData.availability.length > 0) {
+      <div class="detail-item">
+        <mat-icon class="detail-icon">event_available</mat-icon>
+        <span>{{ availabilitySnippet }}</span>
+      </div>
+      } @if(assistantData.hourlyRate !== null && assistantData.hourlyRate !==
+      undefined) {
+      <div class="detail-item">
+        <mat-icon class="detail-icon">payments</mat-icon>
+        <span>~{{ assistantData.hourlyRate }} RON/hr</span>
+      </div>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>
+} @else {
+<p>Assistant data not available.</p>
+}

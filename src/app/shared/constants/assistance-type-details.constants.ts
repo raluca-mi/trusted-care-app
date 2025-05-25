@@ -1,25 +1,37 @@
 import { AssistanceTypeEnum } from '../../auth/models/user.model';
-import { NavigationAssistanceTypeDetail } from '../../layouts/components/models/navigation-assistance-type-detail.model';
+import { NavigationAssistanceTypeDetail } from '../models/navigation-assistance-type-detail.model';
 
-export const ASSISTANCE_TYPES_DETAILS: NavigationAssistanceTypeDetail[] = [
+export const ASSISTANCE_PAGES_CONFIG: NavigationAssistanceTypeDetail[] = [
   {
     id: 'child-care',
     displayName: AssistanceTypeEnum.ChildCare,
+    pageDescription:
+      'Find trusted nannies, babysitters, and daycare options for your children of all ages.',
+    headerImageUrl: 'assets/icons/hero-child-care.jpg',
     route: '/child-care',
   },
   {
     id: 'elderly-care',
     displayName: AssistanceTypeEnum.ElderlyCare,
+    pageDescription:
+      'Browse caregivers specializing in senior care, including companionship, personal care, and in-home assistance.',
+    headerImageUrl: 'assets/icons/hero-elderly-care.png',
     route: '/elderly-care',
   },
   {
     id: 'pets-care',
     displayName: AssistanceTypeEnum.PetsCare,
+    pageDescription:
+      'Discover reliable pet sitters, dog walkers, and grooming services for your furry friends.',
+    headerImageUrl: 'assets/icons/hero-pets-care.jpg',
     route: '/pets-care',
   },
   {
     id: 'housekeeping',
     displayName: AssistanceTypeEnum.HouseKeeping,
+    pageDescription:
+      'Find professional housekeepers for cleaning, organizing, and home maintenance tasks.',
+    headerImageUrl: 'assets/icons/hero-housekeeping.jpg',
     route: '/housekeeping',
   },
 ];

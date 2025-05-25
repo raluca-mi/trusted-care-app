@@ -1,0 +1,73 @@
+@if (pageConfig() === undefined) {
+<div class="assistance-page-container loading-container">
+  <mat-progress-spinner
+    mode="indeterminate"
+    diameter="50"
+  ></mat-progress-spinner>
+  <p>Loading page details...</p>
+</div>
+} @else if (pageConfig()) {
+<div class="assistance-page-container">
+  <div
+    class="hero-image-container"
+    [style.backgroundImage]="'url(' + pageConfig().headerImageUrl + ')'"
+  >
+    <div class="hero-overlay"></div>
+    <div class="hero-text-content">
+      <h1>{{ pageConfig().displayName }}</h1>
+      <p class="hero-description">{{ pageConfig().pageDescription }}</p>
+    </div>
+  </div>
+
+  <div class="page-content-wrapper">
+    <div class="page-header">
+      <h3>Available {{ pageConfig().displayName }} Providers</h3>
+    </div>
+
+    @if (isLoading()) {
+    <div class="loading-container">
+      <mat-progress-spinner
+        mode="indeterminate"
+        diameter="50"
+      ></mat-progress-spinner>
+      <p>Loading caregivers...</p>
+    </div>
+    } @else if (errorLoading()) {
+    <div class="error-container">
+      <p>{{ errorLoading() }}</p>
+      <button
+        mat-stroked-button
+        color="warn"
+        (click)="loadAssistants(pageConfig().displayName)"
+      >
+        Try Again
+      </button>
+    </div>
+    } @else {
+    <div class="assistant-list">
+      @for (assistant of assistants(); track assistant.uid) {
+      <assistant-card [assistant]="assistant"></assistant-card>
+      } @empty {
+      <div class="empty-list-message">
+        <mat-icon class="empty-icon">sentiment_dissatisfied</mat-icon>
+        <p>No {{ pageConfig().displayName }} providers found at the moment.</p>
+        <p>
+          Please check back later or broaden your search criteria (once filters
+          are available).
+        </p>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>
+} @else {
+<div class="assistance-page-container error-container">
+  <h2>Page Configuration Error</h2>
+  <p>
+    There was an issue loading the page details. Please try navigating again or
+    contact support.
+  </p>
+  <button mat-stroked-button routerLink="/home">Back to Home</button>
+</div>
+}

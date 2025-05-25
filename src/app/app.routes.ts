@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './auth/guards/auth.guard';
 import { AuthLayoutComponent } from './layouts/components/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/components/main-layout/main-layout.component';
+import { ASSISTANCE_PAGES_CONFIG } from './shared/constants/assistance-type-details.constants';
 
 export const routes: Routes = [
   {
@@ -45,38 +46,15 @@ export const routes: Routes = [
           ),
         title: 'Home',
       },
-      {
-        path: 'child-care',
+      ...ASSISTANCE_PAGES_CONFIG.map((pageConfig) => ({
+        path: pageConfig.id,
         loadComponent: () =>
           import(
-            './find-care/components/child-care-page/child-care-page.component'
-          ).then((m) => m.ChildCarePageComponent),
-        title: 'Find Child Care',
-      },
-      {
-        path: 'elderly-care',
-        loadComponent: () =>
-          import(
-            './find-care/components/elderly-care-page/elderly-care-page.component'
-          ).then((m) => m.ElderlyCarePageComponent),
-        title: 'Find Senior Care',
-      },
-      {
-        path: 'pets-care',
-        loadComponent: () =>
-          import(
-            './find-care/components/pets-care-page/pets-care-page.component'
-          ).then((m) => m.PetsCarePageComponent),
-        title: 'Find Pet Care',
-      },
-      {
-        path: 'housekeeping',
-        loadComponent: () =>
-          import(
-            './find-care/components/housekeeping-page/housekeeping-page.component'
-          ).then((m) => m.HousekeepingPageComponent),
-        title: 'Find Housekeeping',
-      },
+            './find-care/components/assistance-type-page/assistance-type-page.component'
+          ).then((m) => m.AssistanceTypePageComponent),
+        data: { assistancePageData: pageConfig },
+        title: `${pageConfig.displayName}`,
+      })),
       {
         path: 'settings',
         loadComponent: () =>

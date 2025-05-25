@@ -14,9 +14,9 @@ import {
 } from '@angular/router';
 import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
-import { ASSISTANCE_TYPES_DETAILS } from '../../../shared/constants/assistance-type-details.constants';
+import { ASSISTANCE_PAGES_CONFIG } from '../../../shared/constants/assistance-type-details.constants';
+import { NavigationAssistanceTypeDetail } from '../../../shared/models/navigation-assistance-type-detail.model';
 import { LoggerService } from '../../../shared/services/logger.service';
-import { NavigationAssistanceTypeDetail } from '../models/navigation-assistance-type-detail.model';
 
 @Component({
   selector: 'main-layout',
@@ -46,7 +46,7 @@ export class MainLayoutComponent {
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
   readonly assistanceTypes: NavigationAssistanceTypeDetail[] =
-    ASSISTANCE_TYPES_DETAILS;
+    ASSISTANCE_PAGES_CONFIG;
   isFindCareExpanded = false;
 
   async logout(): Promise<void> {
