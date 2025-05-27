@@ -1,0 +1,99 @@
+<h2 mat-dialog-title>Filter Caregivers</h2>
+
+<mat-dialog-content [formGroup]="filterForm" class="filter-dialog-content">
+  <p class="filter-section-title">Availability</p>
+  <mat-form-field appearance="outline" class="full-width-field">
+    <mat-label>Select Availability</mat-label>
+    <mat-select formControlName="availability" multiple>
+      @for(option of availabilityOptions; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-divider></mat-divider>
+
+  <p class="filter-section-title">Experience</p>
+  <mat-form-field appearance="outline" class="full-width-field">
+    <mat-label>Minimum Years of Experience</mat-label>
+    <mat-select formControlName="experienceYearsMin">
+      @for(option of experienceOptions; track option.value) {
+      <mat-option [value]="option.value">{{ option.viewValue }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-divider></mat-divider>
+
+  <p class="filter-section-title">Hourly Rate Range (RON)</p>
+  <div class="slider-container">
+    <mat-slider
+      discrete="true"
+      [displayWith]="formatRateLabel"
+      class="rate-range-slider"
+    >
+      <input
+        matSliderStartThumb
+        formControlName="hourlyRateMin"
+        [min]="rateSliderMin"
+        [max]="rateSliderMax"
+        [step]="rateSliderStep"
+      />
+      <input
+        matSliderEndThumb
+        formControlName="hourlyRateMax"
+        [min]="rateSliderMin"
+        [max]="rateSliderMax"
+        [step]="rateSliderStep"
+      />
+    </mat-slider>
+    <div class="slider-labels">
+      <span>{{
+        formatRateLabel(filterForm.get("hourlyRateMin")?.value ?? rateSliderMin)
+      }}</span>
+      <span>{{
+        formatRateLabel(filterForm.get("hourlyRateMax")?.value ?? rateSliderMax)
+      }}</span>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <p class="filter-section-title">Gender Preference</p>
+  <mat-form-field appearance="outline" class="full-width-field">
+    <mat-label>Select Gender</mat-label>
+    <mat-select formControlName="gender">
+      <mat-option [value]="null"><em>Any Gender</em></mat-option>
+      @for(option of genderOptions; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-divider></mat-divider>
+
+  <p class="filter-section-title">Other Details</p>
+  <div class="checkbox-group">
+    <mat-checkbox formControlName="nonSmoker" class="filter-checkbox"
+      >Non-Smoker</mat-checkbox
+    >
+    <mat-checkbox formControlName="hasOwnTransportation" class="filter-checkbox"
+      >Has Own Transportation</mat-checkbox
+    >
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-stroked-button (click)="onClearFilters()" type="button">
+    Clear All
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onApplyFilters()"
+    [disabled]="filterForm.invalid"
+  >
+    Apply Filters
+  </button>
+</mat-dialog-actions>

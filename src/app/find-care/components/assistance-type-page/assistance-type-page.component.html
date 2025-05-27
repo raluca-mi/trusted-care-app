@@ -19,9 +19,87 @@
     </div>
   </div>
 
+  <div class="search-bar-section">
+    <div class="search-bar-container">
+      <form
+        [formGroup]="searchForm"
+        (ngSubmit)="onSearchSubmit()"
+        class="search-form"
+      >
+        <mat-form-field class="search-input-field" appearance="outline">
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            formControlName="searchTerm"
+            placeholder="Search by location, name, skill..."
+          />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="search-button"
+        >
+          Search
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div class="page-content-wrapper">
     <div class="page-header">
       <h3>Available {{ pageConfig().displayName }} Providers</h3>
+      <div class="list-actions">
+        <button
+          mat-icon-button
+          (click)="openFilterDialog()"
+          matTooltip="Filter results"
+          aria-label="Filter results"
+          class="filter-btn-with-dot"
+        >
+          <mat-icon>filter_alt</mat-icon>
+          @if(hasActiveFilters()) {
+          <span class="red-dot-indicator"></span>}
+        </button>
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="sortMenu"
+          matTooltip="Sort results"
+          aria-label="Sort results"
+        >
+          <mat-icon>sort</mat-icon>
+        </button>
+        <mat-menu #sortMenu="matMenu">
+          <button
+            mat-menu-item
+            (click)="sortAssistants(SortKey.RateAsc)"
+            [class.active-sort-option]="currentSortKey === SortKey.RateAsc"
+          >
+            Hourly Rate (Low to High)
+          </button>
+          <button
+            mat-menu-item
+            (click)="sortAssistants(SortKey.RateDesc)"
+            [class.active-sort-option]="currentSortKey === SortKey.RateDesc"
+          >
+            Hourly Rate (High to Low)
+          </button>
+          <button
+            mat-menu-item
+            (click)="sortAssistants(SortKey.ExpDesc)"
+            [class.active-sort-option]="currentSortKey === SortKey.ExpDesc"
+          >
+            Years of Experience (High to Low)
+          </button>
+          <button
+            mat-menu-item
+            (click)="sortAssistants(SortKey.ExpAsc)"
+            [class.active-sort-option]="currentSortKey === SortKey.ExpAsc"
+          >
+            Years of Experience (Low to High)
+          </button>
+        </mat-menu>
+      </div>
     </div>
 
     @if (isLoading()) {
@@ -38,7 +116,7 @@
       <button
         mat-stroked-button
         color="warn"
-        (click)="loadAssistants(pageConfig().displayName)"
+        (click)="fetchInitialAssistants(pageConfig().displayName)"
       >
         Try Again
       </button>
@@ -50,11 +128,11 @@
       } @empty {
       <div class="empty-list-message">
         <mat-icon class="empty-icon">sentiment_dissatisfied</mat-icon>
-        <p>No {{ pageConfig().displayName }} providers found at the moment.</p>
         <p>
-          Please check back later or broaden your search criteria (once filters
-          are available).
+          No {{ pageConfig().displayName }} providers found matching your
+          criteria.
         </p>
+        <p>Try adjusting your search terms or check back later.</p>
       </div>
       }
     </div>

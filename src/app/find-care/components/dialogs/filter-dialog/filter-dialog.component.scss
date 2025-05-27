@@ -1,0 +1,50 @@
+mat-dialog-content {
+  min-width: 400px;
+  max-width: 500px;
+  padding-top: 20px;
+}
+
+.filter-section-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.full-width-field {
+  width: 100%;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.slider-container {
+  padding: 0 8px;
+  margin-bottom: 16px;
+}
+
+.rate-range-slider {
+  width: 100%;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85em;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: -8px;
+}
+
+mat-divider {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+mat-dialog-actions {
+  padding: 8px 24px 16px 24px;
+}
