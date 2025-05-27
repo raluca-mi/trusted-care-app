@@ -1,8 +1,8 @@
-import { AssistanceTypeEnum } from '../../auth/models/user.model';
+import { AssistanceType } from "../../auth/enums/assistance-type.enum";
 
 export interface NavigationAssistanceTypeDetail {
   id: string;
-  displayName: AssistanceTypeEnum;
+  displayName: AssistanceType;
   pageDescription: string;
   headerImageUrl: string;
   route: string;

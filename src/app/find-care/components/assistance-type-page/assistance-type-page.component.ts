@@ -33,10 +33,10 @@ import {
   tap,
 } from 'rxjs';
 import {
-  AssistanceTypeEnum,
-  GenderEnum,
   UserInterface,
 } from '../../../auth/models/user.model';
+import { Gender } from "../../../auth/enums/gender.enum";
+import { AssistanceType } from "../../../auth/enums/assistance-type.enum";
 import { NavigationAssistanceTypeDetail } from '../../../shared/models/navigation-assistance-type-detail.model';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
 import { LoggerService } from '../../../shared/services/logger.service';
@@ -147,7 +147,7 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
     return config;
   }
 
-  fetchInitialAssistants(assistanceType: AssistanceTypeEnum): void {
+  fetchInitialAssistants(assistanceType: AssistanceType): void {
     this.logger.log(`Fetching initial assistants for type: ${assistanceType}`);
     this.isLoading.set(true);
     this.errorLoading.set(null);
@@ -182,7 +182,7 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
       });
   }
 
-  private handleFetchError(err: any, assistanceType: AssistanceTypeEnum) {
+  private handleFetchError(err: any, assistanceType: AssistanceType) {
     this.logger.error(
       `Error loading initial assistants for ${assistanceType}:`,
       err
@@ -234,7 +234,7 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
         filters.hourlyRateMin!,
         filters.hourlyRateMax!
       );
-    if (filters.gender && filters.gender !== GenderEnum.Other)
+    if (filters.gender && filters.gender !== Gender.Other)
       processedData = this.filterByGender(processedData, filters.gender);
     if (filters.nonSmoker === true)
       processedData = this.filterByNonSmoker(processedData);
@@ -291,7 +291,7 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
 
   private filterByGender(
     data: UserInterface[],
-    gender: GenderEnum
+    gender: Gender
   ): UserInterface[] {
     return data.filter((assistant) => assistant.gender === gender);
   }

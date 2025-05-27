@@ -14,20 +14,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  AvailabilityOptionEnum,
-  GenderEnum,
-} from '../../../../auth/models/user.model';
+import { Gender } from "../../../../auth/enums/gender.enum";
+import { AvailabilityOption } from "../../../../auth/enums/availability-option.enum";
 
 export interface FilterDialogData {
   currentFilters: Partial<AppliedFilters>;
 }
 export interface AppliedFilters {
-  availability?: AvailabilityOptionEnum[];
+  availability?: AvailabilityOption[];
   experienceYearsMin?: number | null;
   hourlyRateMin?: number | null;
   hourlyRateMax?: number | null;
-  gender?: GenderEnum | null;
+  gender?: Gender | null;
   nonSmoker?: boolean | null;
   hasOwnTransportation?: boolean | null;
 }
@@ -60,8 +58,8 @@ export class FilterDialogComponent implements OnInit {
 
   filterForm!: FormGroup;
 
-  readonly availabilityOptions = Object.values(AvailabilityOptionEnum);
-  readonly genderOptions = Object.values(GenderEnum);
+  readonly availabilityOptions = Object.values(AvailabilityOption);
+  readonly genderOptions = Object.values(Gender);
   readonly experienceOptions: { value: number | null; viewValue: string }[] = [
     { value: null, viewValue: 'Any Experience' },
     { value: 0, viewValue: '0+ years' },

@@ -37,12 +37,12 @@ import {
   Subscription,
 } from 'rxjs';
 import {
-  AssistanceTypeEnum,
-  AvailabilityOptionEnum,
-  GenderEnum,
   UserInterface,
-  UserTypeEnum,
 } from '../../../auth/models/user.model';
+import { UserType } from "../../../auth/enums/user-type.enum";
+import { Gender } from "../../../auth/enums/gender.enum";
+import { AssistanceType } from "../../../auth/enums/assistance-type.enum";
+import { AvailabilityOption } from "../../../auth/enums/availability-option.enum";
 import { AuthService } from '../../../auth/services/auth.service';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
 import { LoggerService } from '../../../shared/services/logger.service';
@@ -100,9 +100,9 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   text = USER_SETTINGS_TEXT;
 
-  readonly genderOptions = Object.values(GenderEnum);
-  readonly assistanceTypes = Object.values(AssistanceTypeEnum);
-  readonly availabilityOptions = Object.values(AvailabilityOptionEnum);
+  readonly genderOptions = Object.values(Gender);
+  readonly assistanceTypes = Object.values(AssistanceType);
+  readonly availabilityOptions = Object.values(AvailabilityOption);
 
   constructor() {
     effect(() => {
@@ -408,7 +408,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         profilePictureUrl: newImageDownloadURL,
       };
 
-      if (currentProfile.userType === UserTypeEnum.CareAssistant) {
+      if (currentProfile.userType === UserType.CareAssistant) {
         updatedData.phoneNumber = formValues.phoneNumber || null;
         updatedData.location = formValues.location || undefined;
         updatedData.bio = formValues.bio || undefined;
@@ -522,6 +522,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   }
 
   get UserTypeEnum() {
-    return UserTypeEnum;
+    return UserType;
   }
 }

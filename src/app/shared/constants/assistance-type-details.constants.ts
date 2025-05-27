@@ -1,10 +1,10 @@
-import { AssistanceTypeEnum } from '../../auth/models/user.model';
+import { AssistanceType } from "../../auth/enums/assistance-type.enum";
 import { NavigationAssistanceTypeDetail } from '../models/navigation-assistance-type-detail.model';
 
 export const ASSISTANCE_PAGES_CONFIG: NavigationAssistanceTypeDetail[] = [
   {
     id: 'child-care',
-    displayName: AssistanceTypeEnum.ChildCare,
+    displayName: AssistanceType.ChildCare,
     pageDescription:
       'Find trusted nannies, babysitters, and daycare options for your children of all ages.',
     headerImageUrl: 'assets/icons/hero-child-care.jpg',
@@ -12,7 +12,7 @@ export const ASSISTANCE_PAGES_CONFIG: NavigationAssistanceTypeDetail[] = [
   },
   {
     id: 'elderly-care',
-    displayName: AssistanceTypeEnum.ElderlyCare,
+    displayName: AssistanceType.ElderlyCare,
     pageDescription:
       'Browse caregivers specializing in senior care, including companionship, personal care, and in-home assistance.',
     headerImageUrl: 'assets/icons/hero-elderly-care.png',
@@ -20,7 +20,7 @@ export const ASSISTANCE_PAGES_CONFIG: NavigationAssistanceTypeDetail[] = [
   },
   {
     id: 'pets-care',
-    displayName: AssistanceTypeEnum.PetsCare,
+    displayName: AssistanceType.PetsCare,
     pageDescription:
       'Discover reliable pet sitters, dog walkers, and grooming services for your furry friends.',
     headerImageUrl: 'assets/icons/hero-pets-care.jpg',
@@ -28,7 +28,7 @@ export const ASSISTANCE_PAGES_CONFIG: NavigationAssistanceTypeDetail[] = [
   },
   {
     id: 'housekeeping',
-    displayName: AssistanceTypeEnum.HouseKeeping,
+    displayName: AssistanceType.HouseKeeping,
     pageDescription:
       'Find professional housekeepers for cleaning, organizing, and home maintenance tasks.',
     headerImageUrl: 'assets/icons/hero-housekeeping.jpg',

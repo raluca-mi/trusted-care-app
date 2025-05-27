@@ -1,30 +1,7 @@
-export enum UserTypeEnum {
-  Researcher = 'researcher',
-  CareAssistant = 'care_assistant',
-}
-
-export enum AssistanceTypeEnum {
-  ChildCare = 'Child Care',
-  ElderlyCare = 'Elderly Care',
-  PetsCare = 'Pets Care',
-  HouseKeeping = 'House Keeping',
-}
-
-export enum AvailabilityOptionEnum {
-  Weekdays = 'Weekdays',
-  Weekends = 'Weekends',
-  Mornings = 'Mornings',
-  Afternoons = 'Afternoons',
-  Evenings = 'Evenings',
-  Overnights = 'Overnights',
-  Flexible = 'Flexible',
-}
-
-export enum GenderEnum {
-  Female = 'Female',
-  Male = 'Male',
-  Other = 'Other',
-}
+import { AssistanceType } from "../enums/assistance-type.enum";
+import { AvailabilityOption } from "../enums/availability-option.enum";
+import { Gender } from "../enums/gender.enum";
+import { UserType } from "../enums/user-type.enum";
 
 export interface UserInterface {
   // Core Firebase Auth Info
@@ -33,7 +10,7 @@ export interface UserInterface {
   displayName: string;
 
   // App-Specific Core Info
-  userType: UserTypeEnum;
+  userType: UserType;
   firstName: string;
   lastName: string;
   createdAt: Date;
@@ -47,10 +24,10 @@ export interface UserInterface {
   location?: string;
   bio?: string;
   dateOfBirth?: string | null;
-  gender?: GenderEnum | null;
-  assistanceTypes?: AssistanceTypeEnum[] | null;
+  gender?: Gender | null;
+  assistanceTypes?: AssistanceType[] | null;
   experienceYears?: number;
-  availability?: AvailabilityOptionEnum[] | null;
+  availability?: AvailabilityOption[] | null;
   hourlyRate?: number | null;
   additionalDetails?: {
     nonSmoker?: boolean;

@@ -10,10 +10,10 @@ import {
 } from 'firebase/firestore';
 import { Observable, from, map } from 'rxjs';
 import {
-  AssistanceTypeEnum,
   UserInterface,
-  UserTypeEnum,
 } from '../../../auth/models/user.model';
+import { UserType } from "../../../auth/enums/user-type.enum";
+import { AssistanceType } from "../../../auth/enums/assistance-type.enum";
 
 @Injectable({
   providedIn: 'root',
@@ -42,12 +42,12 @@ export class UserProfileService {
   }
 
   getCareAssistantsByAssistanceType(
-    assistanceType: AssistanceTypeEnum
+    assistanceType: AssistanceType
   ): Observable<UserInterface[]> {
     const usersCollectionRef = collection(this.firestore, 'users');
     const q = query(
       usersCollectionRef,
-      where('userType', '==', UserTypeEnum.CareAssistant),
+      where('userType', '==', UserType.CareAssistant),
       where('assistanceTypes', 'array-contains', assistanceType)
     );
 
