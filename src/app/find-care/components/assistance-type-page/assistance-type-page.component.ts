@@ -34,6 +34,7 @@ import {
 } from 'rxjs';
 import { AssistanceType } from '../../../auth/enums/assistance-type.enum';
 import { Gender } from '../../../auth/enums/gender.enum';
+import { Skill } from '../../../auth/enums/skill.enum';
 import { UserInterface } from '../../../auth/models/user.model';
 import { NavigationAssistanceTypeDetail } from '../../../shared/models/navigation-assistance-type-detail.model';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
@@ -208,6 +209,8 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
     let processedData = [...this.allFetchedAssistants];
     if (searchTerm)
       processedData = this.filterBySearchTerm(processedData, searchTerm);
+    if (filters.skills && filters.skills.length > 0)
+      processedData = this.filterBySkills(processedData, filters.skills);
     if (filters.availability && filters.availability.length > 0)
       processedData = this.filterByAvailability(
         processedData,
@@ -252,8 +255,13 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
       (assistant) =>
         assistant.displayName?.toLowerCase().includes(lowerSearchTerm) ||
         assistant.location?.toLowerCase().includes(lowerSearchTerm) ||
-        assistant.bio?.toLowerCase().includes(lowerSearchTerm) ||
-        assistant.assistanceType?.toLowerCase().includes(lowerSearchTerm)
+        assistant.bio?.toLowerCase().includes(lowerSearchTerm)
+    );
+  }
+
+  private filterBySkills(data: UserInterface[], skills: Skill[]) {
+    return data.filter((assistant) =>
+      skills.every((skill) => assistant.skills?.includes(skill))
     );
   }
 
@@ -262,7 +270,7 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
     availability: any[]
   ): UserInterface[] {
     return data.filter((assistant) =>
-      availability.some((favail) => assistant.availability?.includes(favail))
+      availability.every((favail) => assistant.availability?.includes(favail))
     );
   }
 
@@ -347,6 +355,7 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
       width: '500px',
       data: {
         currentFilters: this.currentAppliedFilters(),
+        assistanceType: config.displayName,
       } as FilterDialogData,
     });
     dialogRef

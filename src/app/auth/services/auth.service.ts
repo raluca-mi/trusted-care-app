@@ -18,7 +18,7 @@ import {
   USER_DATA_NOT_AVAILABLE_MESSAGE,
 } from '../constants/auth-message.constants';
 import { UserInterface } from '../models/user.model';
-import { UserType } from "../enums/user-type.enum";
+import { UserType } from '../enums/user-type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +61,7 @@ export class AuthService {
           email: email.toLowerCase(),
           userType: userType,
           isAdmin: false,
+          isVerified: false,
           firstName: firstName,
           lastName: lastName,
           displayName: `${firstName} ${lastName}`,

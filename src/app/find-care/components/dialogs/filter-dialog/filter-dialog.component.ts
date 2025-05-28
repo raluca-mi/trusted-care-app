@@ -14,13 +14,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Gender } from "../../../../auth/enums/gender.enum";
-import { AvailabilityOption } from "../../../../auth/enums/availability-option.enum";
+import { ASSISTANCE_TYPE_SKILLS } from '../../../../auth/constants/assistance-type-skills.constants';
+import { AvailabilityOption } from '../../../../auth/enums/availability-option.enum';
+import { Gender } from '../../../../auth/enums/gender.enum';
+import { Skill } from '../../../../auth/enums/skill.enum';
 
 export interface FilterDialogData {
   currentFilters: Partial<AppliedFilters>;
 }
 export interface AppliedFilters {
+  skills?: Skill[];
   availability?: AvailabilityOption[];
   experienceYearsMin?: number | null;
   hourlyRateMin?: number | null;
@@ -58,6 +61,9 @@ export class FilterDialogComponent implements OnInit {
 
   filterForm!: FormGroup;
 
+  public assistanceType: string | null = null;
+  public skillsOptions: Skill[] = [];
+
   readonly availabilityOptions = Object.values(AvailabilityOption);
   readonly genderOptions = Object.values(Gender);
   readonly experienceOptions: { value: number | null; viewValue: string }[] = [
@@ -77,8 +83,13 @@ export class FilterDialogComponent implements OnInit {
 
   ngOnInit(): void {
     const current = this.data?.currentFilters || {};
+    this.assistanceType = (this.data as any)?.assistanceType || null;
+    this.skillsOptions = this.assistanceType
+      ? ASSISTANCE_TYPE_SKILLS[this.assistanceType] || []
+      : [];
 
     this.filterForm = this.fb.group({
+      skills: [current.skills || []],
       availability: [current.availability || []],
       experienceYearsMin: [
         current.experienceYearsMin === undefined
@@ -105,6 +116,7 @@ export class FilterDialogComponent implements OnInit {
     if (this.filterForm.valid) {
       const formValue = this.filterForm.value;
       const appliedFilters: AppliedFilters = {
+        skills: formValue.skills?.length > 0 ? formValue.skills : undefined,
         availability:
           formValue.availability?.length > 0
             ? formValue.availability
@@ -134,6 +146,7 @@ export class FilterDialogComponent implements OnInit {
 
   onClearFilters(): void {
     this.filterForm.reset({
+      skills: [],
       availability: [],
       experienceYearsMin: null,
       hourlyRateMin: this.rateSliderMin,

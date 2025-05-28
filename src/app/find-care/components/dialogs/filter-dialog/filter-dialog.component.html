@@ -1,6 +1,18 @@
 <h2 mat-dialog-title>Filter Caregivers</h2>
 
 <mat-dialog-content [formGroup]="filterForm" class="filter-dialog-content">
+  <p class="filter-section-title">Skills</p>
+  <mat-form-field appearance="outline" class="full-width-field">
+    <mat-label>Select Skills</mat-label>
+    <mat-select formControlName="skills" multiple>
+      @for(option of skillsOptions; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-divider></mat-divider>
+
   <p class="filter-section-title">Availability</p>
   <mat-form-field appearance="outline" class="full-width-field">
     <mat-label>Select Availability</mat-label>

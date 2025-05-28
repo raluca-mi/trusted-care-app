@@ -183,6 +183,22 @@
                   }
                 </mat-select>
               </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="form-field full-width"
+              >
+                <mat-label>{{ text.skillsLabel }}</mat-label>
+                <mat-select formControlName="skills" multiple>
+                  @if(settingsForm.get('assistanceType')?.value) { @for(skill of
+                  skillOptions; track skill) {
+                  <mat-option [value]="skill">
+                    {{ skill }}
+                  </mat-option>
+                  } }
+                </mat-select>
+              </mat-form-field>
+
               <mat-form-field
                 appearance="outline"
                 class="form-field full-width"

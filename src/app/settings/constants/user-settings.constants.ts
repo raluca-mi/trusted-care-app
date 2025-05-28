@@ -44,6 +44,7 @@ export const USER_SETTINGS_TEXT = {
   hourlyRateLabel: 'Hourly Rate',
   hourlyRatePlaceholder: 'e.g., 20',
   assistanceTypeLabel: 'Assistance Type You Offer',
+  skillsLabel: 'Skills',
   availabilityLabel: 'Your General Availability',
   otherDetailsLabel: 'Other Details',
   nonSmokerLabel: 'Non-Smoker',

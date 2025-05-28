@@ -36,9 +36,11 @@ import {
   firstValueFrom,
   Subscription,
 } from 'rxjs';
+import { ASSISTANCE_TYPE_SKILLS } from '../../../auth/constants/assistance-type-skills.constants';
 import { AssistanceType } from '../../../auth/enums/assistance-type.enum';
 import { AvailabilityOption } from '../../../auth/enums/availability-option.enum';
 import { Gender } from '../../../auth/enums/gender.enum';
+import { Skill } from '../../../auth/enums/skill.enum';
 import { UserType } from '../../../auth/enums/user-type.enum';
 import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -97,6 +99,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   private pictureMarkedForRemoval = false;
 
   text = USER_SETTINGS_TEXT;
+  skillOptions: Skill[];
+  private firstAssistanceTypeChange = true;
 
   readonly genderOptions = Object.values(Gender);
   readonly assistanceTypes = Object.values(AssistanceType);
@@ -105,6 +109,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   constructor() {
     effect(() => {
       const profile = this.currentUserProfile();
+      this.firstAssistanceTypeChange = true;
       this.logger.log(
         '[UserSettings Effect] currentUserProfile signal changed:',
         profile
@@ -145,6 +150,16 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       this.selectedImagePreviewUrl = null;
       this.initialProfilePictureUrl = null;
     }
+
+    this.settingsForm
+      .get('assistanceType')
+      ?.valueChanges.subscribe((selectedType: AssistanceType) => {
+        this.skillOptions = ASSISTANCE_TYPE_SKILLS[selectedType] || [];
+        if (!this.firstAssistanceTypeChange) {
+          this.settingsForm.get('skills')?.setValue([]);
+        }
+        this.firstAssistanceTypeChange = false;
+      });
   }
 
   ngOnDestroy(): void {
@@ -188,6 +203,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       experienceYears: [null, [Validators.min(0), Validators.max(70)]],
       hourlyRate: [null, [Validators.min(0)]],
       assistanceType: [],
+      skills: [[]],
       availability: [[]],
       additionalDetails: this.fb.group({
         nonSmoker: [false],
@@ -213,7 +229,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     const patchData = {
       firstName: profile.firstName || '',
       lastName: profile.lastName || '',
-      profilePictureUrl: profile.profilePictureUrl || '', // Patch the URL to the form
+      profilePictureUrl: profile.profilePictureUrl || '',
       phoneNumber: profile.phoneNumber || '',
       location: profile.location || '',
       bio: profile.bio || '',
@@ -222,6 +238,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       experienceYears: profile.experienceYears ?? null,
       hourlyRate: profile.hourlyRate ?? null,
       assistanceType: profile.assistanceType || null,
+      skills: profile.skills || [],
       availability: profile.availability || [],
       additionalDetails: {
         nonSmoker: profile.additionalDetails?.nonSmoker ?? false,
@@ -421,6 +438,18 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
             ? undefined
             : Number(formValues.hourlyRate);
         updatedData.assistanceType = formValues.assistanceType || null;
+
+        // Filter skills to only those valid for the selected assistance type
+        const selectedType: AssistanceType | null =
+          formValues.assistanceType || null;
+        const validSkills: Skill[] = selectedType
+          ? ASSISTANCE_TYPE_SKILLS[selectedType] || []
+          : [];
+        const filteredSkills: Skill[] = (
+          Array.isArray(formValues.skills) ? formValues.skills : []
+        ).filter((skill: Skill) => validSkills.includes(skill));
+        updatedData.skills = filteredSkills;
+
         updatedData.availability =
           formValues.availability && formValues.availability.length > 0
             ? formValues.availability
@@ -441,6 +470,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           formValues.location &&
           formValues.dateOfBirth &&
           formValues.assistanceType &&
+          filteredSkills.length > 0 &&
           formValues.availability?.length > 0
         );
       }
