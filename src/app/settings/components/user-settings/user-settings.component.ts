@@ -36,13 +36,11 @@ import {
   firstValueFrom,
   Subscription,
 } from 'rxjs';
-import {
-  UserInterface,
-} from '../../../auth/models/user.model';
-import { UserType } from "../../../auth/enums/user-type.enum";
-import { Gender } from "../../../auth/enums/gender.enum";
-import { AssistanceType } from "../../../auth/enums/assistance-type.enum";
-import { AvailabilityOption } from "../../../auth/enums/availability-option.enum";
+import { AssistanceType } from '../../../auth/enums/assistance-type.enum';
+import { AvailabilityOption } from '../../../auth/enums/availability-option.enum';
+import { Gender } from '../../../auth/enums/gender.enum';
+import { UserType } from '../../../auth/enums/user-type.enum';
+import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
 import { LoggerService } from '../../../shared/services/logger.service';
@@ -189,12 +187,11 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       // Step 2 Controls (Caregiver Details)
       experienceYears: [null, [Validators.min(0), Validators.max(70)]],
       hourlyRate: [null, [Validators.min(0)]],
-      assistanceTypes: [[]],
+      assistanceType: [],
       availability: [[]],
       additionalDetails: this.fb.group({
         nonSmoker: [false],
         hasOwnTransportation: [false],
-        willingToTravelKm: [null, [Validators.min(0), Validators.max(500)]],
       }),
 
       // Step 3 Controls (Additional Details)
@@ -224,13 +221,12 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       gender: profile.gender || null,
       experienceYears: profile.experienceYears ?? null,
       hourlyRate: profile.hourlyRate ?? null,
-      assistanceTypes: profile.assistanceTypes || [],
+      assistanceType: profile.assistanceType || null,
       availability: profile.availability || [],
       additionalDetails: {
         nonSmoker: profile.additionalDetails?.nonSmoker ?? false,
         hasOwnTransportation:
           profile.additionalDetails?.hasOwnTransportation ?? false,
-        willingToTravelKm: profile.additionalDetails?.willingToTravelKm ?? null,
       },
     };
     this.settingsForm.patchValue(patchData, { emitEvent: false });
@@ -424,10 +420,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           formValues.hourlyRate === null
             ? undefined
             : Number(formValues.hourlyRate);
-        updatedData.assistanceTypes =
-          formValues.assistanceTypes && formValues.assistanceTypes.length > 0
-            ? formValues.assistanceTypes
-            : null;
+        updatedData.assistanceType = formValues.assistanceType || null;
         updatedData.availability =
           formValues.availability && formValues.availability.length > 0
             ? formValues.availability
@@ -436,11 +429,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           nonSmoker: formValues.additionalDetails.nonSmoker,
           hasOwnTransportation:
             formValues.additionalDetails.hasOwnTransportation,
-          willingToTravelKm:
-            formValues.additionalDetails.willingToTravelKm === null
-              ? undefined
-              : Number(formValues.additionalDetails.willingToTravelKm),
         };
+
         updatedData.profileComplete = !!(
           (newImageDownloadURL ||
             (this.initialProfilePictureUrl && !this.pictureMarkedForRemoval)) &&
@@ -450,7 +440,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           formValues.bio &&
           formValues.location &&
           formValues.dateOfBirth &&
-          formValues.assistanceTypes?.length > 0 &&
+          formValues.assistanceType &&
           formValues.availability?.length > 0
         );
       }

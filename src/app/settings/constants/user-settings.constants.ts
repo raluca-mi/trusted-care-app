@@ -43,12 +43,11 @@ export const USER_SETTINGS_TEXT = {
   experiencePlaceholder: 'e.g., 5',
   hourlyRateLabel: 'Hourly Rate',
   hourlyRatePlaceholder: 'e.g., 20',
-  assistanceTypesLabel: 'Assistance Types You Offer',
+  assistanceTypeLabel: 'Assistance Type You Offer',
   availabilityLabel: 'Your General Availability',
   otherDetailsLabel: 'Other Details',
   nonSmokerLabel: 'Non-Smoker',
   haveOwnTransportationLabel: 'I have my own transportation',
-  willingToTravelKmLabel: 'Willing to Travel (km)',
   travelKmPlaceholder: 'e.g., 20',
   kmSuffix: 'km',
 

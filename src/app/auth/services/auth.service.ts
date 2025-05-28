@@ -60,6 +60,7 @@ export class AuthService {
           uid: user.uid,
           email: email.toLowerCase(),
           userType: userType,
+          isAdmin: false,
           firstName: firstName,
           lastName: lastName,
           displayName: `${firstName} ${lastName}`,

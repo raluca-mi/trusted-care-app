@@ -9,11 +9,9 @@ import {
   where,
 } from 'firebase/firestore';
 import { Observable, from, map } from 'rxjs';
-import {
-  UserInterface,
-} from '../../../auth/models/user.model';
-import { UserType } from "../../../auth/enums/user-type.enum";
-import { AssistanceType } from "../../../auth/enums/assistance-type.enum";
+import { AssistanceType } from '../../../auth/enums/assistance-type.enum';
+import { UserType } from '../../../auth/enums/user-type.enum';
+import { UserInterface } from '../../../auth/models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +46,7 @@ export class UserProfileService {
     const q = query(
       usersCollectionRef,
       where('userType', '==', UserType.CareAssistant),
-      where('assistanceTypes', 'array-contains', assistanceType)
+      where('assistanceType', '==', assistanceType)
     );
 
     return from(getDocs(q)).pipe(

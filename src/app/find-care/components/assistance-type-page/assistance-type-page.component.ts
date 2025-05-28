@@ -32,11 +32,9 @@ import {
   Subscription,
   tap,
 } from 'rxjs';
-import {
-  UserInterface,
-} from '../../../auth/models/user.model';
-import { Gender } from "../../../auth/enums/gender.enum";
-import { AssistanceType } from "../../../auth/enums/assistance-type.enum";
+import { AssistanceType } from '../../../auth/enums/assistance-type.enum';
+import { Gender } from '../../../auth/enums/gender.enum';
+import { UserInterface } from '../../../auth/models/user.model';
 import { NavigationAssistanceTypeDetail } from '../../../shared/models/navigation-assistance-type-detail.model';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
 import { LoggerService } from '../../../shared/services/logger.service';
@@ -255,9 +253,7 @@ export class AssistanceTypePageComponent implements OnInit, OnDestroy {
         assistant.displayName?.toLowerCase().includes(lowerSearchTerm) ||
         assistant.location?.toLowerCase().includes(lowerSearchTerm) ||
         assistant.bio?.toLowerCase().includes(lowerSearchTerm) ||
-        assistant.assistanceTypes?.some((at) =>
-          at.toLowerCase().includes(lowerSearchTerm)
-        )
+        assistant.assistanceType?.toLowerCase().includes(lowerSearchTerm)
     );
   }
 

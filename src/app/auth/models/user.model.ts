@@ -1,7 +1,7 @@
-import { AssistanceType } from "../enums/assistance-type.enum";
-import { AvailabilityOption } from "../enums/availability-option.enum";
-import { Gender } from "../enums/gender.enum";
-import { UserType } from "../enums/user-type.enum";
+import { AssistanceType } from '../enums/assistance-type.enum';
+import { AvailabilityOption } from '../enums/availability-option.enum';
+import { Gender } from '../enums/gender.enum';
+import { UserType } from '../enums/user-type.enum';
 
 export interface UserInterface {
   // Core Firebase Auth Info
@@ -10,6 +10,7 @@ export interface UserInterface {
   displayName: string;
 
   // App-Specific Core Info
+  isAdmin: boolean;
   userType: UserType;
   firstName: string;
   lastName: string;
@@ -25,13 +26,12 @@ export interface UserInterface {
   bio?: string;
   dateOfBirth?: string | null;
   gender?: Gender | null;
-  assistanceTypes?: AssistanceType[] | null;
+  assistanceType?: AssistanceType | null;
   experienceYears?: number;
   availability?: AvailabilityOption[] | null;
   hourlyRate?: number | null;
   additionalDetails?: {
     nonSmoker?: boolean;
     hasOwnTransportation?: boolean;
-    willingToTravelKm?: number | null;
   } | null;
 }

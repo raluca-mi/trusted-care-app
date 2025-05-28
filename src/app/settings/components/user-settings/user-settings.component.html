@@ -173,8 +173,8 @@
                 appearance="outline"
                 class="form-field full-width"
               >
-                <mat-label>{{ text.assistanceTypesLabel }}</mat-label>
-                <mat-select formControlName="assistanceTypes" multiple>
+                <mat-label>{{ text.assistanceTypeLabel }}</mat-label>
+                <mat-select formControlName="assistanceType">
                   @for(assistanceType of assistanceTypes; track assistanceType)
                   {
                   <mat-option [value]="assistanceType">{{
@@ -213,21 +213,6 @@
                   [class.full-width-checkbox]
                   >{{ text.haveOwnTransportationLabel }}</mat-checkbox
                 >
-                <mat-form-field
-                  appearance="outline"
-                  class="form-field full-width"
-                  style="margin-top: 10px"
-                >
-                  <mat-label>{{ text.willingToTravelKmLabel }}</mat-label>
-                  <input
-                    matInput
-                    type="number"
-                    formControlName="willingToTravelKm"
-                    [placeholder]="text.travelKmPlaceholder"
-                    min="0"
-                  />
-                  <span matTextSuffix>{{ text.kmSuffix }}</span>
-                </mat-form-field>
               </div>
             </mat-card-content>
           </mat-card>
