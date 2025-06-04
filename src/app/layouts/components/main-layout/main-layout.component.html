@@ -1,3 +1,4 @@
+@if(currentUser(); as user) {
 <mat-toolbar color="primary" class="main-toolbar">
   <button
     mat-icon-button
@@ -15,6 +16,7 @@
     >Trusted Care</span
   >
 
+  @if(user.userType === 'researcher') {
   <div class="toolbar-center-nav">
     @for(type of assistanceTypes; track type.id) {
     <a
@@ -27,18 +29,19 @@
     </a>
     }
   </div>
-
+  <span class="toolbar-researcher-spacer"></span>
+  } @else{
   <span class="toolbar-spacer"></span>
-
-  @if(currentUser(); as user) {
-  <span class="toolbar-user-info">{{ user.displayName || user.email }}</span>
   }
+
+  <span class="toolbar-user-info">{{ user.displayName || user.email }}</span>
+
   <button
     class="user-profile-button"
     [matMenuTriggerFor]="userMenu"
     aria-label="User account options"
   >
-    @if (currentUser()?.profilePictureUrl) {
+    @if (user.profilePictureUrl) {
     <img
       [src]="currentUser().profilePictureUrl"
       alt="Profile"
@@ -80,7 +83,7 @@
         <mat-icon matListItemIcon>home</mat-icon>
         <span matListItemTitle>Home</span>
       </a>
-
+      @if(user.userType === 'researcher') {
       <a
         mat-list-item
         (click)="isFindCareExpanded = !isFindCareExpanded"
@@ -113,7 +116,7 @@
         </a>
         }
       </div>
-      }
+      } }
       <mat-divider></mat-divider>
       <a
         mat-list-item
@@ -135,3 +138,8 @@
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
+} @else {
+<div class="loading-spinner-container">
+  <mat-spinner diameter="50" />
+</div>
+}

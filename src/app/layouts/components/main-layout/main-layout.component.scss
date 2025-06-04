@@ -46,10 +46,17 @@
   }
 }
 
-.toolbar-spacer {
+.toolbar-researcher-spacer {
   flex: 1 1 auto;
   @media (min-width: 1024px) {
     flex-grow: 0;
+  }
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+  @media (min-width: 1024px) {
+    flex-grow: 1;
   }
 }
 
@@ -148,4 +155,11 @@ mat-icon-button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.loading-spinner-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
