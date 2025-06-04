@@ -108,6 +108,7 @@
                   }
                 </mat-form-field>
               </div>
+
               <p>
                 <strong>{{ text.accountTypeLabel }}:</strong>
                 {{
@@ -304,18 +305,18 @@
                   startView="multi-year"
                 ></mat-datepicker>
               </mat-form-field>
-              <mat-form-field
-                appearance="outline"
-                class="form-field full-width"
+
+
+             <mat-card-actions>
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="openSelectLocationModal()"
               >
-                <mat-label>{{ text.locationLabel }}</mat-label>
-                <input
-                  matInput
-                  formControlName="location"
-                  [placeholder]="text.locationPlaceholder"
-                />
-                <mat-icon matSuffix>location_on</mat-icon>
-              </mat-form-field>
+                <mat-icon>pin_drop</mat-icon> {{ text.setYourLocationButton }}
+              </button>
+            </mat-card-actions>
+
               <mat-form-field
                 appearance="outline"
                 class="form-field full-width bio-field"

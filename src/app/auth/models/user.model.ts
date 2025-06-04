@@ -1,3 +1,4 @@
+import { GeoPoint } from 'firebase/firestore';
 import { AssistanceType } from '../enums/assistance-type.enum';
 import { AvailabilityOption } from '../enums/availability-option.enum';
 import { Gender } from '../enums/gender.enum';
@@ -11,7 +12,7 @@ export interface UserInterface {
   displayName: string;
 
   // App-Specific Core Info
-  isAdmin: boolean;
+  isAdmin?: boolean | false;
   userType: UserType;
   firstName: string;
   lastName: string;
@@ -24,7 +25,8 @@ export interface UserInterface {
 
   // Care Assistant Specific Details (optional for Researchers)
   isVerified?: boolean;
-  location?: string;
+  location?: string; //the formatted address
+  coordinates?: GeoPoint | null;
   bio?: string;
   dateOfBirth?: string | null;
   gender?: Gender | null;

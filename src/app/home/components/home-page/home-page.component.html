@@ -8,8 +8,10 @@
     <p>Loading profile...</p>
   </div>
   } @else if(currentUser()) {
-  <div class="home-header">
-    <p>Welcome {{ currentUser().firstName }}!</p>
+  <div class="home-container">
+    <div class="home-header">
+      <p>Welcome {{ currentUser().firstName }}!</p>
+    </div>
   </div>
   }
 </div>

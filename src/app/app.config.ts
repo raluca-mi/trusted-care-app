@@ -16,7 +16,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { provideStorage } from '@angular/fire/storage';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { getStorage } from 'firebase/storage';
-import { firebaseConfig } from '../config/firebase.config';
+import { config } from '../config/firebase.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,7 +25,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
 
     // Firebase imports
-    provideFirebaseApp(() => initializeApp(firebaseConfig.firebase)),
+    provideFirebaseApp(() => initializeApp(config.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),

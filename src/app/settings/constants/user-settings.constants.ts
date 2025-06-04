@@ -24,6 +24,7 @@ export const USER_SETTINGS_TEXT = {
   removePhotoTooltip: 'Remove profile picture',
   profilePictureHint:
     'A clear photo helps build trust. Recommended: 200x200px.',
+  setYourLocationButton: 'Set Your Location',
 
   // Personal Details Card
   personalDetailsTitle: 'Personal Details',

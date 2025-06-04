@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Select Location</h2>
+<mat-dialog-content>
+  <location-picker [(selectedPlace)]="selectedPlace"></location-picker>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="close()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="submit()"
+    [disabled]="!selectedPlace"
+  >
+    Submit
+  </button>
+</mat-dialog-actions>

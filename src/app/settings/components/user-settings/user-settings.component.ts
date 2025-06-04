@@ -22,6 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,6 +31,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { GeoPoint } from 'firebase/firestore';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -44,6 +46,8 @@ import { Skill } from '../../../auth/enums/skill.enum';
 import { UserType } from '../../../auth/enums/user-type.enum';
 import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
+import { SelectLocationDialogComponent } from '../../../location/components/select-location-dialog/select-location-dialog.component';
+import { SearchPlaceResult } from '../../../location/models/search-place-result.model';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
 import { LoggerService } from '../../../shared/services/logger.service';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -69,6 +73,7 @@ import { USER_SETTINGS_TEXT } from '../../constants/user-settings.constants';
     MatCheckboxModule,
     MatStepperModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './user-settings.component.html',
   styleUrl: './user-settings.component.scss',
@@ -80,6 +85,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   private userStorageService = inject(UserStorageService);
   private notificationService = inject(NotificationService);
   private logger = inject(LoggerService);
+  private dialog = inject(MatDialog);
+
+  @ViewChild('profilePictureInput')
+  profilePictureInput!: ElementRef<HTMLInputElement>;
 
   readonly currentUserProfile: Signal<UserInterface | null | undefined> =
     this.authService.currentUser;
@@ -89,31 +98,29 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   private initialFormValues: any = {};
   initialProfilePictureUrl: string | null | undefined = null;
 
+  private initialPlace: SearchPlaceResult | undefined;
+
   hasActualChanges = signal(false);
   private formChangesSubscription: Subscription | null = null;
 
-  @ViewChild('profilePictureInput')
-  profilePictureInput!: ElementRef<HTMLInputElement>;
   selectedImagePreviewUrl: string | ArrayBuffer | null = null;
   private selectedImageFile: File | null = null;
   private pictureMarkedForRemoval = false;
 
-  text = USER_SETTINGS_TEXT;
   skillOptions: Skill[];
   private firstAssistanceTypeChange = true;
 
+  text = USER_SETTINGS_TEXT;
   readonly genderOptions = Object.values(Gender);
   readonly assistanceTypes = Object.values(AssistanceType);
   readonly availabilityOptions = Object.values(AvailabilityOption);
+
+  selectedPlace = signal<SearchPlaceResult | undefined>(undefined);
 
   constructor() {
     effect(() => {
       const profile = this.currentUserProfile();
       this.firstAssistanceTypeChange = true;
-      this.logger.log(
-        '[UserSettings Effect] currentUserProfile signal changed:',
-        profile
-      );
       if (profile) {
         if (this.settingsForm) {
           this.patchForm(profile);
@@ -122,6 +129,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         this.initialProfilePictureUrl = profile.profilePictureUrl;
         this.selectedImageFile = null;
         this.pictureMarkedForRemoval = false;
+
+        this.setInitialPlace(profile);
       } else if (profile === null) {
         if (this.settingsForm) {
           this.settingsForm.reset();
@@ -130,10 +139,39 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         }
         this.selectedImagePreviewUrl = null;
         this.initialProfilePictureUrl = null;
+        this.initialPlace = null;
         this.selectedImageFile = null;
         this.pictureMarkedForRemoval = false;
+        this.selectedPlace.set(undefined);
       }
     });
+
+    effect(() => {
+      if (this.selectedPlace()) {
+        const locationChanged = this.isLocationChanged();
+
+        if (this.settingsForm && locationChanged) {
+          this.hasActualChanges.set(true);
+        }
+      }
+    });
+  }
+
+  private setInitialPlace(profile: UserInterface) {
+    if (profile.location && profile.coordinates) {
+      this.initialPlace = {
+        address: profile.location,
+        formattedAddress: profile.location,
+        coordinates: new google.maps.LatLng(
+          profile.coordinates.latitude,
+          profile.coordinates.longitude
+        ),
+      };
+
+      this.selectedPlace.set(this.initialPlace);
+    } else {
+      this.selectedPlace.set(undefined);
+    }
   }
 
   ngOnInit(): void {
@@ -180,16 +218,37 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         const formValuesChanged =
           JSON.stringify(currentValues) !==
           JSON.stringify(this.initialFormValues);
+
+        const locationChanged = this.isLocationChanged();
+
         this.hasActualChanges.set(
           formValuesChanged ||
             !!this.selectedImageFile ||
-            this.pictureMarkedForRemoval
+            this.pictureMarkedForRemoval ||
+            locationChanged
         );
         this.logger.log(
           'Form value changed, hasActualChanges set to:',
           this.hasActualChanges()
         );
       });
+  }
+
+  private isLocationChanged(): boolean {
+    let locationChanged = false;
+    if (this.initialPlace && this.selectedPlace()) {
+      locationChanged =
+        this.selectedPlace().coordinates.lat() !=
+          this.initialPlace.coordinates.lat() ||
+        this.selectedPlace().coordinates.lng() !=
+          this.initialPlace.coordinates.lng();
+    } else if (
+      (!this.initialPlace && this.selectedPlace()) ||
+      (this.initialPlace && !this.selectedPlace())
+    ) {
+      locationChanged = true;
+    }
+    return locationChanged;
   }
 
   private initializeForm(): void {
@@ -217,7 +276,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       ],
       gender: [null],
       dateOfBirth: [null],
-      location: [''],
       bio: ['', [Validators.maxLength(1500)]],
     });
     this.initialFormValues = this.settingsForm.getRawValue();
@@ -231,7 +289,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       lastName: profile.lastName || '',
       profilePictureUrl: profile.profilePictureUrl || '',
       phoneNumber: profile.phoneNumber || '',
-      location: profile.location || '',
       bio: profile.bio || '',
       dateOfBirth: profile.dateOfBirth ? new Date(profile.dateOfBirth) : null,
       gender: profile.gender || null,
@@ -313,6 +370,22 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     } else {
       this.notificationService.showInfo('No profile picture to remove.');
     }
+  }
+
+  openSelectLocationModal() {
+    const dialogRef = this.dialog.open(SelectLocationDialogComponent, {
+      width: '2000px',
+      height: '700px',
+      data: { initialPlace: this.selectedPlace() },
+    });
+
+    dialogRef
+      .afterClosed()
+      .subscribe((result: SearchPlaceResult | undefined) => {
+        if (result) {
+          this.selectedPlace.set(result);
+        }
+      });
   }
 
   async saveSettings(): Promise<void> {
@@ -449,6 +522,17 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           Array.isArray(formValues.skills) ? formValues.skills : []
         ).filter((skill: Skill) => validSkills.includes(skill));
         updatedData.skills = filteredSkills;
+
+        //set location and coordinates from selectedPlace
+        if (this.selectedPlace()) {
+          updatedData.location =
+            this.selectedPlace()?.formattedAddress ||
+            this.selectedPlace()?.address;
+          updatedData.coordinates = new GeoPoint(
+            this.selectedPlace().coordinates.lat(),
+            this.selectedPlace().coordinates.lng()
+          );
+        }
 
         updatedData.availability =
           formValues.availability && formValues.availability.length > 0

@@ -1,0 +1,14 @@
+<div class="location-picker-container">
+  <div class="select-location">
+
+  <search-place
+    [(place)]="selectedPlace"
+    placeholder="Enter a location"
+  ></search-place>
+
+  <button mat-raised-button (click)="pickCurrentLocation()">
+    Use My Current Location
+  </button>
+</div>
+  <map-display #mapDisplay [place]="selectedPlace()"></map-display>
+</div>

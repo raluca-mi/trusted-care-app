@@ -43,3 +43,6 @@ Thumbs.db
 
 #firebase
 /src/config
+
+# Google Maps
+/src/index.html
