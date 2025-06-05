@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { distinctUntilChanged, Observable, of, switchMap } from 'rxjs';
 import { UserInterface } from '../../../auth/models/user.model';
 import { FavouritesFacade } from '../../../store/favourites/favourites.facade';
@@ -24,6 +25,7 @@ import { FavouritesFacade } from '../../../store/favourites/favourites.facade';
 export class AssistantCardComponent {
   assistant: Signal<UserInterface> = input.required<UserInterface>();
   private favouritesFacade = inject(FavouritesFacade);
+  private router = inject(Router);
 
   isFavourite: Signal<boolean | undefined>;
 
@@ -75,6 +77,8 @@ export class AssistantCardComponent {
 
   viewProfile(): void {
     const currentAssistant = this.assistant();
-    console.log('View profile clicked for:', currentAssistant.displayName);
+    if (currentAssistant && currentAssistant.uid) {
+      this.router.navigate(['/assistant-profile', currentAssistant.uid]);
+    }
   }
 }

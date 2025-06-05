@@ -56,6 +56,14 @@ export const routes: Routes = [
         title: `${pageConfig.displayName}`,
       })),
       {
+        path: 'assistant-profile/:uid',
+        loadComponent: () =>
+          import(
+            './find-care/components/assistant-profile-page/assistant-profile-page.component'
+          ).then((m) => m.AssistantProfilePageComponent),
+        title: 'Assistant Profile',
+      },
+      {
         path: 'favourites',
         loadComponent: () =>
           import(

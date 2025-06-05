@@ -1,0 +1,200 @@
+.profile-header {
+  background: rgb(98 131 230);;
+  position: relative;
+  min-height: 260px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0 0 24px 24px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.profile-header-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(165, 155, 63, 0.35) 60%,
+    rgba(151, 142, 93, 0.7) 100%
+  );
+  z-index: 1;
+}
+.profile-header-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 16px 16px;
+  color: #fff;
+  text-align: center;
+}
+.profile-picture-large-container {
+  margin-bottom: 12px;
+}
+.profile-picture-large {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  object-fit: cover;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+}
+.profile-placeholder-large {
+  font-size: 110px;
+  color: #e0e0e0;
+  background: #fff;
+  border-radius: 50%;
+  padding: 8px;
+}
+.favorite-action-button {
+  margin-top: 18px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.location-info {
+  margin-top: 4px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #e3f2fd;
+}
+.profile-content-wrapper {
+  max-width: 80vw;
+  margin: 0 auto;
+  padding: 0 12px 32px 12px;
+}
+.profile-details-card {
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  background: #fafbfc;
+}
+.profile-section {
+  margin-bottom: 28px;
+}
+.profile-section h3 {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  margin-bottom: 14px;
+  .section-icon {
+    margin-right: 8px;
+    font-size: 1.5rem;
+  }
+}
+.bio-section .bio-text {
+  font-size: 1.08rem;
+  color: #444;
+  margin-bottom: 0;
+}
+.details-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  margin-bottom: 8px;
+}
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 1.08rem;
+  color: #333;
+}
+.skills-section,
+.availability-section {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  transition: box-shadow 0.2s;
+  &:hover {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+  }
+}
+.skills-list,
+.availability-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.skill-pill {
+  background: linear-gradient(90deg, #42a5f5 0%, #478ed1 100%);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(66, 165, 245, 0.08);
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+  &:hover {
+    background: linear-gradient(90deg, #478ed1 0%, #42a5f5 100%);
+  }
+}
+.availability-pill {
+  background: linear-gradient(90deg, #6699bb 0%, #4359a0 100%);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(102, 187, 106, 0.08);
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+  &:hover {
+    background: linear-gradient(90deg, #4359a0 0%, #6699bb 100%);
+  }
+}
+.additional-details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.08rem;
+    color: #333;
+    margin-bottom: 6px;
+  }
+}
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #888;
+}
+.error-container {
+  text-align: center;
+  margin-top: 48px;
+  color: #b71c1c;
+}
+@media (max-width: 600px) {
+  .profile-header {
+    min-height: 180px;
+    border-radius: 0 0 12px 12px;
+  }
+  .profile-header-content {
+    padding: 18px 6px 10px 6px;
+  }
+  .profile-picture-large,
+  .profile-placeholder-large {
+    width: 70px;
+    height: 70px;
+    font-size: 70px;
+  }
+  .profile-content-wrapper {
+    padding: 0 2px 18px 2px;
+  }
+  .profile-details-card {
+    border-radius: 10px;
+  }
+  .skills-section,
+  .availability-section {
+    padding: 12px 8px;
+  }
+}
