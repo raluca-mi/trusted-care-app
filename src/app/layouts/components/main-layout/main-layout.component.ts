@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Signal, ViewChild } from '@angular/core';
+import { Component, effect, inject, Signal, ViewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -18,6 +20,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { ASSISTANCE_PAGES_CONFIG } from '../../../shared/constants/assistance-type-details.constants';
 import { NavigationAssistanceTypeDetail } from '../../../shared/models/navigation-assistance-type-detail.model';
 import { LoggerService } from '../../../shared/services/logger.service';
+import { FavouritesFacade } from '../../../store/favourites/favourites.facade';
 
 @Component({
   selector: 'main-layout',
@@ -33,6 +36,7 @@ import { LoggerService } from '../../../shared/services/logger.service';
     MatListModule,
     MatMenuModule,
     MatProgressSpinner,
+    MatBadgeModule,
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'],
@@ -41,6 +45,7 @@ export class MainLayoutComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private logger = inject(LoggerService);
+  private favouritesFacade = inject(FavouritesFacade);
 
   currentUser: Signal<UserInterface | null | undefined> =
     this.authService.currentUser;
@@ -51,7 +56,20 @@ export class MainLayoutComponent {
     ASSISTANCE_PAGES_CONFIG;
   isFindCareExpanded = false;
 
+  readonly totalFavourites: Signal<number | undefined> = toSignal(
+    this.favouritesFacade.totalFavourites$
+  );
+
+  constructor() {
+    effect(() => {
+      if (this.currentUser()) {
+        this.favouritesFacade.loadFavourites(this.currentUser().uid);
+      }
+    });
+  }
+
   async logout(): Promise<void> {
+    this.favouritesFacade.clearFavouritesState();
     try {
       await this.authService.logout();
       await this.router.navigate(['/login']);

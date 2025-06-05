@@ -56,6 +56,14 @@ export const routes: Routes = [
         title: `${pageConfig.displayName}`,
       })),
       {
+        path: 'favourites',
+        loadComponent: () =>
+          import(
+            './favourites/components/favourites-page/favourites-page.component'
+          ).then((m) => m.FavouritesPageComponent),
+        title: 'Favourites',
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import(
@@ -68,15 +76,8 @@ export const routes: Routes = [
         redirectTo: 'home',
         pathMatch: 'full',
       },
-
-      {
-        path: '**',
-        redirectTo: 'home',
-      },
     ],
   },
-
-  { path: '**', redirectTo: 'home', pathMatch: 'full' },
   {
     path: '**',
     redirectTo: 'login',

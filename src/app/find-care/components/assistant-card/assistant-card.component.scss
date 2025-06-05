@@ -18,7 +18,7 @@
     transform: translateY(-2px) scale(1.012);
   }
 
-  .favorite-button {
+  .favourite-button {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -34,8 +34,8 @@
     align-items: center;
     justify-content: center;
 
-    &.is-favorite mat-icon {
-      color: rgb(206, 40, 40);
+    &.is-favourite mat-icon {
+      color: rgb(194, 36, 36);
       font-weight: bold;
     }
   }

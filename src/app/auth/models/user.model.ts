@@ -23,6 +23,9 @@ export interface UserInterface {
   profilePictureUrl?: string;
   phoneNumber?: string | null;
 
+  //Researchers Specific Details
+  favouriteAssistantUids?: string[] | null;
+
   // Care Assistant Specific Details (optional for Researchers)
   isVerified?: boolean;
   location?: string; //the formatted address

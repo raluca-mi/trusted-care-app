@@ -2,13 +2,15 @@
 <mat-card class="assistant-card" (click)="viewProfile()" matRipple>
   <button
     mat-icon-button
-    class="favorite-button"
-    [class.is-favorite]="isFavorite()"
-    (click)="toggleFavorite($event)"
-    [matTooltip]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'"
-    aria-label="Toggle favorite"
+    class="favourite-button"
+    [class.is-favourite]="isFavourite()"
+    (click)="toggleFavourite($event)"
+    [matTooltip]="
+      isFavourite() ? 'Remove from favourites' : 'Add to favourites'
+    "
+    aria-label="Toggle favourite"
   >
-    <mat-icon>{{ isFavorite() ? "favorite" : "favorite_border" }}</mat-icon>
+    <mat-icon>{{ isFavourite() ? "favorite" : "favorite_border" }}</mat-icon>
   </button>
   <div class="card-header">
     <div class="profile-picture-container">

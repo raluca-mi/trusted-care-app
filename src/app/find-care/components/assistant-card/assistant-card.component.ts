@@ -1,16 +1,13 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  input,
-  signal,
-  Signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, inject, input, Signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { distinctUntilChanged, Observable, of, switchMap } from 'rxjs';
 import { UserInterface } from '../../../auth/models/user.model';
+import { FavouritesFacade } from '../../../store/favourites/favourites.facade';
 
 @Component({
   selector: 'assistant-card',
@@ -26,19 +23,40 @@ import { UserInterface } from '../../../auth/models/user.model';
 })
 export class AssistantCardComponent {
   assistant: Signal<UserInterface> = input.required<UserInterface>();
-  isFavorite: WritableSignal<boolean> = signal(false);
+  private favouritesFacade = inject(FavouritesFacade);
 
-  constructor() {}
+  isFavourite: Signal<boolean | undefined>;
 
-  toggleFavorite(event: MouseEvent): void {
-    event.stopPropagation();
-    this.isFavorite.set(!this.isFavorite());
-    console.log(
-      'Favorite toggled for:',
-      this.assistant().displayName,
-      'New state:',
-      this.isFavorite()
+  constructor() {
+    const assistant$: Observable<UserInterface> = toObservable(this.assistant);
+
+    this.isFavourite = toSignal(
+      assistant$.pipe(
+        switchMap((assistant) => {
+          if (assistant && assistant.uid) {
+            return this.favouritesFacade.isFavourite$(assistant.uid);
+          }
+
+          return of(undefined);
+        }),
+        distinctUntilChanged()
+      ),
+      { initialValue: undefined }
     );
+  }
+
+  toggleFavourite(event: MouseEvent): void {
+    event.stopPropagation();
+    const currentAssistant = this.assistant();
+    if (!currentAssistant) return;
+
+    const currentIsFavourite = this.isFavourite();
+
+    if (currentIsFavourite === true) {
+      this.favouritesFacade.removeFavourite(currentAssistant.uid);
+    } else {
+      this.favouritesFacade.addFavourite(currentAssistant);
+    }
   }
 
   get availabilitySnippet(): string {
@@ -56,6 +74,7 @@ export class AssistantCardComponent {
   }
 
   viewProfile(): void {
-    console.log('View profile clicked for:', this.assistant().displayName);
+    const currentAssistant = this.assistant();
+    console.log('View profile clicked for:', currentAssistant.displayName);
   }
 }

@@ -6,6 +6,7 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { UserInterface } from './auth/models/user.model';
 import { AuthService } from './auth/services/auth.service';
 import { UserProfileService } from './shared/services/firestore/user-profile.service';
+import { FavouritesFacade } from './store/favourites/favourites.facade';
 
 @Component({
   selector: 'app-root',

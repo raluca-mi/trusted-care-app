@@ -116,7 +116,25 @@
         </a>
         }
       </div>
-      } }
+      }
+
+      <a
+        mat-list-item
+        (click)="navigateTo('/favourites')"
+        routerLink="/favourites"
+        routerLinkActive="active-list-item"
+      >
+        <mat-icon
+          matListItemIcon
+          [matBadge]="totalFavourites() || 0"
+          [matBadgeHidden]="!totalFavourites() || totalFavourites() === 0"
+          matBadgeColor="accent"
+          >favorite</mat-icon
+        >
+        <span matListItemTitle>Favourites</span>
+      </a>
+
+      }
       <mat-divider></mat-divider>
       <a
         mat-list-item

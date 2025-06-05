@@ -1,0 +1,30 @@
+<div class="favourites-page-container">
+  <div class="page-header">
+    <h2>My Favourite Care Assistants</h2>
+    @if (favouriteAssistants().length > 0) {
+    <button mat-stroked-button color="warn" (click)="clearAllFavourites()">
+      <mat-icon>delete_sweep</mat-icon>
+      Clear All Favourites
+    </button>
+    }
+  </div>
+
+  <div class="assistant-list">
+    @for (assistant of favouriteAssistants(); track assistant.uid) {
+    <assistant-card [assistant]="assistant"></assistant-card>
+    } @empty {
+    <div class="empty-list-message">
+      <mat-icon class="empty-icon">favorite_border</mat-icon>
+      <h3>No Favourites Yet</h3>
+      <p>You haven't added any care assistants to your favourites.</p>
+      <p>
+        Start exploring and click the heart icon on an assistant's card to save
+        them here!
+      </p>
+      <button mat-stroked-button color="primary" routerLink="/home">
+        Find Care Assistants
+      </button>
+    </div>
+    }
+  </div>
+</div>
