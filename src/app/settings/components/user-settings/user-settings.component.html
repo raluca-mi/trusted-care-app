@@ -16,6 +16,14 @@
       able to be verified.
     </span>
   </div>
+  } @else if(currentUserProfile().isRejected) {
+  <div class="error-bar">
+    <mat-icon>error</mat-icon>
+    <span>
+      Your account has been rejected. Your profile needs to be thrustworthy.
+      Make sure you update it to try again for validation.
+    </span>
+  </div>
   } @else if(!currentUserProfile().isVerified) {
   <div class="warn-bar">
     <mat-icon>error</mat-icon>

@@ -3,6 +3,17 @@
   padding: 16px 16px;
 }
 
+.error-bar {
+  background: rgb(170, 29, 29);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 5px 0px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
 .warn-bar {
   background: rgb(216, 184, 96);
   display: flex;

@@ -535,9 +535,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
             ? null
             : Number(formValues.experienceYears);
         updatedData.hourlyRate =
-          formValues.hourlyRate === null
-            ? null
-            : Number(formValues.hourlyRate);
+          formValues.hourlyRate === null ? null : Number(formValues.hourlyRate);
         updatedData.assistanceType = formValues.assistanceType || null;
 
         const selectedType: AssistanceType | null =
@@ -561,27 +559,33 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         if (currentProfile.isVerified == true) {
           updatedData.isVerified = false;
         }
+        if (currentProfile.isRejected) {
+          updatedData.isRejected = false;
+        }
 
-       const finalProfileDataForCheck = { ...currentProfile, ...updatedData };
+        const finalProfileDataForCheck = { ...currentProfile, ...updatedData };
         updatedData.profileComplete = !!(
-            finalProfileDataForCheck.email &&
-            finalProfileDataForCheck.displayName &&
-            finalProfileDataForCheck.firstName &&
-            finalProfileDataForCheck.lastName &&
-            finalProfileDataForCheck.profilePictureUrl &&
-            finalProfileDataForCheck.phoneNumber &&
-            finalProfileDataForCheck.location &&
-            finalProfileDataForCheck.coordinates &&
-            finalProfileDataForCheck.bio &&
-            finalProfileDataForCheck.dateOfBirth &&
-            finalProfileDataForCheck.gender &&
-            finalProfileDataForCheck.assistanceType &&
-            (finalProfileDataForCheck.skills && finalProfileDataForCheck.skills.length > 0) &&
-            (finalProfileDataForCheck.experienceYears !== null && finalProfileDataForCheck.experienceYears !== undefined) &&
-            (finalProfileDataForCheck.availability && finalProfileDataForCheck.availability.length > 0) &&
-            (finalProfileDataForCheck.hourlyRate !== null && finalProfileDataForCheck.hourlyRate !== undefined)
+          finalProfileDataForCheck.email &&
+          finalProfileDataForCheck.displayName &&
+          finalProfileDataForCheck.firstName &&
+          finalProfileDataForCheck.lastName &&
+          finalProfileDataForCheck.profilePictureUrl &&
+          finalProfileDataForCheck.phoneNumber &&
+          finalProfileDataForCheck.location &&
+          finalProfileDataForCheck.coordinates &&
+          finalProfileDataForCheck.bio &&
+          finalProfileDataForCheck.dateOfBirth &&
+          finalProfileDataForCheck.gender &&
+          finalProfileDataForCheck.assistanceType &&
+          finalProfileDataForCheck.skills &&
+          finalProfileDataForCheck.skills.length > 0 &&
+          finalProfileDataForCheck.experienceYears !== null &&
+          finalProfileDataForCheck.experienceYears !== undefined &&
+          finalProfileDataForCheck.availability &&
+          finalProfileDataForCheck.availability.length > 0 &&
+          finalProfileDataForCheck.hourlyRate !== null &&
+          finalProfileDataForCheck.hourlyRate !== undefined
         );
-
       }
 
       await firstValueFrom(

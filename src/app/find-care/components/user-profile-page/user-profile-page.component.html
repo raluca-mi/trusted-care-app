@@ -29,7 +29,7 @@
       <p class="location-info">
         <mat-icon>location_on</mat-icon> {{ user().location }}
       </p>
-      } @if(user().userType == UserType.CareAssistant) {
+      } @if(user().userType == UserType.CareAssistant && !currentResearcher().isAdmin) {
       <div class="profile-actions-row">
         <button
           mat-fab

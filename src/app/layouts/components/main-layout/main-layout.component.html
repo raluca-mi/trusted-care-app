@@ -77,7 +77,6 @@
   >
     @if (currentUser()?.isAdmin) {
     <mat-nav-list>
-      <div class="nav-section-header">Admin Panel</div>
       @for(navLink of adminNavigetionLinkDetails; track navLink.id) {
       <a
         mat-list-item

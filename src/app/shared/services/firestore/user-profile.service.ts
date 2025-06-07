@@ -153,4 +153,45 @@ export class UserProfileService {
       updateDoc(userDocRef, { favouriteAssistantUids: favouriteAssistantUids })
     );
   }
+
+  getPendingVerificationAssistants(): Observable<UserInterface[]> {
+    const q = query(
+      collection(this.firestore, 'users'),
+      where('userType', '==', UserType.CareAssistant),
+      where('profileComplete', '==', true),
+      where('isVerified', '==', false),
+      orderBy('createdAt', 'desc')
+    );
+
+    return from(getDocs(q)).pipe(
+      map((querySnapshot) => {
+        const users: UserInterface[] = [];
+        querySnapshot.forEach((doc: any) => {
+          const data = doc.data();
+          if (data.isRejected === false || data.isRejected === undefined) {
+            users.push({ uid: doc.id, ...data } as UserInterface);
+          }
+        });
+        return users;
+      })
+    );
+  }
+
+  getVerifiedAssistants(): Observable<UserInterface[]> {
+    const q = query(
+      collection(this.firestore, 'users'),
+      where('userType', '==', UserType.CareAssistant),
+      where('isVerified', '==', true),
+      orderBy('createdAt', 'desc')
+    );
+    return from(getDocs(q)).pipe(map(this.mapQueryToUsers));
+  }
+
+  private mapQueryToUsers = (querySnapshot: any): UserInterface[] => {
+    const users: UserInterface[] = [];
+    querySnapshot.forEach((doc: any) => {
+      users.push({ uid: doc.id, ...doc.data() } as UserInterface);
+    });
+    return users;
+  };
 }

@@ -28,6 +28,7 @@ export interface UserInterface {
   // Care Assistant Specific Details (optional for Researchers)
   profileComplete?: boolean;
   isVerified?: boolean;
+  isRejected?: boolean;
   location?: string; //the formatted address
   coordinates?: GeoPoint | null;
   bio?: string;
