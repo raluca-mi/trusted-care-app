@@ -285,11 +285,11 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   private patchForm(profile: UserInterface): void {
     const patchData = {
-      firstName: profile.firstName || '',
-      lastName: profile.lastName || '',
-      profilePictureUrl: profile.profilePictureUrl || '',
-      phoneNumber: profile.phoneNumber || '',
-      bio: profile.bio || '',
+      firstName: profile.firstName || null,
+      lastName: profile.lastName || null,
+      profilePictureUrl: profile.profilePictureUrl || null,
+      phoneNumber: profile.phoneNumber || null,
+      bio: profile.bio || null,
       dateOfBirth: profile.dateOfBirth ? new Date(profile.dateOfBirth) : null,
       gender: profile.gender || null,
       experienceYears: profile.experienceYears ?? null,
@@ -521,7 +521,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         displayName: `${formValues.firstName} ${formValues.lastName}`,
         profilePictureUrl: newImageDownloadURL,
         phoneNumber: formValues.phoneNumber || null,
-        bio: formValues.bio || undefined,
+        bio: formValues.bio || null,
         dateOfBirth: formValues.dateOfBirth
           ? new Date(formValues.dateOfBirth).toISOString().split('T')[0]
           : null,
@@ -532,11 +532,11 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       if (currentProfile.userType === UserType.CareAssistant) {
         updatedData.experienceYears =
           formValues.experienceYears === null
-            ? undefined
+            ? null
             : Number(formValues.experienceYears);
         updatedData.hourlyRate =
           formValues.hourlyRate === null
-            ? undefined
+            ? null
             : Number(formValues.hourlyRate);
         updatedData.assistanceType = formValues.assistanceType || null;
 
@@ -558,19 +558,30 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
             formValues.additionalDetails.hasOwnTransportation,
         };
 
+        if (currentProfile.isVerified == true) {
+          updatedData.isVerified = false;
+        }
+
+       const finalProfileDataForCheck = { ...currentProfile, ...updatedData };
         updatedData.profileComplete = !!(
-          (newImageDownloadURL ||
-            (this.initialProfilePictureUrl && !this.pictureMarkedForRemoval)) &&
-          formValues.phoneNumber &&
-          formValues.experienceYears &&
-          formValues.hourlyRate &&
-          formValues.bio &&
-          updatedData.location &&
-          formValues.dateOfBirth &&
-          formValues.assistanceType &&
-          filteredSkills.length > 0 &&
-          formValues.availability?.length > 0
+            finalProfileDataForCheck.email &&
+            finalProfileDataForCheck.displayName &&
+            finalProfileDataForCheck.firstName &&
+            finalProfileDataForCheck.lastName &&
+            finalProfileDataForCheck.profilePictureUrl &&
+            finalProfileDataForCheck.phoneNumber &&
+            finalProfileDataForCheck.location &&
+            finalProfileDataForCheck.coordinates &&
+            finalProfileDataForCheck.bio &&
+            finalProfileDataForCheck.dateOfBirth &&
+            finalProfileDataForCheck.gender &&
+            finalProfileDataForCheck.assistanceType &&
+            (finalProfileDataForCheck.skills && finalProfileDataForCheck.skills.length > 0) &&
+            (finalProfileDataForCheck.experienceYears !== null && finalProfileDataForCheck.experienceYears !== undefined) &&
+            (finalProfileDataForCheck.availability && finalProfileDataForCheck.availability.length > 0) &&
+            (finalProfileDataForCheck.hourlyRate !== null && finalProfileDataForCheck.hourlyRate !== undefined)
         );
+
       }
 
       await firstValueFrom(
@@ -593,9 +604,16 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
       this.settingsForm.markAsPristine();
       this.hasActualChanges.set(false);
-      this.notificationService.showSuccess(
-        this.text.profileUpdatedSuccessfullyNotification
-      );
+
+      if (currentProfile.userType == UserType.CareAssistant) {
+        this.notificationService.showSuccess(
+          this.text.profileUpdatedForValidationSuccessfullyNotification
+        );
+      } else {
+        this.notificationService.showSuccess(
+          this.text.profileUpdatedSuccessfullyNotification
+        );
+      }
     } catch (error) {
       this.logger.error('Error saving profile settings:', error);
       this.notificationService.showError(

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './admin/guards/admin.guard';
 import { authGuard } from './auth/guards/auth.guard';
 import { AuthLayoutComponent } from './layouts/components/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/components/main-layout/main-layout.component';
@@ -45,6 +46,33 @@ export const routes: Routes = [
             (m) => m.HomePageComponent
           ),
         title: 'Home',
+      },
+      {
+        path: 'admin',
+        canActivate: [adminGuard],
+        children: [
+          {
+            path: 'assistants',
+            loadComponent: () =>
+              import(
+                './admin/components/assistants-page/assistants-page.component'
+              ).then((m) => m.AssistantsPageComponent),
+            title: 'Admin: Manage Assistants',
+          },
+          {
+            path: 'researchers',
+            loadComponent: () =>
+              import(
+                './admin/components/researchers-page/researchers-page.component'
+              ).then((m) => m.ResearchersPageComponent),
+            title: 'Admin: Manage Researchers',
+          },
+          {
+            path: '',
+            redirectTo: 'assistants',
+            pathMatch: 'full',
+          },
+        ],
       },
       ...ASSISTANCE_PAGES_CONFIG.map((pageConfig) => ({
         path: pageConfig.id,

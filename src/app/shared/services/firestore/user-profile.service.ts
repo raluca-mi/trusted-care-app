@@ -5,6 +5,7 @@ import {
   collection,
   documentId,
   getDocs,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -104,7 +105,9 @@ export class UserProfileService {
     const q = query(
       usersCollectionRef,
       where('userType', '==', UserType.CareAssistant),
-      where('assistanceType', '==', assistanceType)
+      where('assistanceType', '==', assistanceType),
+      where('isVerified', '==', true),
+      orderBy('createdAt', 'desc')
     );
 
     return from(getDocs(q)).pipe(
@@ -115,6 +118,28 @@ export class UserProfileService {
         });
 
         return assistants;
+      })
+    );
+  }
+
+  getResearchers(): Observable<UserInterface[]> {
+    const usersCollectionRef = collection(this.firestore, 'users');
+    const q = query(
+      usersCollectionRef,
+      where('userType', '==', UserType.Researcher),
+      orderBy('createdAt', 'desc')
+    );
+
+    return from(getDocs(q)).pipe(
+      map((querySnapshot) => {
+        const researchers: UserInterface[] = [];
+        querySnapshot.forEach((doc) => {
+          researchers.push({ uid: doc.id, ...doc.data() } as UserInterface);
+        });
+        return researchers;
+      }),
+      catchError((error) => {
+        return of([]);
       })
     );
   }

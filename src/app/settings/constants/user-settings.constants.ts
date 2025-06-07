@@ -93,4 +93,6 @@ export const USER_SETTINGS_TEXT = {
   passwordResetEmailSentNotification:
     'Password reset email sent. Please check your inbox.',
   emailNotFoundNotification: 'Cannot initiate password reset: Email not found.',
+  profileUpdatedForValidationSuccessfullyNotification:
+    'Profile updated successfully! Wait for validation from an admin, to start your journey!',
 } as const;

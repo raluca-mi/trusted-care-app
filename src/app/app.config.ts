@@ -14,8 +14,11 @@ import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { provideStorage } from '@angular/fire/storage';
+
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { provideEffects } from '@ngrx/effects';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
@@ -24,9 +27,9 @@ import { config } from '../config/firebase.config';
 import { FavouritesEffects } from './store/favourites/favourites.effects';
 import { favouritesReducer } from './store/favourites/favourites.reducer';
 import { FAVOURITES_FEATURE_KEY } from './store/favourites/favourites.selectors';
-import { REQUESTS_FEATURE_KEY } from './store/requests/requests.selectors';
-import { requestsReducer } from './store/requests/requests.reducer';
 import { RequestsEffects } from './store/requests/requests.effects';
+import { requestsReducer } from './store/requests/requests.reducer';
+import { REQUESTS_FEATURE_KEY } from './store/requests/requests.selectors';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +42,7 @@ export const appConfig: ApplicationConfig = {
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
+    provideFunctions(() => getFunctions()),
 
     importProvidersFrom(MatSnackBarModule),
 

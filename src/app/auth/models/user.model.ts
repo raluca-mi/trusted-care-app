@@ -17,7 +17,6 @@ export interface UserInterface {
   firstName: string;
   lastName: string;
   createdAt: Date;
-  profileComplete?: boolean;
 
   // Common Profile Details (for both, but more for Care Assistant)
   profilePictureUrl?: string;
@@ -27,6 +26,7 @@ export interface UserInterface {
   favouriteAssistantUids?: string[] | null;
 
   // Care Assistant Specific Details (optional for Researchers)
+  profileComplete?: boolean;
   isVerified?: boolean;
   location?: string; //the formatted address
   coordinates?: GeoPoint | null;

@@ -15,14 +15,16 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
+import { UserType } from '../../../auth/enums/user-type.enum';
 import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
+import { ADMIN_NAVIGATION_LINK_DETAILS } from '../../../shared/constants/admin-navigation-link-details.constants';
 import { ASSISTANCE_PAGES_CONFIG } from '../../../shared/constants/assistance-type-details.constants';
 import { NavigationAssistanceTypeDetail } from '../../../shared/models/navigation-assistance-type-detail.model';
+import { NavigationLinkDetails } from '../../../shared/models/navigation-link-details.model';
 import { LoggerService } from '../../../shared/services/logger.service';
 import { FavouritesFacade } from '../../../store/favourites/favourites.facade';
 import { RequestsFacade } from '../../../store/requests/requests.facade';
-import { UserType } from '../../../auth/enums/user-type.enum';
 
 @Component({
   selector: 'main-layout',
@@ -57,6 +59,9 @@ export class MainLayoutComponent {
 
   readonly assistanceTypes: NavigationAssistanceTypeDetail[] =
     ASSISTANCE_PAGES_CONFIG;
+  readonly adminNavigetionLinkDetails: NavigationLinkDetails[] =
+    ADMIN_NAVIGATION_LINK_DETAILS;
+
   isFindCareExpanded = false;
 
   readonly totalFavourites: Signal<number | undefined> = toSignal(

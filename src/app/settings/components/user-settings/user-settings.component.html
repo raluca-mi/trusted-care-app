@@ -7,7 +7,30 @@
     ></mat-progress-spinner>
     <p>{{ text.loadingProfile }}</p>
   </div>
-  } @else if (currentUserProfile()) {
+  } @else if (currentUserProfile()) { @if(currentUserProfile().userType ==
+  'care_assistant') { @if(!currentUserProfile().profileComplete) {
+  <div class="warn-bar">
+    <mat-icon>error</mat-icon>
+    <span>
+      Your account is not complete. You need to complete all fields for it to be
+      able to be verified.
+    </span>
+  </div>
+  } @else if(!currentUserProfile().isVerified) {
+  <div class="warn-bar">
+    <mat-icon>error</mat-icon>
+    <span>
+      Your account is not verified yet. It needs to be validated by an admin for
+      you to be visible to other users. It will be verified soon.
+    </span>
+  </div>
+  } @else{
+  <div class="info-bar">
+    <mat-icon>info</mat-icon>
+    <span> Your account is verified. </span>
+  </div>
+  } }
+
   <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
     <mat-stepper linear #stepper="matStepper">
       <mat-step [stepControl]="settingsForm.get('firstName')">
@@ -306,16 +329,15 @@
                 ></mat-datepicker>
               </mat-form-field>
 
-
-             <mat-card-actions>
-              <button
-                mat-stroked-button
-                type="button"
-                (click)="openSelectLocationModal()"
-              >
-                <mat-icon>pin_drop</mat-icon> {{ text.setYourLocationButton }}
-              </button>
-            </mat-card-actions>
+              <mat-card-actions>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="openSelectLocationModal()"
+                >
+                  <mat-icon>pin_drop</mat-icon> {{ text.setYourLocationButton }}
+                </button>
+              </mat-card-actions>
 
               <mat-form-field
                 appearance="outline"

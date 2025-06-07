@@ -1,4 +1,4 @@
-import { AssistanceType } from "../../auth/enums/assistance-type.enum";
+import { AssistanceType } from '../../auth/enums/assistance-type.enum';
 import { NavigationAssistanceTypeDetail } from '../models/navigation-assistance-type-detail.model';
 
 export const ASSISTANCE_PAGES_CONFIG: NavigationAssistanceTypeDetail[] = [

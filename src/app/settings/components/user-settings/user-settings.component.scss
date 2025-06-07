@@ -3,6 +3,28 @@
   padding: 16px 16px;
 }
 
+.warn-bar {
+  background: rgb(216, 184, 96);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 5px 0px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-bar {
+  background: rgb(173, 221, 184);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 5px 0px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
 .profile-picture-column {
   display: flex;
   flex-direction: column;
