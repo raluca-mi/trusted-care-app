@@ -1,0 +1,204 @@
+<div class="requests-page-container">
+  @if (isLoading()) {
+  <div class="loading-container">
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="50"
+    ></mat-progress-spinner>
+    <p>Loading requests...</p>
+  </div>
+  } @else {
+  <mat-tab-group animationDuration="0ms" class="requests-tabs">
+    <!-- PENDING TAB -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">hourglass_top</mat-icon>
+        Pending
+      </ng-template>
+      <div class="tab-content">
+        @for (req of pendingRequests(); track req.requestId) {
+        <mat-card class="request-card">
+          <mat-card-header>
+            @if (req.otherUser?.profilePictureUrl) {
+            <img
+              mat-card-avatar
+              [src]="req.otherUser.profilePictureUrl"
+              [alt]="req.otherUser.displayName"
+            />
+            } @else {
+            <mat-icon mat-card-avatar class="default-avatar-icon"
+              >account_circle</mat-icon
+            >
+            }
+            <mat-card-title>{{
+              req.otherUser?.displayName || "User details not available"
+            }}</mat-card-title>
+            <mat-card-subtitle>
+              Request
+              {{
+                currentUser()?.userType === userType.Researcher
+                  ? "sent"
+                  : "received"
+              }}
+              on {{ toDate(req.createdAt) | date : "mediumDate" }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-actions>
+            <!-- If I am a Researcher, link to the Assistant's profile -->
+            @if(currentUser()?.userType === userType.Researcher) {
+            <button
+              mat-button
+              color="primary"
+              [routerLink]="['/user-profile-page', req.assistantUid]"
+            >
+              View Profile
+            </button>
+            }
+            <!-- If I am an Assistant, link to the Researcher's profile -->
+            @if(currentUser()?.userType === userType.CareAssistant) {
+            <button
+              mat-button
+              color="primary"
+              [routerLink]="['/user-profile-page', req.researcherUid]"
+            >
+              View Profile
+            </button>
+            } @if (currentUser()?.userType === userType.CareAssistant) {
+
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="acceptRequest(req.requestId)"
+            >
+              Accept
+            </button>
+            <button
+              mat-flat-button
+              color="warn"
+              (click)="declineRequest(req.requestId)"
+            >
+              Decline
+            </button>
+
+            } @if (currentUser()?.userType === userType.Researcher) {
+
+            <button
+              mat-stroked-button
+              color="warn"
+              (click)="cancelRequest(req.requestId)"
+            >
+              Cancel Request</button
+            >}
+          </mat-card-actions>
+        </mat-card>
+        } @empty {
+        <div class="empty-tab-message">
+          <mat-icon class="empty-icon">inbox</mat-icon>
+          <p>No pending requests.</p>
+        </div>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- ACCEPTED TAB -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon accepted-icon">check_circle_outline</mat-icon>
+        Accepted
+      </ng-template>
+      <div class="tab-content">
+        @for (req of acceptedRequests(); track req.requestId) {
+        <mat-card class="request-card request-accepted">
+          <mat-card-header>
+            @if (req.otherUser?.profilePictureUrl) {
+            <img
+              mat-card-avatar
+              [src]="req.otherUser.profilePictureUrl"
+              [alt]="req.otherUser.displayName"
+            />
+            } @else {
+            <mat-icon mat-card-avatar class="default-avatar-icon"
+              >account_circle</mat-icon
+            >
+            }
+            <mat-card-title>{{
+              req.otherUser?.displayName || "User details not available"
+            }}</mat-card-title>
+            <mat-card-subtitle>
+              Request accepted on
+              {{ toDate(req.updatedAt) | date : "mediumDate" }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-actions>
+            <!-- If I am a Researcher, link to the Assistant's profile -->
+            @if(currentUser()?.userType === userType.Researcher) {
+            <button
+              mat-button
+              color="primary"
+              [routerLink]="['/user-profile-page', req.assistantUid]"
+            >
+              View Profile
+            </button>
+            }
+            <!-- If I am an Assistant, link to the Researcher's profile -->
+            @if(currentUser()?.userType === userType.CareAssistant) {
+            <button
+              mat-button
+              color="primary"
+              [routerLink]="['/user-profile-page', req.researcherUid]"
+            >
+              View Profile
+            </button>
+            }
+          </mat-card-actions>
+        </mat-card>
+        } @empty {
+        <div class="empty-tab-message">
+          <mat-icon class="empty-icon">done_all</mat-icon>
+          <p>No accepted requests yet.</p>
+        </div>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- DECLINED TAB -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon declined-icon">highlight_off</mat-icon>
+        Declined
+      </ng-template>
+      <div class="tab-content">
+        @for (req of declinedRequests(); track req.requestId) {
+        <mat-card class="request-card request-declined">
+          <mat-card-header>
+            @if (req.otherUser?.profilePictureUrl) {
+            <img
+              mat-card-avatar
+              [src]="req.otherUser.profilePictureUrl"
+              [alt]="req.otherUser.displayName"
+            />
+            } @else {
+            <mat-icon mat-card-avatar class="default-avatar-icon"
+              >account_circle</mat-icon
+            >
+            }
+            <mat-card-title>{{
+              req.otherUser?.displayName || "User details not available"
+            }}</mat-card-title>
+            <mat-card-subtitle>
+              Request declined on
+              {{ toDate(req.updatedAt) | date : "mediumDate" }}
+            </mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+        } @empty {
+        <div class="empty-tab-message">
+          <mat-icon class="empty-icon">no_accounts</mat-icon>
+          <p>No declined requests.</p>
+        </div>
+        }
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  }
+</div>

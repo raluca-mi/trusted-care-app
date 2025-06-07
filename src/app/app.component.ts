@@ -3,10 +3,11 @@ import { User } from '@angular/fire/auth';
 import { RouterOutlet } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { UserType } from './auth/enums/user-type.enum';
 import { UserInterface } from './auth/models/user.model';
 import { AuthService } from './auth/services/auth.service';
 import { UserProfileService } from './shared/services/firestore/user-profile.service';
-import { FavouritesFacade } from './store/favourites/favourites.facade';
+import { RequestsFacade } from './store/requests/requests.facade';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import { FavouritesFacade } from './store/favourites/favourites.facade';
 export class AppComponent implements OnInit, OnDestroy {
   authService = inject(AuthService);
   userProfileService = inject(UserProfileService);
+  requestsFacade = inject(RequestsFacade);
 
   private rootUserSubscription: Subscription | null = null;
 

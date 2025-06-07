@@ -78,7 +78,7 @@ export class AssistantCardComponent {
   viewProfile(): void {
     const currentAssistant = this.assistant();
     if (currentAssistant && currentAssistant.uid) {
-      this.router.navigate(['/assistant-profile', currentAssistant.uid]);
+      this.router.navigate(['/user-profile-page', currentAssistant.uid]);
     }
   }
 }

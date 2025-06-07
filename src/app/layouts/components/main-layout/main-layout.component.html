@@ -120,6 +120,16 @@
 
       <a
         mat-list-item
+        (click)="navigateTo('/requests')"
+        routerLink="/requests"
+        routerLinkActive="active-list-item"
+      >
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Requests sent</span>
+      </a>
+
+      <a
+        mat-list-item
         (click)="navigateTo('/favourites')"
         routerLink="/favourites"
         routerLinkActive="active-list-item"
@@ -134,6 +144,16 @@
         <span matListItemTitle>Favourites</span>
       </a>
 
+      } @else {
+      <a
+        mat-list-item
+        (click)="navigateTo('/requests')"
+        routerLink="/requests"
+        routerLinkActive="active-list-item"
+      >
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Requests received</span>
+      </a>
       }
       <mat-divider></mat-divider>
       <a

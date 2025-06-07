@@ -21,6 +21,8 @@ import { ASSISTANCE_PAGES_CONFIG } from '../../../shared/constants/assistance-ty
 import { NavigationAssistanceTypeDetail } from '../../../shared/models/navigation-assistance-type-detail.model';
 import { LoggerService } from '../../../shared/services/logger.service';
 import { FavouritesFacade } from '../../../store/favourites/favourites.facade';
+import { RequestsFacade } from '../../../store/requests/requests.facade';
+import { UserType } from '../../../auth/enums/user-type.enum';
 
 @Component({
   selector: 'main-layout',
@@ -46,6 +48,7 @@ export class MainLayoutComponent {
   private router = inject(Router);
   private logger = inject(LoggerService);
   private favouritesFacade = inject(FavouritesFacade);
+  private requestsFacade = inject(RequestsFacade);
 
   currentUser: Signal<UserInterface | null | undefined> =
     this.authService.currentUser;
@@ -64,12 +67,18 @@ export class MainLayoutComponent {
     effect(() => {
       if (this.currentUser()) {
         this.favouritesFacade.loadFavourites(this.currentUser().uid);
+        if (this.currentUser().userType === UserType.Researcher) {
+          this.requestsFacade.loadSentRequests(this.currentUser().uid);
+        } else if (this.currentUser().userType === UserType.CareAssistant) {
+          this.requestsFacade.loadReceivedRequests(this.currentUser().uid);
+        }
       }
     });
   }
 
   async logout(): Promise<void> {
     this.favouritesFacade.clearFavouritesState();
+    this.requestsFacade.clearRequestsState();
     try {
       await this.authService.logout();
       await this.router.navigate(['/login']);

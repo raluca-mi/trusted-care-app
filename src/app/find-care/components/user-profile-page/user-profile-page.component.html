@@ -1,0 +1,231 @@
+<div class="profile-page-container">
+  @if (isLoading()) {
+  <div class="loading-container">
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="60"
+    ></mat-progress-spinner>
+    <p>Loading profile...</p>
+  </div>
+  } @else if (user()) {
+  <div class="profile-header">
+    <div class="profile-header-overlay"></div>
+    <div class="profile-header-content">
+      <div class="profile-picture-large-container">
+        @if (user().profilePictureUrl) {
+        <img
+          [src]="user().profilePictureUrl"
+          [alt]="user().displayName"
+          class="profile-picture-large"
+        />
+        } @else {
+        <mat-icon class="profile-placeholder-large">account_circle</mat-icon>
+        }
+      </div>
+      <h1>
+        {{ user().displayName || user().firstName + " " + user().lastName }}
+      </h1>
+      @if (user().location) {
+      <p class="location-info">
+        <mat-icon>location_on</mat-icon> {{ user().location }}
+      </p>
+      } @if(user().userType == UserType.CareAssistant) {
+      <div class="profile-actions-row">
+        <button
+          mat-fab
+          extended
+          [color]="isFavourite() ? 'warn' : 'primary'"
+          (click)="toggleFavorite()"
+          class="favorite-action-button"
+          [matTooltip]="
+            isFavourite() ? 'Remove from Favourites' : 'Add to Favourites'
+          "
+        >
+          <mat-icon>{{
+            isFavourite() ? "favorite" : "favorite_border"
+          }}</mat-icon>
+          <span>{{
+            isFavourite() ? "Added to Favourites" : "Add to Favourites"
+          }}</span>
+        </button>
+
+        @if(currentResearcher() && currentResearcher()?.uid !== user().uid) {
+        <button
+          mat-raised-button
+          color="accent"
+          class="request-button"
+          (click)="sendConnectionRequest()"
+          [disabled]="
+            existingRequestStatus() === RequestStatus.Pending ||
+            existingRequestStatus() === RequestStatus.Accepted ||
+            declinedRequest()
+          "
+        >
+          <mat-icon>person_add</mat-icon>
+          @if(existingRequestStatus() === RequestStatus.Pending) {
+          <span>Request Sent</span>
+          } @else if (existingRequestStatus() === RequestStatus.Accepted) {
+          <span>Connected</span>
+
+          } @else if (declinedRequest()) {
+          <span>Declined</span>} @else {
+          <span>Request Connection</span>
+          }
+        </button>
+        }
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="profile-content-wrapper">
+    <mat-card class="profile-details-card">
+      <mat-card-content>
+        @if (user().bio) {
+        <section class="profile-section bio-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon">person</mat-icon>
+            About {{ user().firstName }}
+          </h3>
+          <p class="bio-text">{{ user().bio }}</p>
+        </section>
+        <mat-divider></mat-divider>
+        }
+
+        <section class="profile-section details-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon">info</mat-icon>
+            Details
+          </h3>
+          <div class="details-grid">
+            @if (calculateAge(user().dateOfBirth); as age) {
+            <div class="detail-item">
+              <mat-icon>cake</mat-icon> <span>{{ age }} years old</span>
+            </div>
+            } @if (user().gender && user().gender !== 'Other') {
+            <div class="detail-item">
+              <mat-icon>wc</mat-icon> <span>{{ user().gender }}</span>
+            </div>
+            } @if(user().userType == UserType.CareAssistant) { @if
+            (user().experienceYears !== null && user().experienceYears !==
+            undefined) {
+            <div class="detail-item">
+              <mat-icon>work_history</mat-icon>
+              <span>{{ user().experienceYears }} years experience</span>
+            </div>
+            } @if (user().hourlyRate !== null && user().hourlyRate !==
+            undefined) {
+            <div class="detail-item">
+              <mat-icon>payments</mat-icon>
+              <span>{{ user().hourlyRate }} RON/hr</span>
+            </div>
+            } }
+          </div>
+        </section>
+
+        @if(user().userType == UserType.CareAssistant){ @if (user().skills &&
+        user().skills.length > 0) {
+        <section class="profile-section skills-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon">star</mat-icon>
+            Skills & Expertise
+          </h3>
+          <div class="skills-list">
+            @for(skill of user().skills; track skill) {
+            <span class="skill-pill">{{ skill }}</span>
+            }
+          </div>
+        </section>
+        } @if (user().availability && user().availability.length > 0) {
+        <section class="profile-section availability-section">
+          <h3>
+            <mat-icon color="accent" class="section-icon"
+              >event_available</mat-icon
+            >
+            General Availability
+          </h3>
+          <div class="availability-list">
+            @for(avail of user().availability; track avail) {
+            <span class="availability-pill">{{ avail }}</span>
+            }
+          </div>
+        </section>
+        }
+        <mat-divider></mat-divider>
+        <section class="profile-section contact-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon">group</mat-icon>
+            Contact
+          </h3>
+          @if (canViewContactInfo()) {
+          <ul class="details-list">
+            @if(user().phoneNumber) {
+            <li><mat-icon>phone</mat-icon> {{ user().phoneNumber }}</li>
+            } @else {
+            <li>The user has not set up a phone number</li>
+            } @if(user().email) {
+            <li><mat-icon>email</mat-icon> {{ user().email }}</li>
+            } @else{ The user has not set up his email. }
+          </ul>
+          } @else {
+          <span>
+            To see the contact details you will need to connect with
+            {{ user().firstName }}. Start by sending a request.</span
+          >
+          }
+        </section>
+
+        @if (user().additionalDetails) {
+        <mat-divider></mat-divider>
+        <section class="profile-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon">info</mat-icon>
+            Other Information
+          </h3>
+          <ul class="details-list">
+            @if (user().additionalDetails.nonSmoker) {
+            <li><mat-icon>smoke_free</mat-icon> Non-Smoker</li>
+            } @if (user().additionalDetails.hasOwnTransportation) {
+            <li><mat-icon>directions_car</mat-icon> Has Own Transportation</li>
+            }
+          </ul>
+        </section>
+        } } @else if(user().userType == UserType.Researcher) {
+        <mat-divider></mat-divider>
+        <section class="profile-section contact-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon">group</mat-icon>
+            Contact
+          </h3>
+          @if (canViewContactInfo()) {
+          <ul class="details-list">
+            @if(user().phoneNumber) {
+            <li><mat-icon>phone</mat-icon> {{ user().phoneNumber }}</li>
+            } @else {
+            <li>The user has not set up a phone number</li>
+            } @if(user().email) {
+            <li><mat-icon>email</mat-icon> {{ user().email }}</li>
+            } @else{ The user has not set up his email. }
+          </ul>
+          } @else {
+          <span>
+            To see the contact details you will need to connect with
+            {{ user().firstName }}. For this you can wait a request from him and
+            accept it.</span
+          >
+          }
+        </section>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+  } @else {
+  <div class="error-container">
+    <h2>Assistant Profile Not Found</h2>
+    <p>
+      The requested profile could not be loaded. It might have been removed or
+      the link is incorrect.
+    </p>
+  </div>
+  }
+</div>

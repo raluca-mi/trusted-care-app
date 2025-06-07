@@ -56,12 +56,20 @@ export const routes: Routes = [
         title: `${pageConfig.displayName}`,
       })),
       {
-        path: 'assistant-profile/:uid',
+        path: 'user-profile-page/:uid',
         loadComponent: () =>
           import(
-            './find-care/components/assistant-profile-page/assistant-profile-page.component'
-          ).then((m) => m.AssistantProfilePageComponent),
-        title: 'Assistant Profile',
+            './find-care/components/user-profile-page/user-profile-page.component'
+          ).then((m) => m.UserProfilePageComponent),
+        title: 'View User Profile',
+      },
+      {
+        path: 'requests',
+        loadComponent: () =>
+          import(
+            './connection-requests/components/requests-page/requests-page.component'
+          ).then((m) => m.RequestsPageComponent),
+        title: 'Requests',
       },
       {
         path: 'favourites',

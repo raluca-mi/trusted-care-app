@@ -24,6 +24,9 @@ import { config } from '../config/firebase.config';
 import { FavouritesEffects } from './store/favourites/favourites.effects';
 import { favouritesReducer } from './store/favourites/favourites.reducer';
 import { FAVOURITES_FEATURE_KEY } from './store/favourites/favourites.selectors';
+import { REQUESTS_FEATURE_KEY } from './store/requests/requests.selectors';
+import { requestsReducer } from './store/requests/requests.reducer';
+import { RequestsEffects } from './store/requests/requests.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,9 +44,10 @@ export const appConfig: ApplicationConfig = {
 
     provideStore({
       [FAVOURITES_FEATURE_KEY]: favouritesReducer,
+      [REQUESTS_FEATURE_KEY]: requestsReducer,
     }),
 
-    provideEffects([FavouritesEffects]),
+    provideEffects([FavouritesEffects, RequestsEffects]),
 
     provideStoreDevtools({
       maxAge: 25,

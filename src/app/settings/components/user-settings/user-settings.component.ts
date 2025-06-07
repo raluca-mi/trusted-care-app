@@ -487,21 +487,49 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       }
 
       const formValues = this.settingsForm.value;
+
+      const getLocationAndCoordinates = () => {
+        if (this.selectedPlace()) {
+          return {
+            location:
+              this.selectedPlace()?.formattedAddress ||
+              this.selectedPlace()?.address,
+            coordinates: new GeoPoint(
+              this.selectedPlace().coordinates.lat(),
+              this.selectedPlace().coordinates.lng()
+            ),
+          };
+        }
+        return {};
+      };
+
+      const getFilteredSkills = (
+        selectedType: AssistanceType | null,
+        skills: Skill[]
+      ): Skill[] => {
+        const validSkills: Skill[] = selectedType
+          ? ASSISTANCE_TYPE_SKILLS[selectedType] || []
+          : [];
+        return (Array.isArray(skills) ? skills : []).filter((skill: Skill) =>
+          validSkills.includes(skill)
+        );
+      };
+
       const updatedData: Partial<UserInterface> = {
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         displayName: `${formValues.firstName} ${formValues.lastName}`,
         profilePictureUrl: newImageDownloadURL,
+        phoneNumber: formValues.phoneNumber || null,
+        bio: formValues.bio || undefined,
+        dateOfBirth: formValues.dateOfBirth
+          ? new Date(formValues.dateOfBirth).toISOString().split('T')[0]
+          : null,
+        gender: formValues.gender || null,
+        ...getLocationAndCoordinates(),
       };
 
       if (currentProfile.userType === UserType.CareAssistant) {
-        updatedData.phoneNumber = formValues.phoneNumber || null;
-        updatedData.location = formValues.location || undefined;
-        updatedData.bio = formValues.bio || undefined;
-        updatedData.dateOfBirth = formValues.dateOfBirth
-          ? new Date(formValues.dateOfBirth).toISOString().split('T')[0]
-          : null;
-        updatedData.gender = formValues.gender || null;
         updatedData.experienceYears =
           formValues.experienceYears === null
             ? undefined
@@ -512,27 +540,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
             : Number(formValues.hourlyRate);
         updatedData.assistanceType = formValues.assistanceType || null;
 
-        // Filter skills to only those valid for the selected assistance type
         const selectedType: AssistanceType | null =
           formValues.assistanceType || null;
-        const validSkills: Skill[] = selectedType
-          ? ASSISTANCE_TYPE_SKILLS[selectedType] || []
-          : [];
-        const filteredSkills: Skill[] = (
-          Array.isArray(formValues.skills) ? formValues.skills : []
-        ).filter((skill: Skill) => validSkills.includes(skill));
+        const filteredSkills: Skill[] = getFilteredSkills(
+          selectedType,
+          formValues.skills
+        );
         updatedData.skills = filteredSkills;
-
-        //set location and coordinates from selectedPlace
-        if (this.selectedPlace()) {
-          updatedData.location =
-            this.selectedPlace()?.formattedAddress ||
-            this.selectedPlace()?.address;
-          updatedData.coordinates = new GeoPoint(
-            this.selectedPlace().coordinates.lat(),
-            this.selectedPlace().coordinates.lng()
-          );
-        }
 
         updatedData.availability =
           formValues.availability && formValues.availability.length > 0
@@ -551,7 +565,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           formValues.experienceYears &&
           formValues.hourlyRate &&
           formValues.bio &&
-          formValues.location &&
+          updatedData.location &&
           formValues.dateOfBirth &&
           formValues.assistanceType &&
           filteredSkills.length > 0 &&
