@@ -15,7 +15,7 @@ import { LoggerService } from '../../../shared/services/logger.service';
 })
 export class HomePageComponent {
   private authService = inject(AuthService);
-  private router = inject(Router);
+  router = inject(Router);
   private logger = inject(LoggerService);
 
   currentUser: Signal<UserInterface | null | undefined> =

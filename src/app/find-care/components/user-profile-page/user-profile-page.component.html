@@ -29,7 +29,8 @@
       <p class="location-info">
         <mat-icon>location_on</mat-icon> {{ user().location }}
       </p>
-      } @if(user().userType == UserType.CareAssistant && !currentResearcher().isAdmin) {
+      } @if(user().userType == UserType.CareAssistant &&
+      !currentResearcher().isAdmin) {
       <div class="profile-actions-row">
         <button
           mat-fab
@@ -90,7 +91,37 @@
           <p class="bio-text">{{ user().bio }}</p>
         </section>
         <mat-divider></mat-divider>
+        } @else {
+        <section class="profile-section bio-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon">person</mat-icon>
+            About {{ user().firstName }}
+          </h3>
+          <p class="no-info-message">This user has not provided a bio yet.</p>
+        </section>
+        <mat-divider></mat-divider>
         }
+
+        <section class="profile-section location-section">
+          <h3>
+            <mat-icon color="primary" class="section-icon"
+              >location_on</mat-icon
+            >
+            Location @if (userPlace()?.address) {
+            <span class="formatted-location">({{ userPlace().address }})</span>
+            }
+          </h3>
+          @if (userPlace()) {
+          <div class="map-container">
+            <map-display [place]="userPlace()"></map-display>
+          </div>
+          } @else {
+          <p class="no-info-message">
+            Location information not provided by this user.
+          </p>
+          }
+        </section>
+        <mat-divider></mat-divider>
 
         <section class="profile-section details-section">
           <h3>
@@ -120,6 +151,15 @@
               <span>{{ user().hourlyRate }} RON/hr</span>
             </div>
             } }
+            
+            @if ( !(calculateAge(user().dateOfBirth)) && !(user().gender &&
+            user().gender !== 'Other') && !(user().userType ==
+            UserType.CareAssistant && user().experienceYears !== null &&
+            user().experienceYears !== undefined) && !(user().userType ==
+            UserType.CareAssistant && user().hourlyRate !== null &&
+            user().hourlyRate !== undefined) ) {
+            <div class="no-info-message">No details provided by this user.</div>
+            }
           </div>
         </section>
 

@@ -77,6 +77,16 @@
   >
     @if (currentUser()?.isAdmin) {
     <mat-nav-list>
+      <a
+        mat-list-item
+        (click)="navigateTo('/home')"
+        routerLink="/home"
+        routerLinkActive="active-list-item"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>Home</span>
+      </a>
       @for(navLink of adminNavigetionLinkDetails; track navLink.id) {
       <a
         mat-list-item

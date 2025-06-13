@@ -22,6 +22,8 @@ import { UserType } from '../../../auth/enums/user-type.enum';
 import { UserInterface } from '../../../auth/models/user.model';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ConnectionRequestStatus } from '../../../connection-requests/enums/connection-request-status.enum';
+import { MapDisplayComponent } from '../../../location/components/map-display/map-display.component';
+import { SearchPlaceResult } from '../../../location/models/search-place-result.model';
 import { UserProfileService } from '../../../shared/services/firestore/user-profile.service';
 import { LoggerService } from '../../../shared/services/logger.service';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -39,6 +41,7 @@ import { RequestsFacade } from '../../../store/requests/requests.facade';
     MatChipsModule,
     MatDividerModule,
     MatTooltipModule,
+    MapDisplayComponent,
   ],
   templateUrl: './user-profile-page.component.html',
   styleUrl: './user-profile-page.component.scss',
@@ -58,6 +61,7 @@ export class UserProfilePageComponent {
   existingRequestStatus: Signal<ConnectionRequestStatus | null | undefined>;
   declinedRequest: Signal<ConnectionRequestStatus | undefined>;
   canViewContactInfo: Signal<boolean | undefined>;
+  userPlace: Signal<SearchPlaceResult | undefined>;
 
   readonly currentResearcher: Signal<UserInterface | null | undefined> =
     this.authService.currentUser;
@@ -71,9 +75,23 @@ export class UserProfilePageComponent {
     this.setExistingRequestStatus();
     this.getDeclinedRequest();
 
-    this.canViewContactInfo = computed(() =>
-      this.existingRequestStatus() === ConnectionRequestStatus.Accepted
+    this.canViewContactInfo = computed(
+      () =>
+        this.currentResearcher()?.isAdmin === true ||
+        this.existingRequestStatus() === ConnectionRequestStatus.Accepted
     );
+
+    this.userPlace = computed(() => {
+      const currentUser = this.user();
+      if (currentUser?.coordinates && currentUser.location) {
+        const coords = new google.maps.LatLng(
+          currentUser.coordinates.latitude,
+          currentUser.coordinates.longitude
+        );
+        return { address: currentUser.location, coordinates: coords };
+      }
+      return undefined;
+    });
   }
 
   toggleFavorite(): void {

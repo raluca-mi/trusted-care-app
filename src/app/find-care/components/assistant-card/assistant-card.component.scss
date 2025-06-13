@@ -3,7 +3,7 @@
 .assistant-card {
   width: 100%;
   max-width: 340px;
-  height: 310px;
+  height: fit-content;
   margin: 12px;
   cursor: pointer;
   border-radius: 18px;
@@ -103,7 +103,7 @@
     .subtitle-icon {
       font-size: 1rem;
       height: 1rem;
-      width: 1rem;
+      width: 2rem;
       margin-right: 4px;
     }
   }
@@ -156,7 +156,7 @@
       height: 1.1rem;
       width: 1.1rem;
       margin-right: 2px;
-      color: #7b1fa2;
+      color: #184e88;
     }
   }
 }

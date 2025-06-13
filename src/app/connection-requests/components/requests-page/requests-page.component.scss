@@ -40,8 +40,15 @@
   }
 
   .default-avatar-icon {
-    transform: scale(1.5);
+    padding-top: 15px;
+    padding-left: 15px;
+    transform: scale(2);
     color: #9e9e9e;
+  }
+
+  .real-avatar {
+    padding: 5px;
+    scale: 1.1;
   }
 }
 

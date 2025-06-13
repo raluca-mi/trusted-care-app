@@ -20,7 +20,7 @@
         <mat-card class="request-card">
           <mat-card-header>
             @if (req.otherUser?.profilePictureUrl) {
-            <img
+            <img class="real-avatar"
               mat-card-avatar
               [src]="req.otherUser.profilePictureUrl"
               [alt]="req.otherUser.displayName"
@@ -111,7 +111,7 @@
         <mat-card class="request-card request-accepted">
           <mat-card-header>
             @if (req.otherUser?.profilePictureUrl) {
-            <img
+            <img class="real-avatar"
               mat-card-avatar
               [src]="req.otherUser.profilePictureUrl"
               [alt]="req.otherUser.displayName"
@@ -172,7 +172,7 @@
         <mat-card class="request-card request-declined">
           <mat-card-header>
             @if (req.otherUser?.profilePictureUrl) {
-            <img
+            <img class="real-avatar"
               mat-card-avatar
               [src]="req.otherUser.profilePictureUrl"
               [alt]="req.otherUser.displayName"
