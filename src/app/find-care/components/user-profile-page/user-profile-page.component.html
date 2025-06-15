@@ -150,9 +150,7 @@
               <mat-icon>payments</mat-icon>
               <span>{{ user().hourlyRate }} RON/hr</span>
             </div>
-            } }
-            
-            @if ( !(calculateAge(user().dateOfBirth)) && !(user().gender &&
+            } } @if ( !(calculateAge(user().dateOfBirth)) && !(user().gender &&
             user().gender !== 'Other') && !(user().userType ==
             UserType.CareAssistant && user().experienceYears !== null &&
             user().experienceYears !== undefined) && !(user().userType ==
@@ -168,7 +166,9 @@
         <section class="profile-section skills-section">
           <h3>
             <mat-icon color="primary" class="section-icon">star</mat-icon>
-            Skills & Expertise
+            Skills & Expertise in @if(user().assistanceType) {
+            {{ user().assistanceType }}
+            }
           </h3>
           <div class="skills-list">
             @for(skill of user().skills; track skill) {
