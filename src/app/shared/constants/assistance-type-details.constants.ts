@@ -23,7 +23,7 @@ export const ASSISTANCE_PAGES_CONFIG: NavigationAssistanceTypeDetail[] = [
     displayName: AssistanceType.PetsCare,
     pageDescription:
       'Discover reliable pet sitters, dog walkers, and grooming services for your furry friends.',
-    headerImageUrl: 'assets/icons/hero-pets-care.jpg',
+    headerImageUrl: 'assets/icons/hero-pets-care.png',
     route: '/pets-care',
   },
   {
