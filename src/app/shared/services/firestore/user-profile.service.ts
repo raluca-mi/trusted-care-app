@@ -177,6 +177,23 @@ export class UserProfileService {
     );
   }
 
+   getAllAssistants(): Observable<UserInterface[]> {
+    const usersCollectionRef = collection(this.firestore, 'users');
+    const q = query(
+      usersCollectionRef,
+      where('userType', '==', UserType.CareAssistant),
+      orderBy('createdAt', 'desc') 
+    );
+
+
+    return from(getDocs(q)).pipe(
+      map(this.mapQueryToUsers),
+      catchError(error => {
+        return of([]);
+      })
+    );
+  }
+
   getVerifiedAssistants(): Observable<UserInterface[]> {
     const q = query(
       collection(this.firestore, 'users'),

@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,20 +38,21 @@ import { AdminService } from '../../services/admin.service';
   templateUrl: './researchers-page.component.html',
   styleUrl: './researchers-page.component.scss',
 })
-export class ResearchersPageComponent {
+export class ResearchersPageComponent implements AfterViewInit {
   private userProfileService = inject(UserProfileService);
   private notificationService = inject(NotificationService);
   private adminService = inject(AdminService);
   private router = inject(Router);
 
   isLoading = signal(true);
-  isDeleting = signal(null);
+  isDeleting = signal<string | null>(null);
 
   displayedColumns: string[] = ['displayName', 'email', 'createdAt', 'actions'];
   dataSource: MatTableDataSource<UserInterface> = new MatTableDataSource();
+  pageSize = 5;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
   constructor() {}
 
@@ -53,14 +60,25 @@ export class ResearchersPageComponent {
     this.loadResearchers();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
   loadResearchers(): void {
     this.isLoading.set(true);
     this.userProfileService.getResearchers().subscribe({
       next: (researchers) => {
         this.dataSource.data = researchers;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
         this.isLoading.set(false);
+        setTimeout(() => {
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+          }
+          if (this.sort) {
+            this.dataSource.sort = this.sort;
+          }
+        });
       },
       error: (err) => {
         this.notificationService.showError('Failed to load researcher data.');

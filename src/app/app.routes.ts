@@ -60,6 +60,14 @@ export const routes: Routes = [
             title: 'Admin: Manage Assistants',
           },
           {
+            path: 'verify-assistants',
+            loadComponent: () =>
+              import(
+                './admin/components/verify-assistants-page/verify-assistants-page.component'
+              ).then((m) => m.VerifyAssistantsPageComponent),
+            title: 'Admin: Verify Assistants',
+          },
+          {
             path: 'researchers',
             loadComponent: () =>
               import(

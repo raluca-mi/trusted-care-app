@@ -8,6 +8,12 @@ export const ADMIN_NAVIGATION_LINK_DETAILS: NavigationLinkDetails[] = [
     icon: 'manage_accounts',
   },
   {
+    id: 'admin-verify-assistants',
+    displayName: 'Verify Assistants',
+    route: '/admin/verify-assistants',
+    icon: 'how_to_reg',
+  },
+  {
     id: 'admin-researchers',
     displayName: 'Manage Researchers',
     route: '/admin/researchers',
