@@ -1,14 +1,8 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
+import { AssistanceType } from './enums/assistance-type.enum';
+import { UserType } from './enums/user-type.enum';
+import { ConnectionRequestStatus } from './enums/connection-request-status.enum';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
@@ -124,3 +118,148 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
     );
   }
 });
+
+/**
+ * A scheduled Cloud Function that runs once every 24 hours to aggregate
+ * platform statistics and save them to a single document in Firestore.
+ */
+export const aggregateStatistics = functions.pubsub
+  .schedule('every 24 hours')
+  .onRun(async (context) => {
+    const logger = functions.logger;
+    logger.info('Starting scheduled statistics aggregation.');
+
+    const db = admin.firestore();
+
+    try {
+      let totalVerifiedAssistants = 0;
+      let totalResearchers = 0;
+      let totalConnectionsMade = 0;
+      const categoryCounts: { [key: string]: number } = {};
+      const categoryRateData: {
+        [key: string]: { totalRate: number; count: number };
+      } = {};
+
+      // --- Admin Stats Initialization ---
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const assistantSignupsLast30Days: { [date: string]: number } = {};
+      const researcherSignupsLast30Days: { [date: string]: number } = {};
+      const verificationStatusCounts = { verified: 0, unverified: 0 };
+      const categoryVerificationBreakdown: {
+        [key: string]: { verified: number; unverified: number };
+      } = {};
+
+      Object.values(AssistanceType).forEach((type) => {
+        categoryCounts[type] = 0;
+        categoryRateData[type] = { totalRate: 0, count: 0 };
+        categoryVerificationBreakdown[type] = { verified: 0, unverified: 0 };
+      });
+
+      // --- Fetch and process all users ---
+      const usersSnapshot = await db.collection('users').get();
+      logger.info(`Processing ${usersSnapshot.size} total user documents.`);
+
+      usersSnapshot.forEach((doc) => {
+        const user = doc.data();
+        const createdAt = user.createdAt?.toDate
+          ? user.createdAt.toDate()
+          : new Date(0);
+        const dateString = createdAt.toISOString().split('T')[0];
+
+        // Researchers
+        if (user.userType === UserType.Researcher) {
+          totalResearchers++;
+          if (createdAt > thirtyDaysAgo) {
+            researcherSignupsLast30Days[dateString] =
+              (researcherSignupsLast30Days[dateString] || 0) + 1;
+          }
+        }
+
+        // Care Assistants
+        if (user.userType === UserType.CareAssistant) {
+          if (createdAt > thirtyDaysAgo) {
+            assistantSignupsLast30Days[dateString] =
+              (assistantSignupsLast30Days[dateString] || 0) + 1;
+          }
+          if (user.isVerified === true) {
+            verificationStatusCounts.verified++;
+          } else {
+            verificationStatusCounts.unverified++;
+          }
+          if (
+            user.assistanceType &&
+            categoryVerificationBreakdown[user.assistanceType]
+          ) {
+            if (user.isVerified === true) {
+              categoryVerificationBreakdown[user.assistanceType].verified++;
+            } else {
+              categoryVerificationBreakdown[user.assistanceType].unverified++;
+            }
+          }
+
+          if (user.isVerified === true) {
+            totalVerifiedAssistants++;
+            if (
+              user.assistanceType &&
+              categoryCounts.hasOwnProperty(user.assistanceType)
+            ) {
+              categoryCounts[user.assistanceType]++;
+            }
+            if (user.assistanceType && user.hourlyRate > 0) {
+              if (categoryRateData.hasOwnProperty(user.assistanceType)) {
+                categoryRateData[user.assistanceType].totalRate +=
+                  user.hourlyRate;
+                categoryRateData[user.assistanceType].count++;
+              }
+            }
+          }
+        }
+      });
+
+      // --- Fetch and count accepted requests ---
+      const requestsSnapshot = await db
+        .collection('requests')
+        .where('status', '==', ConnectionRequestStatus.Accepted)
+        .get();
+      totalConnectionsMade = requestsSnapshot.size;
+
+      // --- Calculate average rates ---
+      const averageRates: { [key: string]: number } = {};
+      for (const type in categoryRateData) {
+        if (categoryRateData[type].count > 0) {
+          averageRates[type] = parseFloat(
+            (
+              categoryRateData[type].totalRate / categoryRateData[type].count
+            ).toFixed(2)
+          );
+        } else {
+          averageRates[type] = 0;
+        }
+      }
+
+      const finalStats = {
+        totalVerifiedAssistants,
+        totalResearchers,
+        totalConnectionsMade,
+        categoryCounts,
+        averageRates,
+        assistantSignupsLast30Days,
+        researcherSignupsLast30Days,
+        verificationStatusCounts,
+        categoryVerificationBreakdown,
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      };
+
+      logger.info('Final calculated stats:', finalStats);
+
+      const statsDocRef = db.collection('statistics').doc('live_stats');
+      await statsDocRef.set(finalStats, { merge: true });
+
+      logger.info('Successfully updated statistics/live_stats document.');
+      return null;
+    } catch (error) {
+      logger.error('Error during statistics aggregation:', error);
+      return null;
+    }
+  });

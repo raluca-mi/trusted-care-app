@@ -1,18 +1,213 @@
-<div class="home-container">
-  @if (currentUser() === undefined) {
-  <div class="loading-shade">
-    <mat-progress-spinner
-      mode="indeterminate"
-      diameter="50"
-    ></mat-progress-spinner>
-    <p>Loading profile...</p>
+<div class="home-page-container">
+  <div class="welcome-header">
+    @if(currentUser()) {
+      <h1>Welcome, {{ currentUser().firstName || currentUser().displayName }}!</h1>
+    } @else {
+      <h1>Welcome to Trusted Care</h1>
+    }
+    <p>Here is a General Overview of the TrustedCare platform:</p>
   </div>
-  } @else if(currentUser()) {
-   
-  <div class="hero-section">
-    <div class="hero-content">
-      <h1>Welcome, {{ currentUser().firstName }}!</h1>
-      </div>
-  </div>
+
+  @if(liveStats() === undefined) {
+    <div class="stats-loading">
+      <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+      <span>Loading platform statistics...</span>
+    </div>
+  } @else if (liveStats()) {
+    <div class="stats-cards-grid">
+      <mat-card class="stat-card">
+        <mat-card-header>
+        <div mat-card-avatar class="stat-icon-container primary">
+          <mat-icon>verified_user</mat-icon>
+        </div>
+        <mat-card-title>{{ liveStats().totalVerifiedAssistants }}</mat-card-title>
+        <mat-card-subtitle>Verified Assistants</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+      <mat-card class="stat-card">
+        <mat-card-header>
+        <div mat-card-avatar class="stat-icon-container accent">
+          <mat-icon>groups</mat-icon>
+        </div>
+        <mat-card-title>{{ liveStats().totalResearchers }}</mat-card-title>
+          <mat-card-subtitle>Researchers</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+      <mat-card class="stat-card">
+        <mat-card-header>
+        <div mat-card-avatar class="stat-icon-container warn">
+          <mat-icon>handshake</mat-icon>
+        </div>
+        <mat-card-title>{{ liveStats().totalConnectionsMade }}</mat-card-title>
+          <mat-card-subtitle>Connections Made</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </div>
+
+
+    <div class="charts-grid">
+      <mat-card class="chart-card">
+        <mat-card-content>
+          <canvas baseChart class="chart-canvas"
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="barChartType">
+          </canvas>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <mat-card-content>
+          <canvas baseChart class="chart-canvas"
+            [data]="pieChartData"
+            [options]="pieChartOptions"
+            [type]="pieChartType">
+          </canvas>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  } @else {
+    <div class="stats-error">
+      <mat-icon color="warn">error</mat-icon>
+      <span>Could not load platform statistics.</span>
+    </div>
   }
+
+  <!-- Personal Statistics Section (for Researcher) -->
+  @if(currentUser()?.userType === 'researcher') {
+    <mat-divider class="section-divider-large"></mat-divider>
+    <div class="personal-stats-section">
+      <div class="personal-stats-header">
+        <h2>My Personal Statistics</h2>
+        <mat-form-field appearance="outline" class="filter-dropdown">
+          <mat-label>Filter by Category</mat-label>
+          <mat-select [formControl]="assistanceTypeFilterControl">
+            <mat-option value="all">All Categories</mat-option>
+            @for (type of assistanceTypeOptions; track type) {
+              <mat-option [value]="type">{{ type }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="charts-grid">
+
+        <mat-card class="chart-card">
+          <mat-card-content>
+            <canvas baseChart class="chart-canvas"
+              [data]="weeklyActivityLineChartData()"
+              [options]="weeklyActivityLineChartOptions"
+              [type]="weeklyActivityLineChartType">
+            </canvas>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="chart-card">
+          <mat-card-content>
+            @if(filteredSentRequests().length > 0) {
+              <canvas baseChart class="chart-canvas"
+                [data]="statusPieChartData()"
+                [options]="statusPieChartOptions"
+                [type]="statusPieChartType">
+              </canvas>
+            } @else {
+              <div class="chart-placeholder">No request data for this category.</div>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+
+  <!-- Personal Statistics Section (for Assistant) -->
+  @if(currentUser()?.userType === 'care_assistant') {
+    <mat-divider class="section-divider-large"></mat-divider>
+    <div class="personal-stats-section">
+      <div class="personal-stats-header">
+        <h2>My Personal Statistics</h2>
+      </div>
+      <div class="charts-grid">
+
+        <mat-card class="chart-card">
+          <mat-card-content>
+            <canvas baseChart class="chart-canvas"
+              [data]="assistantWeeklyRequestsLineChartData()"
+              [options]="assistantWeeklyRequestsLineChartOptions"
+              [type]="assistantWeeklyRequestsLineChartType">
+            </canvas>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="chart-card">
+          <mat-card-content>
+            @if(assistantReceivedRequests().length > 0) {
+              <canvas baseChart class="chart-canvas"
+                [data]="assistantStatusPieChartData()"
+                [options]="assistantStatusPieChartOptions"
+                [type]="assistantStatusPieChartType">
+              </canvas>
+            } @else {
+              <div class="chart-placeholder">No request data available.</div>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+
+  <!-- Admin Dashboard Section -->
+  @if(currentUser()?.isAdmin) {
+    <mat-divider class="section-divider-large"></mat-divider>
+    <div class="personal-stats-section">
+      <div class="personal-stats-header">
+        <h2>Administrator Dashboard</h2>
+      </div>
+      <div class="charts-grid admin-charts">
+
+        <mat-card class="chart-card">
+          <mat-card-header><mat-card-title>Assistants Registered (Last 30 Days)</mat-card-title></mat-card-header>
+          <mat-card-content>
+            <canvas baseChart class="chart-canvas"
+              [data]="assistantSignupsChartData()"
+              [options]="adminLineChartOptions"
+              [type]="'line'">
+            </canvas>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="chart-card">
+          <mat-card-header><mat-card-title>Researchers Registered (Last 30 Days)</mat-card-title></mat-card-header>
+          <mat-card-content>
+            <canvas baseChart class="chart-canvas"
+              [data]="researcherSignupsChartData()"
+              [options]="adminLineChartOptions"
+              [type]="'line'">
+            </canvas>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="chart-card">
+          <mat-card-content>
+            <canvas baseChart class="chart-canvas"
+              [data]="verificationPieChartData()"
+              [options]="adminPieChartOptions"
+              [type]="'pie'">
+            </canvas>
+          </mat-card-content>
+        </mat-card>
+        
+        <mat-card class="chart-card">
+        
+          <mat-card-content>
+            <canvas baseChart class="chart-canvas"
+              [data]="categoryBreakdownBarChartData()"
+              [options]="adminBarChartOptions"
+              [type]="'bar'">
+            </canvas>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+
 </div>
