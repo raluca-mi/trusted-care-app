@@ -4,6 +4,7 @@ import { authGuard } from './auth/guards/auth.guard';
 import { AuthLayoutComponent } from './layouts/components/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/components/main-layout/main-layout.component';
 import { ASSISTANCE_PAGES_CONFIG } from './shared/constants/assistance-type-details.constants';
+import { researcherGuard } from './auth/guards/researcher.guards';
 
 export const routes: Routes = [
   {
@@ -89,6 +90,7 @@ export const routes: Routes = [
             './find-care/components/assistance-type-page/assistance-type-page.component'
           ).then((m) => m.AssistanceTypePageComponent),
         data: { assistancePageData: pageConfig },
+        canActivate: [researcherGuard],
         title: `${pageConfig.displayName}`,
       })),
       {
@@ -113,6 +115,7 @@ export const routes: Routes = [
           import(
             './favourites/components/favourites-page/favourites-page.component'
           ).then((m) => m.FavouritesPageComponent),
+        canActivate: [researcherGuard],
         title: 'Favourites',
       },
       {
