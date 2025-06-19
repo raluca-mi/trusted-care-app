@@ -53,6 +53,7 @@ import { LoggerService } from '../../../shared/services/logger.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { UserStorageService } from '../../../shared/services/storage/user-storage.service';
 import { USER_SETTINGS_TEXT } from '../../constants/user-settings.constants';
+import { minimumAgeValidator } from '../../validators/minimum-age.validator';
 
 @Component({
   selector: 'user-settings',
@@ -272,10 +273,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       // Step 3 Controls (Additional Details)
       phoneNumber: [
         '',
-        [Validators.pattern('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$')],
+        [Validators.pattern(this.text.phoneNumberRegexPattern)],
       ],
       gender: [null],
-      dateOfBirth: [null],
+      dateOfBirth: [null, [minimumAgeValidator(18)]],
       bio: ['', [Validators.maxLength(1500)]],
     });
     this.initialFormValues = this.settingsForm.getRawValue();
@@ -374,8 +375,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   openSelectLocationModal() {
     const dialogRef = this.dialog.open(SelectLocationDialogComponent, {
-      width: '2000px',
-      height: '700px',
+      width: '600px',
+      height: '650px',
       data: { initialPlace: this.selectedPlace() },
     });
 
@@ -575,7 +576,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
           finalProfileDataForCheck.coordinates &&
           finalProfileDataForCheck.bio &&
           finalProfileDataForCheck.dateOfBirth &&
-          finalProfileDataForCheck.gender &&
+          finalProfileDataForCheck.gender !== null &&
           finalProfileDataForCheck.assistanceType &&
           finalProfileDataForCheck.skills &&
           finalProfileDataForCheck.skills.length > 0 &&
@@ -610,9 +611,15 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       this.hasActualChanges.set(false);
 
       if (currentProfile.userType == UserType.CareAssistant) {
-        this.notificationService.showSuccess(
-          this.text.profileUpdatedForValidationSuccessfullyNotification
-        );
+        if (updatedData.profileComplete) {
+          this.notificationService.showSuccess(
+            this.text.profileUpdatedForValidationSuccessfullyNotification
+          );
+        } else {
+          this.notificationService.showSuccess(
+            this.text.profileUpdatedSuccessfullyNotification
+          );
+        }
       } else {
         this.notificationService.showSuccess(
           this.text.profileUpdatedSuccessfullyNotification

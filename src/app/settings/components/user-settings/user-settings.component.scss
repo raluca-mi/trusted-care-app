@@ -130,7 +130,17 @@
 
   .form-field {
     flex: 1;
+    margin-bottom: 8px;
+
+    .mat-error {
+      padding-bottom: 8px;
+      display: block;
+    }
   }
+}
+
+.form-field.full-width {
+  margin-bottom: 16px;
 }
 
 .full-width {
@@ -241,4 +251,8 @@ mat-divider {
 mat-card-actions button[mat-stroked-button] {
   color: #555;
   border-color: #ccc;
+}
+
+.location-action {
+  padding: 8px 8px 30px 8px;
 }

@@ -60,6 +60,8 @@ export const USER_SETTINGS_TEXT = {
   genderLabel: 'Gender',
   preferNotToSay: 'Prefer not to say',
   dateOfBirthLabel: 'Date of Birth',
+  olderThan18Message: 'You must be at least 18 years old.',
+  dateOfBirthInvalid: 'Please enter a valid date of birth.',
   dobPlaceholder: 'DD/MM/YYYY',
   locationLabel: 'Location',
   locationPlaceholder: 'Brașov, Brașov',
@@ -95,4 +97,8 @@ export const USER_SETTINGS_TEXT = {
   emailNotFoundNotification: 'Cannot initiate password reset: Email not found.',
   profileUpdatedForValidationSuccessfullyNotification:
     'Profile updated successfully! Wait for validation from an admin, to start your journey!',
+
+  //Validators
+  phoneNumberRegexPattern:
+    '^(\\+4|)?(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?(\\s|\\.|\\-)?([0-9]{3}(\\s|\\.|\\-|)){2}$',
 } as const;

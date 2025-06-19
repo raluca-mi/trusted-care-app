@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, model, NgZone } from '@angular/core';
+import { Component, inject, model, NgZone } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { SearchPlaceResult } from '../../models/search-place-result.model';
 import { LocationService } from '../../services/location.service';

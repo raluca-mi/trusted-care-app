@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { currentPosition } from '../constants/coords.constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocationService {
-
-  constructor() { }
+  currentPosition: {coords: { latitude: number; longitude: number }} | null =
+    currentPosition;
+  constructor() {}
 
   reverseGeocode(lat: number, lng: number): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -21,20 +23,20 @@ export class LocationService {
   }
 
   getCurrentPosition(): Promise<{ lat: number; lng: number }> {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject('Geolocation is not supported by this browser.');
-    } else {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => reject(error)
-      );
-    }
-  });
-}
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject('Geolocation is not supported by this browser.');
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve({
+              lat: this.currentPosition.coords.latitude,
+              lng: this.currentPosition.coords.longitude,
+            });
+          },
+          (error) => reject(error)
+        );
+      }
+    });
+  }
 }

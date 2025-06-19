@@ -308,7 +308,7 @@
                 <mat-label>{{ text.genderLabel }}</mat-label>
                 <mat-select formControlName="gender">
                   <mat-option [value]="null"
-                    ><em>{{ text.preferNotToSay }}</em></mat-option
+                    ><span>{{ text.preferNotToSay }}</span></mat-option
                   >
                   @for(gender of genderOptions; track gender) {
                   <mat-option [value]="gender">{{ gender }}</mat-option>
@@ -335,9 +335,16 @@
                   #dobPicker
                   startView="multi-year"
                 ></mat-datepicker>
+                @if (settingsForm.get('dateOfBirth')?.errors?.['minimumAge'] &&
+                settingsForm.get('dateOfBirth')?.touched) {
+                <mat-error>{{ text.olderThan18Message }}</mat-error>
+                } @if (settingsForm.get('dateOfBirth')?.errors?.['invalidDate']
+                && settingsForm.get('dateOfBirth')?.touched) {
+                <mat-error>{{ text.dateOfBirthInvalid }}</mat-error>
+                }
               </mat-form-field>
 
-              <mat-card-actions>
+              <mat-card-actions class="location-action">
                 <button
                   mat-stroked-button
                   type="button"

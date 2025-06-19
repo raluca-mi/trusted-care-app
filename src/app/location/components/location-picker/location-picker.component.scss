@@ -1,19 +1,24 @@
 .location-picker-container {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
   max-width: 50vw;
   max-height: 70vh;
   padding: 5px;
 
-  .select-location{
+  .select-location {
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    gap: 40px;
+
+    .use-current-location-button-container {
+      margin-top: 10px;
+    }
   }
 }
 
 map-display {
-  width: 26vw;
+  width: 30vw;
   height: 50vh;
 }
-

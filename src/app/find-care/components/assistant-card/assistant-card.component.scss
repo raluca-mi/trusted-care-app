@@ -3,7 +3,7 @@
 .assistant-card {
   width: 100%;
   max-width: 340px;
-  height: fit-content;
+  height: 320px;
   margin: 12px;
   cursor: pointer;
   border-radius: 18px;
@@ -105,6 +105,14 @@
       height: 1rem;
       width: 2rem;
       margin-right: 4px;
+    }
+
+    .location-subtitle-container {
+      overflow: hidden;
+      max-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
     }
   }
 }
