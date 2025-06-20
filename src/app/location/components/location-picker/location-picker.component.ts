@@ -5,6 +5,7 @@ import { SearchPlaceResult } from '../../models/search-place-result.model';
 import { LocationService } from '../../services/location.service';
 import { MapDisplayComponent } from '../map-display/map-display.component';
 import { SearchPlaceComponent } from '../search-place/search-place.component';
+import { LOCATION_CONSTANTS } from '../../constants/location.constants';
 
 @Component({
   selector: 'location-picker',
@@ -22,6 +23,8 @@ export class LocationPickerComponent {
 
   locationService = inject(LocationService);
   ngZone = inject(NgZone);
+
+  text = LOCATION_CONSTANTS;
 
   constructor() {}
 

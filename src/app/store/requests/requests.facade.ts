@@ -25,12 +25,10 @@ export class RequestsFacade {
 
   constructor() {}
 
-  // Get all requests (less common to use directly, usually by status)
   allRequests$: Observable<ConnectionRequest[]> = this.store.pipe(
     select(RequestsSelectors.selectAllRequests)
   );
 
-  // Get Sent Requests by status
   getSentRequestsByStatus$(
     researcherUid: string,
     status: ConnectionRequestStatus
@@ -42,7 +40,6 @@ export class RequestsFacade {
     );
   }
 
-  // Get Received Requests by status
   getReceivedRequestsByStatus$(
     assistantUid: string,
     status: ConnectionRequestStatus
@@ -54,7 +51,6 @@ export class RequestsFacade {
     );
   }
 
-  // Check for an active request
   getActiveRequestBetweenUsers$(
     researcherUid: string,
     assistantUid: string

@@ -9,8 +9,6 @@ import {
 
 const requestsReducerInternal = createReducer(
   initialRequestsState,
-
-  // Send Request
   on(RequestsActions.sendRequest, (state) => ({ ...state, error: null })),
   on(RequestsActions.sendRequestSuccess, (state, { request }) => {
     return requestsAdapter.addOne(request, state);
@@ -19,8 +17,6 @@ const requestsReducerInternal = createReducer(
     ...state,
     error,
   })),
-
-  // Cancel Request
   on(RequestsActions.cancelRequest, (state) => ({ ...state, error: null })),
   on(RequestsActions.cancelRequestSuccess, (state, { requestId }) => {
     return requestsAdapter.mapOne(
@@ -39,8 +35,6 @@ const requestsReducerInternal = createReducer(
     ...state,
     error,
   })),
-
-  // Respond to Request
   on(RequestsActions.respondToRequest, (state) => ({ ...state, error: null })),
   on(RequestsActions.respondToRequestSuccess, (state, { request }) => {
     return requestsAdapter.upsertOne(request, state);
@@ -49,8 +43,6 @@ const requestsReducerInternal = createReducer(
     ...state,
     error,
   })),
-
-  // Load Sent Requests
   on(RequestsActions.loadSentRequests, (state) => ({
     ...state,
     isLoadingSent: true,
@@ -67,8 +59,6 @@ const requestsReducerInternal = createReducer(
     isLoadingSent: false,
     error,
   })),
-
-  // Load Received Requests
   on(RequestsActions.loadReceivedRequests, (state) => ({
     ...state,
     isLoadingReceived: true,
@@ -85,8 +75,6 @@ const requestsReducerInternal = createReducer(
     isLoadingReceived: false,
     error,
   })),
-
-  // Listener updates
   on(RequestsActions.upsertRequestFromListener, (state, { request }) => {
     return requestsAdapter.upsertOne(request, state);
   }),
@@ -96,7 +84,6 @@ const requestsReducerInternal = createReducer(
       return requestsAdapter.removeOne(requestId, state);
     }
   ),
-
   on(RequestsActions.clearRequestsState, (state) => {
     return requestsAdapter.removeAll(state);
   })

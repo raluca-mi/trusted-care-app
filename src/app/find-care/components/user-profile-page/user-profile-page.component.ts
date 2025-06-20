@@ -219,11 +219,6 @@ export class UserProfilePageComponent {
   }
 
   private setExistingRequestStatus() {
-    //if the current User logged in is assistant, then assign the current user to assistantSignal and the user to be the researcher
-    //proceed the opposite in the reversed case
-    // if the current User logged in is assistant, then assign the current user to assistantSignal and the user to be the researcher
-    // proceed the opposite in the reversed case
-
     const viewProfileUserSignal$ = toObservable(this.user);
     const currentUserSignal$ = toObservable(this.currentResearcher);
 
@@ -236,7 +231,6 @@ export class UserProfilePageComponent {
             currentUser &&
             currentUser.uid
           ) {
-            // Determine roles
             let assistantUid: string;
             let researcherUid: string;
 

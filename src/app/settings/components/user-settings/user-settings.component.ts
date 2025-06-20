@@ -662,12 +662,6 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteAccount(): void {
-    this.notificationService.showWarning(
-      'Account deletion not yet implemented.'
-    );
-  }
-
   get UserTypeEnum() {
     return UserType;
   }

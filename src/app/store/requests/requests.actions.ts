@@ -29,7 +29,6 @@ export const cancelRequestFailure = createAction(
   props<{ error: any }>()
 );
 
-// Respond to Request Actions
 export const respondToRequest = createAction(
   RequestActionTypes.RESPOND_TO_REQUEST,
   props<{
@@ -49,7 +48,6 @@ export const respondToRequestFailure = createAction(
   props<{ error: any }>()
 );
 
-// Load Sent Requests Actions
 export const loadSentRequests = createAction(
   RequestActionTypes.LOAD_SENT_REQUESTS,
   props<{ researcherUid: string }>()
@@ -63,7 +61,6 @@ export const loadSentRequestsFailure = createAction(
   props<{ error: any }>()
 );
 
-// Load Received Requests Actions
 export const loadReceivedRequests = createAction(
   RequestActionTypes.LOAD_RECEIVED_REQUESTS,
   props<{ assistantUid: string }>()

@@ -37,7 +37,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
 
-    // Firebase imports
     provideFirebaseApp(() => initializeApp(config.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),

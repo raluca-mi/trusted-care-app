@@ -16,11 +16,6 @@ export class StatisticsService {
   private firestore: Firestore = inject(Firestore);
   private logger = inject(LoggerService);
 
-  /**
-   * Fetches the live statistics document from Firestore.
-   * This provides a real-time observable of the stats data.
-   * @returns An Observable emitting the LiveStats object, or null if it doesn't exist or an error occurs.
-   */
   getLiveStats(): Observable<LiveStats | null> {
     const statsDocRef = doc(
       this.firestore,

@@ -6,3 +6,7 @@ export const currentPosition: {
     longitude: 25.6015075,
   },
 } as const;
+
+export const LOCATION_CONSTANTS = {
+  useMyCurrentLocation: 'Use My Current Location',
+};

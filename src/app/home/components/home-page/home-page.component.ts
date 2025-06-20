@@ -222,8 +222,6 @@ export class HomePageComponent {
     ChartData<'pie', number[], string | string[]>
   >;
 
-  private allReceivedRequests$: Observable<ConnectionRequest[]> =
-    this.requestsFacade.allRequests$;
   assistantReceivedRequests: Signal<ConnectionRequest[]>;
 
   // Admin Stats

@@ -11,14 +11,12 @@ export const selectRequestsState =
 const {
   selectIds: selectRequestIds,
   selectEntities: selectRequestEntities,
-  selectAll: selectAllRequestsInternal, // Internal selector for all requests
+  selectAll: selectAllRequestsInternal,
   selectTotal: selectTotalRequests,
 } = requestsAdapter.getSelectors(selectRequestsState);
 
-// Selector to get all requests (might be a mix of sent/received before specific filtering)
 export const selectAllRequests = selectAllRequestsInternal;
 
-// Selectors for Sent Requests by Status
 export const selectSentRequestsByStatus = (status: ConnectionRequestStatus) =>
   createSelector(
     selectAllRequests,
@@ -29,7 +27,6 @@ export const selectSentRequestsByStatus = (status: ConnectionRequestStatus) =>
       )
   );
 
-// Selectors for Received Requests by Status
 export const selectReceivedRequestsByStatus = (
   status: ConnectionRequestStatus
 ) =>
@@ -42,7 +39,6 @@ export const selectReceivedRequestsByStatus = (
       )
   );
 
-// Selector to check if an active request exists from a specific researcher to an assistant
 export const selectActiveRequestBetweenUsers = (
   researcherUid: string,
   assistantUid: string

@@ -49,9 +49,6 @@ export class ConnectionRequestsService {
     );
   }
 
-  /**
-   * Updates the status of an existing request document in Firestore.
-   */
   updateRequestStatus(
     requestId: string,
     status: ConnectionRequestStatus
@@ -73,9 +70,6 @@ export class ConnectionRequestsService {
     );
   }
 
-  /**
-   * Fetches all requests sent by a specific researcher.
-   */
   fetchSentRequests(researcherUid: string): Observable<ConnectionRequest[]> {
     this.logger.log(
       'RequestService: Fetching sent requests for researcherUid:',
@@ -100,9 +94,6 @@ export class ConnectionRequestsService {
     );
   }
 
-  /**
-   * Fetches all requests received by a specific assistant.
-   */
   fetchReceivedRequests(assistantUid: string): Observable<ConnectionRequest[]> {
     this.logger.log(
       'RequestService: Fetching received requests for assistantUid:',
@@ -127,9 +118,6 @@ export class ConnectionRequestsService {
     );
   }
 
-  /**
-   * Fetches a single request by its ID (useful for respondToRequestSuccess).
-   */
   getRequestById(requestId: string): Observable<ConnectionRequest | null> {
     const requestDocRef = doc(
       this.firestore,
